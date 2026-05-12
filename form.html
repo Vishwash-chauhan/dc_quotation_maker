@@ -1,0 +1,2542 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Dahi Cheeni Quotation Maker</title>
+  <style>
+    body{font-family:Inter,system-ui,Segoe UI,Roboto,Helvetica,Arial,sans-serif;margin:0;padding:20px;color:#222;background:#f8f9fa}
+    .container{max-width:900px;margin:0 auto;background:white;padding:24px;border-radius:8px;box-shadow:0 2px 8px rgba(0,0,0,0.08)}
+    h1{font-size:28px;margin:0 0 8px 0;color:#1a3a3a;font-weight:700}
+    h1 small{display:block;font-size:14px;color:#666;font-weight:400;margin-top:4px}
+    h3{font-size:16px;margin:20px 0 12px 0;color:#2D3E50;font-weight:600;border-bottom:2px solid #f0f0f0;padding-bottom:8px}
+    p.muted{color:#777;font-size:13px;margin:8px 0 16px 0}
+    label{display:block;margin-top:10px;font-weight:600;color:#333}
+    input,select{padding:10px;border:1px solid #ddd;border-radius:6px;width:100%;box-sizing:border-box;font-size:14px}
+    input:focus,select:focus{outline:none;border-color:#2D3E50;box-shadow:0 0 0 3px rgba(45,62,80,0.1)}
+    .row{display:flex;gap:12px}
+    .col{flex:1}
+    .search{margin-top:10px;padding:10px;border:1px solid #ddd;border-radius:6px;width:100%;}
+    .search:focus{outline:none;border-color:#2D3E50;box-shadow:0 0 0 3px rgba(45,62,80,0.1)}
+    .filter-buttons{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px;margin-bottom:12px}
+    .filter-btn{padding:8px 14px;border:1px solid #ddd;background:#f5f5f5;border-radius:6px;cursor:pointer;font-size:13px;font-weight:600;color:#333;transition:all 0.2s}
+    .filter-btn:hover{border-color:#2D3E50;background:#e8f0f5}
+    .filter-btn.active{background:#2D3E50;color:white;border-color:#2D3E50}
+    .filter-dropdown{display:none;width:100%;padding:10px;border:1px solid #ddd;border-radius:6px;font-size:14px;background:white}
+    .search-help{font-size:12px;color:#888;margin-top:6px;font-style:italic}
+    @media (max-width: 600px){
+      .filter-buttons{display:none}
+      .filter-dropdown{display:block}
+    }
+    .menu-list{max-height:360px;overflow:auto;border:1px solid #e6e6e6;padding:8px;margin-top:8px;border-radius:6px}
+    .category{margin-bottom:12px;border-bottom:1px solid #f0f0f0;padding-bottom:8px}
+    .category-header{font-weight:700;padding:8px 6px;background:#fbfbfb;border-radius:4px;margin-bottom:6px;border:1px solid #f3f3f3}
+    .menu-item{display:flex;align-items:center;gap:12px;padding:8px;border-bottom:1px solid #fafafa}
+    .menu-item:last-child{border-bottom:none}
+    .menu-item .meta{flex:1}
+    .menu-item .right{width:140px;text-align:right;color:#333}
+    .menu-item label{margin:0;cursor:pointer}
+    .menu-item input[type=checkbox]{width:18px;height:18px;cursor:pointer}
+    .description-input { font-size: 13px; color: #444; margin-top: 6px; width: 100%; box-sizing: border-box; padding: 6px; border: 1px solid #e6e6e6; border-radius: 6px; resize: vertical; min-height: 44px; }
+    .veg-toggle { display:inline-block; font-size:12px; padding:4px 8px; border-radius: 16px; border: 1px solid #dcdcdc; margin-left:8px; cursor:pointer; background:#f0f8f5; color:#1b5e20; min-width:56px; text-align:center; }
+    .veg-toggle.non-veg { background:#fff5f5; color:#8b0000; border-color:#f2c0c0 }
+    .veg-toggle.veg { background:#eafaf0; color:#116830; border-color:#c6f0d1 }
+    table{width:100%;border-collapse:collapse;margin-top:16px;border:1px solid #ddd}
+    th,td{border:1px solid #ddd;padding:10px 8px;text-align:left;font-size:13px}
+    th{background:#f5f5f5;font-weight:600;color:#333;word-break:break-word}
+    .col-right{text-align:right}
+    .total-row{background:#f9f9f9;font-weight:600}
+    /* Category header inside the selected items table */
+    .category-row td{background:#f5f5f5;font-weight:700;padding:8px;text-transform:none}
+    .category-row td strong{font-weight:700}
+    
+    /* Table wrapper: enable horizontal scrolling on small devices */
+    #tableWrap{overflow-x:auto;-webkit-overflow-scrolling:touch}
+    table{min-width:100%}
+    .pcsDisplay{white-space:nowrap;text-align:center}
+
+    .total{font-weight:700;text-align:right;margin-top:10px}
+    /* Small icon buttons for actions */
+    .icon-btn{background:transparent;border:0;padding:6px;border-radius:6px;cursor:pointer;display:inline-flex;align-items:center;justify-content:center}
+    .icon-btn.deleteBtn{color:#d32f2f}
+    .icon-btn.deleteBtn:hover{background:#fbeaea}
+    /* hide the drag 'sandwich' handle; use up/down arrows instead */
+    .drag-handle{display:none;cursor:move;color:#666;padding:6px;font-size:16px}
+    tr.dragging{opacity:0.6}
+    /* Show up/down move buttons on desktop by default */
+    .mobile-move{display:inline-flex;gap:6px;align-items:center}
+    .mobile-move svg{width:16px;height:16px} 
+    .small{font-size:12px;color:#666}
+    button{padding:12px 20px;border-radius:6px;border:0;background:#2D3E50;color:white;cursor:pointer;font-weight:600;font-size:14px;transition:all 0.2s}
+    button:hover{background:#1a2535;box-shadow:0 2px 6px rgba(0,0,0,0.15)}
+    button:active{transform:scale(0.98)}
+    .muted{color:#777;font-size:13px}
+    .form-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
+    footer{margin-top:20px;font-size:12px;color:#666}
+    .dashed-box{margin-top:24px; padding: 16px; border: 2px dashed #ccc; border-radius: 6px; background: #f9f9f9;}
+    .dashed-box h3{margin-top:0;border:none;padding:0;color:#2D3E50}
+    a{color:#2D3E50;text-decoration:none}
+    a:hover{text-decoration:underline}
+    /* Loading Spinner */
+    .spinner {
+      display: none;
+      width: 16px;
+      height: 16px;
+      border: 2px solid #f3f3f3;
+      border-top: 2px solid #2D3E50;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      margin-right: 8px;
+      vertical-align: middle;
+    }
+    .spinner.show {
+      display: inline-block;
+    }
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    #status {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    /* PDF Modal Popup */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1000;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0,0,0,0.5);
+      align-items: center;
+      justify-content: center;
+    }
+    .modal.show {
+      display: flex;
+    }
+    .modal-content {
+      background: white;
+      padding: 30px 20px;
+      border-radius: 8px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+      max-width: 500px;
+      width: 95%;
+      text-align: center;
+      max-height: 90vh;
+      overflow-y: auto;
+    }
+
+    /* Image Gallery styles */
+    .gallery-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-top: 12px; }
+    .gallery-thumb { position: relative; border: 1px solid #e6e6e6; border-radius: 6px; overflow: hidden; cursor: pointer; }
+    .gallery-thumb img { width: 100%; height: 80px; object-fit: cover; display: block; }
+    .gallery-thumb .sel { position: absolute; top: 6px; right: 6px; background: rgba(255,255,255,0.9); border-radius: 50%; width: 24px; height: 24px; display:flex;align-items:center;justify-content:center;font-weight:700;color:#2D3E50 }
+    .gallery-thumb.selected { outline: 3px solid #F6B27A; }
+    .gallery-actions { display:flex; gap:8px; align-items:center; justify-content:space-between; margin-top:12px; }
+    .gallery-upload-note { font-size:12px; color:#666; }
+
+    .selected-preview { display:flex; gap:8px; align-items:center; margin-left:12px; flex-wrap:wrap; }
+    .selected-preview img{ height:36px; width:36px; object-fit:cover; border-radius:4px; border:1px solid #eee }
+    .upload-progress{ font-size:12px; color:#666; margin-left:8px }
+    .upload-err{ color: #d32f2f; font-size:12px; margin-top:8px }
+    .modal-content h2 {
+      color: #2D3E50;
+      margin-top: 0;
+      font-size: 22px;
+      margin-bottom: 12px;
+    }
+    .modal-content p {
+      color: #666;
+      font-size: 13px;
+      line-height: 1.6;
+      margin: 12px 0;
+    }
+    .pdf-link-box {
+      background: #f5f5f5;
+      border: 2px solid #F6B27A;
+      border-radius: 6px;
+      padding: 12px;
+      margin: 16px 0;
+      word-break: break-all;
+      font-size: 11px;
+      max-height: 120px;
+      overflow-y: auto;
+    }
+    .pdf-link-box a {
+      color: #2D3E50;
+      font-weight: 600;
+      font-size: 11px;
+    }
+    .modal-buttons {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 20px;
+      justify-content: center;
+    }
+    .modal-buttons button {
+      width: 100%;
+      padding: 12px 16px;
+      font-size: 13px;
+      border-radius: 6px;
+    }
+    .modal-buttons button.secondary {
+      background: #666;
+    }
+    .modal-buttons button.secondary:hover {
+      background: #444;
+    }
+    @media (min-width: 600px) {
+      .modal-content {
+        padding: 40px;
+        width: 90%;
+      }
+      .modal-content h2 {
+        font-size: 24px;
+      }
+      .modal-content p {
+        font-size: 14px;
+      }
+      .pdf-link-box {
+        padding: 16px;
+        font-size: 12px;
+      }
+      .pdf-link-box a {
+        font-size: 12px;
+      }
+      .modal-buttons {
+        flex-direction: row;
+        gap: 12px;
+      }
+      .modal-buttons button {
+        flex: 1;
+        padding: 10px 20px;
+        font-size: 14px;
+      }
+    }
+    .modal-buttons button.primary {
+      background: #2D3E50;
+    }
+    .modal-buttons button.primary:hover {
+      background: #1a2535;
+    }
+    @media(max-width:768px){
+      body{padding:12px}
+      .container{padding:16px;border-radius:6px}
+      h1{font-size:22px}
+      h1 small{font-size:12px}
+      h3{font-size:14px;margin:16px 0 10px 0}
+      .form-grid{grid-template-columns:1fr}
+      table{font-size:12px;margin-top:12px;min-width:100%}
+      th,td{padding:6px 4px;font-size:11px}
+      th{white-space:nowrap}
+      button{padding:8px 12px;font-size:12px;width:100%;margin-bottom:8px}
+      input,select{padding:6px;font-size:11px}
+      .menu-item .right{width:100px;font-size:12px}
+      .menu-item{gap:8px}
+      label{margin-top:8px}
+      .small{font-size:11px}
+      .muted{font-size:12px}
+      /* Mobile table optimizations */
+      #tableWrap{margin-left:-8px;margin-right:-8px}
+      .description-input{font-size:11px;min-height:36px;padding:4px}
+      .veg-toggle{font-size:11px;padding:2px 6px;min-width:48px}
+      .icon-btn{padding:2px}
+      .icon-btn svg{width:12px;height:12px}
+    }
+    @media(max-width:600px){
+      /* Stack table more compactly on tablets */
+      table{font-size:11px}
+      th,td{padding:5px 3px;font-size:10px}
+      input,select{padding:4px;font-size:10px}
+      .description-input{font-size:10px;min-height:32px;padding:3px}
+      button{padding:6px 10px;font-size:11px}
+      /* Make form-grid single column on mobile */
+      .form-grid{grid-template-columns:1fr}
+      /* Images section responsive */
+      #manageImagesBtn{width:100%;margin-bottom:4px}
+      .selected-preview{margin-left:0}
+    }
+    @media(max-width:480px){
+      body{padding:8px}
+      .container{padding:12px;border-radius:4px}
+      h1{font-size:18px}
+      h1 small{font-size:11px}
+      h3{font-size:13px;margin:12px 0 8px 0;padding-bottom:6px}
+      table{font-size:10px;margin-top:8px}
+      th,td{padding:4px 2px;font-size:9px}
+      th{white-space:nowrap}
+      button{padding:6px 8px;font-size:11px}
+      input,select{padding:4px;font-size:9px;width:100%}
+      .form-grid{gap:8px;grid-template-columns:1fr}
+      .col-right{font-size:10px}
+      .menu-item .right{width:70px;font-size:10px}
+      .menu-item{gap:6px}
+      p.muted{font-size:10px}
+      /* Mobile-specific table tweaks */
+      #tableWrap{margin-left:-6px;margin-right:-6px}
+      .description-input{font-size:9px;min-height:30px;padding:2px}
+      .veg-toggle{font-size:9px;padding:1px 4px;min-width:40px}
+      .icon-btn{padding:1px}
+      .icon-btn svg{width:10px;height:10px}
+      /* Hide calc column on very small screens */
+      th:nth-child(7), td:nth-child(7){display:none}
+      /* Images button and preview responsive */
+      #manageImagesBtn{width:100%;margin-bottom:8px}
+      .selected-preview{margin-left:0;margin-top:8px;justify-content:flex-start}
+      .selected-preview img{height:32px;width:32px}
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Dahi Cheeni Quotation Maker
+    </h1>
+
+  <!-- Load Existing Quotation Section -->
+  <div style="background:#f5f9ff; border:2px solid #2D3E50; border-radius:8px; padding:16px; margin-bottom:20px;">
+    <div style="display:flex; gap:12px; align-items:center; flex-wrap:wrap;">
+      <label style="margin:0; font-weight:600; white-space:nowrap;">Load Existing:</label>
+      <input id="quotationSearch" type="text" placeholder="Search quotations..." style="flex:1; min-width:200px; padding:10px; border-radius:6px; border:1px solid #ddd;" />
+      <select id="quotationSelect" style="flex:1; min-width:200px; padding:10px; border-radius:6px; border:1px solid #ddd;">
+        <option value="">-- New Quotation --</option>
+      </select>
+      <button id="loadQuotationBtn" type="button" style="background:#F6B27A; color:#2D3E50; padding:10px 16px; white-space:nowrap;">Load</button>
+      <button id="refreshListBtn" type="button" style="background:#666; padding:10px 12px;" title="Refresh list">↻</button>
+    </div>
+    <p class="muted" style="margin:8px 0 0 0; font-size:12px;">Search or select a previous quotation to load and modify, or start fresh with "New Quotation".</p>
+  </div>
+
+  <div>
+    <div class="form-grid">
+      <div>
+        <label>Event Date</label>
+        <input id="eventDate" type="date" />
+      </div>
+      <div>
+        <label>Host Name</label>
+        <input id="hostName" type="text"/>
+      </div>
+      <div>
+        <label>Mobile No</label>
+        <input id="mobile" type="tel" placeholder="" />
+      </div>
+      <div>
+        <label>Time</label>
+        <input id="time" type="time" />
+      </div>
+      <div>
+        <label>Pax</label>
+        <input id="pax" type="text" placeholder="10 Kids 5 Adults" />
+      </div>
+      <div>
+        <label>Location</label>
+        <input id="location" type="text"/>
+      </div>
+      <!-- IMAGE MANAGEMENT COMMENTED OUT -->
+      <!-- <div style="margin-top:8px; display:flex; align-items:flex-start; gap:12px; flex-wrap:wrap;">
+        <button id="manageImagesBtn" type="button" style="background:#F6B27A;color:#2D3E50;border-radius:6px;padding:8px 12px;border:none;font-weight:600">Manage Images</button>
+        <div id="selectedImagesPreview" class="selected-preview" aria-live="polite"></div>
+      </div> -->
+    </div>
+
+    <label style="margin-top:18px"></label>
+    <input id="webhookUrl" type="hidden" value="https://n8n.vyaapaarniti.com/webhook/9b2f3be4-e30e-42e8-9ca7-afce486bf02e" />
+    <input type="hidden" id="quoteId" value="" />
+    <input type="hidden" name="x-webhook-token" id="webhookToken" value="a-string-secret-at-least-256-bits-long" />
+    <p class="muted" style="margin-top:8px;"></p>
+
+    <label style="margin-top:16px">Search & select menu items</label>
+    <div class="filter-buttons" id="filterButtons"></div>
+    <select id="filterDropdown" class="filter-dropdown"></select>
+    <input id="search" class="search" placeholder="Search by dish name or ingredient (e.g., Chicken, Paneer, Rice)..." />    <div id="menuList" class="menu-list">Loading menu…</div>
+
+    <h3 style="margin-top:18px">Selected Items</h3>
+    <div id="tableWrap">
+      <table id="selectedTable">
+        <thead>
+          <tr>
+            <th style="flex:2;min-width:220px">Item Details</th>
+            <th style="width:70px;text-align:center">Portions</th>
+            <th style="width:80px;text-align:center">Rate (₹)</th>
+            <th style="width:90px;text-align:center">Amt (₹)</th>
+            <th style="width:90px;text-align:center">Pcs.</th>
+            <th style="width:75px;text-align:center">Unit</th>
+            <th style="width:45px;text-align:center" title="Auto calculate">Calc.</th>
+            <th style="width:90px;text-align:center">Action</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+        <tfoot>
+          <tr>
+            <td colspan="3" style="text-align: right; font-weight: bold; padding: 8px;">Total:</td>
+            <td style="text-align: center; font-weight: bold; padding: 8px;"><span id="totalAmount">₹0</span></td>
+            <td colspan="4" style="padding: 8px;"></td>
+          </tr>
+        </tfoot>
+      </table>
+    </div>
+
+    <div style="margin-top:24px; padding: 16px; border: 2px dashed #ccc; border-radius: 6px; background: #f9f9f9;">
+      <h3 style="margin-top: 0; border: none; padding: 0;">Add Custom Item</h3>
+      <div class="form-grid">
+        <div>
+          <label>Item Name</label>
+          <input id="customName" type="text" placeholder="e.g., Special Biryani" />
+        </div>
+        <div>
+          <label>Description</label>
+          <input id="customDesc" type="text" placeholder="Item description" />
+        </div>
+        <div>
+          <label>Category</label>
+          <select id="customCategory" style="padding:8px;border:1px solid #ccc;border-radius:6px;width:100%;box-sizing:border-box">
+            <option value="">— Select Category —</option>
+            <option value="Table Snacks">Table Snacks</option>
+            <option value="Main Course">Main Course</option>
+            <option value="Rice">Rice</option>
+            <option value="Noodles">Noodles</option>
+            <option value="Dessert">Dessert</option>
+            <option value="Drinks">Drinks</option>
+            <option value="Live Stations">Live Stations</option>
+          </select>
+        </div>
+        <div>
+          <label>Veg / Non-Veg</label>
+          <select id="customVegNonVeg" style="padding:8px;border:1px solid #ccc;border-radius:6px;width:100%;box-sizing:border-box">
+            <option value="">— Select —</option>
+            <option value="Veg">Veg</option>
+            <option value="Non-Veg">Non-Veg</option>
+            <option value="Veg & Non-Veg">Veg & Non-Veg</option>
+          </select>
+        </div>
+        <div id="customPcsDiv">
+          <label>Pcs.</label>
+          <input id="customPcs" type="text" placeholder="e.g., 1 KG, 6 PCS" />
+        </div>
+        <div id="customPortionsDiv">
+          <label>Portions</label>
+          <input id="customPortions" type="number" min="0" value="1" />
+        </div>
+        <div id="customSetupDiv" style="display:none">
+          <label>Setup (₹)</label>
+          <input id="customSetup" type="number" min="0" value="0" />
+        </div>
+        <div id="customNoPeopleDiv" style="display:none">
+          <label>No. People</label>
+          <input id="customNoPeople" type="number" min="0" value="0" />
+        </div>
+        <div>
+          <label>Rate</label>
+          <input id="customRate" type="number" min="0" step="0.01" placeholder="₹0" />
+        </div>
+        <div style="display: flex; align-items: flex-end;">
+          <button id="addCustomItemBtn" style="width: 100%; margin: 0;">+ Add Item</button>
+        </div>
+      </div>
+    </div>
+
+    <h3 style="margin-top:24px">Other Services</h3>
+    <div class="form-grid">
+      <div>
+        <label>Chef + Servers + Helper</label>
+        <input id="chefServers" type="text" placeholder="₹4,000" />
+      </div>
+      <div>
+        <label>Table Décor (As Per Theme)</label>
+        <input id="tableDecor" type="text" value="Included" />
+      </div>
+      <div>
+        <label>Cutlery & Crockery</label>
+        <input id="cutlery" type="text" placeholder="₹100" />
+      </div>
+      <div>
+        <label>Chaffing Dishes & Snack Warmers</label>
+        <input id="chaffing" type="text" placeholder="₹100" />
+      </div>
+      <div>
+        <label>Conveyance</label>
+        <input id="conveyance" type="text" value="As Per Actual" />
+      </div>
+      <div>
+        <label>Venue Charges</label>
+        <input id="venueCharges" type="text" placeholder="₹0" />
+      </div>
+    </div>
+
+    <h3 style="margin-top:24px">Summary & Total</h3>
+    <table class="data-table">
+      <tbody>
+        <tr><td colspan="2">Subtotal (Items)</td><td class="col-right" id="subtotalItems">₹0</td></tr>
+        <tr><td colspan="2">Chef + Servers + Helper</td><td class="col-right" id="summaryChef">—</td></tr>
+        <tr><td colspan="2">Table Décor (As Per Theme)</td><td class="col-right" id="summaryDecor">—</td></tr>
+        <tr><td colspan="2">Cutlery & Crockery</td><td class="col-right" id="summaryCutlery">—</td></tr>
+        <tr><td colspan="2">Chaffing Dishes & Snack Warmers</td><td class="col-right" id="summaryChaffing">—</td></tr>
+        <tr><td colspan="2">Conveyance</td><td class="col-right" id="summaryConveyance">—</td></tr>
+        <tr><td colspan="2">Venue Charges</td><td class="col-right" id="summaryVenue">—</td></tr>
+        <tr class="total-row"><td colspan="2">Subtotal (With Services)</td><td class="col-right" id="subtotalWithServices">₹0</td></tr>
+        <tr class="total-row"><td colspan="2">GST 5%</td><td class="col-right" id="gstAmount">₹0</td></tr>
+        <tr class="total-row"><td colspan="2">TOTAL AMOUNT</td><td class="col-right" id="finalTotal">₹0</td></tr>
+      </tbody>
+    </table>
+
+    <h3 style="margin-top:24px">To Be Provided By Host</h3>
+    <div class="form-grid">
+      <div>
+        <label>Tables with covers for the food display</label>
+        <input id="tables" type="text" value="As Required" />
+      </div>
+      <div>
+        <label>Kitchen Space & Table to be provided</label>
+        <input id="kitchenSpace" type="text" value="As Required" />
+      </div>
+    </div>
+
+    <div style="margin-top:18px;display:flex;gap:12px;align-items:center">
+      <button id="submitBtn" style="background-color: green; color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer;">Submit</button>
+      <div class="muted"><a href="#" id="downloadBtn"></a></div>
+    </div>
+  </div>
+    </div>
+
+    <div id="status" class="small" style="margin-top:12px"><span class="spinner" id="spinner"></span><span id="statusText"></span></div>
+  </div>
+
+  <!-- IMAGE GALLERY MODAL COMMENTED OUT -->
+  <!-- <div id="imageModal" class="modal" aria-hidden="true">
+    <div class="modal-content" role="dialog" aria-modal="true" aria-labelledby="imageModalTitle">
+      <h2 id="imageModalTitle">Manage Images</h2>
+      <p class="gallery-upload-note">Upload images and select 9 images for the 3x3 gallery.</p>
+      <div class="gallery-actions">
+        <div style="display:flex;gap:8px;align-items:center">
+          <input id="imageFilesInput" type="file" accept="image/*" multiple />
+          <button id="uploadImagesBtn" class="primary" type="button">Upload Selected</button>
+        </div>
+        <div style="text-align:right">
+          <span id="galleryCount">0</span>/9 selected
+        </div>
+      </div>
+      <div id="galleryGrid" class="gallery-grid" aria-live="polite"></div>
+      <div id="galleryStatus" class="upload-progress" style="text-align:left"></div>
+      <div style="margin-top:12px; display:flex; gap:8px; justify-content:flex-end;">
+        <button id="saveImagesBtn" type="button" class="primary">Save Selection</button>
+        <button id="closeImagesBtn" type="button" class="secondary">Cancel</button>
+      </div>
+    </div>
+  </div> -->
+
+  <!-- PDF Modal Popup -->
+  <div id="pdfModal" class="modal">
+    <div class="modal-content">
+      <h2>✓ Quotation Generated!</h2>
+      <p>Your quotation has been successfully created.</p>
+      <div class="modal-buttons">
+        <button class="primary" onclick="downloadPdf()">Download</button>
+        <button class="secondary" onclick="closePdfModal()">Close</button>
+      </div>
+    </div>
+  </div>
+
+<script>
+/* Configuration */
+const SHEET_ID = '1dQijjlam6sm3GxNXfTZoyMi2yzZl41pAe96Ygvjm_vI';
+const SHEET_NAME = 'Master Menu';
+const GVIZ_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(SHEET_NAME)}`;
+
+let menuItems = []; // {Name,Description,Rate,...}
+const menuListEl = document.getElementById('menuList');
+const searchEl = document.getElementById('search');
+const selectedTableBody = document.querySelector('#selectedTable tbody');
+const totalAmountEl = document.getElementById('totalAmount');
+const webhookEl = document.getElementById('webhookUrl');
+const hostNameEl = document.getElementById('hostName');
+const quoteIdEl = document.getElementById('quoteId');
+
+/* CLOUDINARY & GALLERY CONFIGURATION COMMENTED OUT
+// --- Cloudinary configuration: set your unsigned upload preset here ---
+const CLOUDINARY_CLOUD_NAME = 'dwffrfajl'; // change if needed
+const CLOUDINARY_UPLOAD_PRESET = 'little_jalabies_quotation_uploads'; // <--- set your UNSIGNED upload preset name here
+const CLOUDINARY_UPLOAD_URL = `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/upload`;
+
+// Gallery state
+let galleryImages = [
+  { url: 'https://res.cloudinary.com/dwffrfajl/image/upload/v1768137613/vxmqwdko70izz8eq0nwa.jpg' },
+  { url: 'https://res.cloudinary.com/dwffrfajl/image/upload/v1768137613/fkuyydfqcbqxv1imes0t.jpg' },
+  { url: 'https://res.cloudinary.com/dwffrfajl/image/upload/v1768137612/pgn4s96hid5x2btqns8h.jpg' },
+  { url: 'https://res.cloudinary.com/dwffrfajl/image/upload/v1768137611/zszkne05cdh6li8lgyl5.jpg' },
+  { url: 'https://res.cloudinary.com/dwffrfajl/image/upload/v1768137610/zqx0o0qtmatlfkbcsgvm.jpg' },
+  { url: 'https://res.cloudinary.com/dwffrfajl/image/upload/v1768137610/kyq7og2hhgdgwgo1e0ja.jpg' },
+  { url: 'https://res.cloudinary.com/dwffrfajl/image/upload/v1768137609/x10yyd8230wxf2rnpjzv.jpg' },
+  { url: 'https://res.cloudinary.com/dwffrfajl/image/upload/v1768137608/tn7rcoy1w0g5sw0clnvx.jpg' },
+  { url: 'https://res.cloudinary.com/dwffrfajl/image/upload/v1768137607/xftinqmucmx8bj6xrfjs.jpg' }
+]; // { url }
+let selectedImages = galleryImages.map(g => g.url); // array of urls (max 9) - preselect all original images
+// Ensure preview and counts reflect the preselected images on page load
+document.addEventListener('DOMContentLoaded', () => {
+  renderSelectedPreview();
+  galleryCount && (galleryCount.textContent = selectedImages.length);
+});
+*/
+
+/* IMAGE MANAGEMENT ELEMENTS & FUNCTIONS COMMENTED OUT
+// Elements
+const manageImagesBtn = document.getElementById('manageImagesBtn');
+const imageModal = document.getElementById('imageModal');
+const closeImagesBtn = document.getElementById('closeImagesBtn');
+const saveImagesBtn = document.getElementById('saveImagesBtn');
+const imageFilesInput = document.getElementById('imageFilesInput');
+const uploadImagesBtn = document.getElementById('uploadImagesBtn');
+const galleryGrid = document.getElementById('galleryGrid');
+const galleryCount = document.getElementById('galleryCount');
+const galleryStatus = document.getElementById('galleryStatus');
+const selectedImagesPreview = document.getElementById('selectedImagesPreview');
+
+function openImageModal(){
+  imageModal.classList.add('show');
+  imageModal.setAttribute('aria-hidden','false');
+  renderGallery();
+}
+function closeImageModal(){
+  imageModal.classList.remove('show');
+  imageModal.setAttribute('aria-hidden','true');
+}
+manageImagesBtn && manageImagesBtn.addEventListener('click', ()=>{
+  openImageModal();
+});
+closeImagesBtn && closeImagesBtn.addEventListener('click', ()=>{ closeImageModal(); });
+*/
+
+/* GALLERY RENDERING FUNCTIONS COMMENTED OUT
+function renderGallery(){
+  galleryGrid.innerHTML = '';
+  galleryImages.forEach((img, idx)=>{
+    const el = document.createElement('div'); el.className = 'gallery-thumb'+(selectedImages.includes(img.url)?' selected':'');
+    el.dataset.idx = idx;
+    el.innerHTML = `<img src="${img.url}" alt="img-${idx}"><div class="sel">${selectedImages.includes(img.url)?'✓':''}</div>`;
+    el.addEventListener('click', ()=>toggleSelectImage(img.url, el));
+    galleryGrid.appendChild(el);
+  });
+  galleryCount.textContent = selectedImages.length;
+}
+
+function toggleSelectImage(url, el){
+  const idx = selectedImages.indexOf(url);
+  if (idx === -1){
+    if (selectedImages.length >= 9){ alert('You can select up to 9 images only'); return; }
+    selectedImages.push(url);
+    el.classList.add('selected');
+    el.querySelector('.sel').textContent = '✓';
+  } else {
+    selectedImages.splice(idx,1);
+    el.classList.remove('selected');
+    el.querySelector('.sel').textContent = '';
+  }
+  galleryCount.textContent = selectedImages.length;
+}
+
+// Preview selectedImages in the form
+function renderSelectedPreview(){
+  selectedImagesPreview.innerHTML = '';
+  selectedImages.forEach(u=>{ const i = document.createElement('img'); i.src = u; selectedImagesPreview.appendChild(i); });
+}
+
+saveImagesBtn && saveImagesBtn.addEventListener('click', ()=>{
+  renderSelectedPreview();
+  closeImageModal();
+});
+*/
+
+/* CLOUDINARY UPLOAD FUNCTIONS COMMENTED OUT
+// Handle file uploads to Cloudinary
+uploadImagesBtn && uploadImagesBtn.addEventListener('click', async ()=>{
+  const files = imageFilesInput.files;
+  if (!files || files.length === 0){ galleryStatus.textContent = 'No files selected.'; return; }
+  if (!CLOUDINARY_UPLOAD_PRESET){ galleryStatus.innerHTML = '<span class="upload-err">Set CLOUDINARY_UPLOAD_PRESET in the JS to enable uploads.</span>'; return; }
+  galleryStatus.textContent = 'Uploading...';
+  for (const f of files){
+    try{
+      const url = await uploadFileToCloudinary(f);
+      if (url){ galleryImages.unshift({url}); }
+    }catch(e){ console.error('upload err', e); galleryStatus.innerHTML = '<span class="upload-err">Upload failed for one or more files.</span>'; }
+  }
+  galleryStatus.textContent = '';
+  renderGallery();
+});
+
+function uploadFileToCloudinary(file){
+  return new Promise((resolve, reject)=>{
+    const fd = new FormData();
+    fd.append('file', file);
+    fd.append('upload_preset', CLOUDINARY_UPLOAD_PRESET);
+    fetch(CLOUDINARY_UPLOAD_URL, { method: 'POST', body: fd })
+    .then(r=>r.json())
+    .then(data=>{
+      if (data && (data.secure_url || data.url)) resolve(data.secure_url || data.url);
+      else reject(new Error('Upload failed'));
+    }).catch(reject);
+  })
+}
+
+// Allow adding existing Cloudinary URLs manually (optional):
+function addImageUrl(url){ if(!url) return; galleryImages.unshift({url}); renderGallery(); }
+*/
+
+// Generate unique Quote ID counter from localStorage
+function getNextQuoteCounter(hostName) {
+  const key = `quoteCounter_${hostName}`;
+  let count = localStorage.getItem(key);
+  count = (parseInt(count) || 0) + 1;
+  localStorage.setItem(key, count);
+  return String(count).padStart(3, '0');
+}
+
+function generateQuoteId() {
+  const hostName = hostNameEl.value.trim();
+  if (!hostName) {
+    quoteIdEl.value = '';
+    return;
+  }
+  const counter = getNextQuoteCounter(hostName);
+  quoteIdEl.value = `${hostName}${counter}`;
+}
+
+// Update Quote ID when host name changes
+hostNameEl.addEventListener('change', generateQuoteId);
+hostNameEl.addEventListener('blur', generateQuoteId);
+
+function formatCurrency(v){
+  if (isNaN(v)) return v;
+  const n = Number(v);
+  return '₹' + (Number.isInteger(n) ? n.toLocaleString() : n.toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2}));
+}
+
+function fetchSheet(){
+  // Hardcoded menu items for offline/testing when the sheet is not public
+const menuItems = [
+    // SOUPS
+    {Name: "Velvety Cream of Tomato", Description: "A smooth tomato purée, delicately finished with cream and herbs.", PcsDisplay: "", Unit: "", Calculate: "0", Rate: 159, Category: "Soups", VegNonVeg: "Veg"},
+    {Name: "Hariyali Shorba", Description: "A soothing green vegetable broth made of spinach & peas delicately seasoned with herbs and mild spices.", PcsDisplay: "", Unit: "", Calculate: "0", Rate: 159, Category: "Soups", VegNonVeg: "Veg"},
+    {Name: "Cream Of Veg", Description: "Garden vegetables slow-cooked and blended into creamy, smooth and comforting soup preparation.", PcsDisplay: "", Unit: "", Calculate: "0", Rate: 159, Category: "Soups", VegNonVeg: "Veg"},
+    {Name: "Silken Cream of Mushroom", Description: "A velvety mushroom soup, rich and earthy in flavour.", PcsDisplay: "", Unit: "", Calculate: "0", Rate: 159, Category: "Soups", VegNonVeg: "Veg"},
+
+    // CHATORI CHAAT & NOSTALGIC BITES
+    {Name: "Palak Patta Chaat", Description: "Crispy spinach leaves topped with sweet curd, tangy chutneys & crunchy sev for a perfect chatpata bite.", PcsDisplay: "", Unit: "", Calculate: "0", Rate: 249, Category: "Chatori Chaat & Nostalgic Bites", VegNonVeg: "Veg"},
+    {Name: "Dilli ke Dahi Bhalle", Description: "Soft lentil dumplings dunked in creamy curd with sweet and tangy chutneys.", PcsDisplay: "", Unit: "", Calculate: "0", Rate: 249, Category: "Chatori Chaat & Nostalgic Bites", VegNonVeg: "Veg"},
+    {Name: "Swadisht Aloo Tikki", Description: "Classic shallow-fried potato snack, simple yet beloved at every gathering.", PcsDisplay: "", Unit: "", Calculate: "0", Rate: 249, Category: "Chatori Chaat & Nostalgic Bites", VegNonVeg: "Veg"},
+    {Name: "Mumbaiya Batata Vada", Description: "Mini potato vadas coated in gram flour, spiced and fried crisp.", PcsDisplay: "", Unit: "", Calculate: "0", Rate: 249, Category: "Chatori Chaat & Nostalgic Bites", VegNonVeg: "Veg"},
+    {Name: "Podi Idli Bites", Description: "Soft idlis tossed in South Indian podi masala, spicy and comforting.", PcsDisplay: "", Unit: "", Calculate: "0", Rate: 249, Category: "Chatori Chaat & Nostalgic Bites", VegNonVeg: "Veg"},
+    {Name: "Chatori Chaat Canapés", Description: "Crisp canapés topped with zesty, tangy chaat flavours.", PcsDisplay: "", Unit: "", Calculate: "0", Rate: 249, Category: "Chatori Chaat & Nostalgic Bites", VegNonVeg: "Veg"},
+    {Name: "Samosa-e-Khaas", Description: "Cocktail samosas with spiced potato filling, flaky and golden.", PcsDisplay: "", Unit: "", Calculate: "0", Rate: 299, Category: "Chatori Chaat & Nostalgic Bites", VegNonVeg: "Veg"},
+    {Name: "Paneer Pakode Nostalgia", Description: "Paneer fritters in homestyle_besan batter, warm and hearty.", PcsDisplay: "", Unit: "", Calculate: "0", Rate: 399, Category: "Chatori Chaat & Nostalgic Bites", VegNonVeg: "Veg"},
+    {Name: "Pakoda-e-Mausam", Description: "Seasonal vegetables dipped in spiced batter, fried to perfection.", PcsDisplay: "", Unit: "", Calculate: "0", Rate: 399, Category: "Chatori Chaat & Nostalgic Bites", VegNonVeg: "Veg"},
+    {Name: "Mini Vada Pav", Description: "Soft pav filled with a spiced potato fritter, served with chutneys for the perfect street-style flavour in a mini size.", PcsDisplay: "", Unit: "", Calculate: "0", Rate: 299, Category: "Chatori Chaat & Nostalgic Bites", VegNonVeg: "Veg"},
+    {Name: "Channa Kulcha", Description: "Spiced Punjabi-style channa served with soft kulchas, packed with comforting North Indian flavours.", PcsDisplay: "", Unit: "", Calculate: "0", Rate: 319, Category: "Chatori Chaat & Nostalgic Bites", VegNonVeg: "Veg"},
+    {Name: "Punjabi Channa Bhatura", Description: "Fluffy bhaturas served with spicy Punjabi-style channa, packed with rich North Indian flavours.", PcsDisplay: "", Unit: "", Calculate: "0", Rate: 319, Category: "Chatori Chaat & Nostalgic Bites", VegNonVeg: "Veg"},
+    {Name: "Bombay Pav Bhaji", Description: "A buttery mix of mashed vegetables cooked with spices, served hot with soft pav for that authentic Mumbai taste.", PcsDisplay: "", Unit: "", Calculate: "0", Rate: 319, Category: "Chatori Chaat & Nostalgic Bites", VegNonVeg: "Veg"},
+    {Name: "Dilliwale Aloo Poori", Description: "Fluffy pooris served with flavourful homestyle potato curry, inspired by classic North Indian breakfasts & festive gatherings.", PcsDisplay: "", Unit: "", Calculate: "0", Rate: 319, Category: "Chatori Chaat & Nostalgic Bites", VegNonVeg: "Veg"},
+    {Name: "Cheese Balls", Description: "Golden-fried cheese balls, gooey and indulgent inside.", PcsDisplay: "", Unit: "", Calculate: "0", Rate: 319, Category: "Chatori Chaat & Nostalgic Bites", VegNonVeg: "Veg"},
+    {Name: "Veg Sandwiches", Description: "Classic vegetable sandwich, simple and comforting.", PcsDisplay: "", Unit: "", Calculate: "0", Rate: 189, Category: "Chatori Chaat & Nostalgic Bites", VegNonVeg: "Veg"},
+    {Name: "Mini Pizzas", Description: "Cheesy cocktail pizzas baked to bite-sized perfection.", PcsDisplay: "", Unit: "", Calculate: "0", Rate: 119, Category: "Chatori Chaat & Nostalgic Bites", VegNonVeg: "Veg"},
+    {Name: "Falafel-e-Dilli", Description: "Chickpea fritters served with a homestyle dip twist.", PcsDisplay: "", Unit: "", Calculate: "0", Rate: 319, Category: "Chatori Chaat & Nostalgic Bites", VegNonVeg: "Veg"},
+
+    // TRADITIONAL STARTERS
+    {Name: "Noor-e-Paneer Tikka", Description: "Creamy paneer cubes marinated in malai and spices, char-grilled for a melt-in-mouth bite", PcsDisplay: "", Unit: "", Calculate: "0", Rate: 429, Category: "Traditional Starters", VegNonVeg: "Veg"},
+    {Name: "Achari Paneer Lazeez", Description: "Paneer infused with tangy pickle spices, smoky and full of flavour.", PcsDisplay: "", Unit: "", Calculate: "0", Rate: 429, Category: "Traditional Starters", VegNonVeg: "Veg"},
+    {Name: "Shahi Dahi Kebabs", Description: "Delicate hung curd kebabs, crisp outside and luxuriously soft within.", PcsDisplay: "", Unit: "", Calculate: "0", Rate: 399, Category: "Traditional Starters", VegNonVeg: "Veg"},
+    {Name: "Subz Seekh-e-Khaas", Description: "Juicy veg mince seekh, roasted in the tandoor with aromatic masalas.", PcsDisplay: "", Unit: "", Calculate: "0", Rate: 429, Category: "Traditional Starters", VegNonVeg: "Veg"},
+    {Name: "Nawabi Shammi Kebabs", Description: "Rustic lentil patties spiced with heritage flavours, pan-fried to perfection.", PcsDisplay: "", Unit: "", Calculate: "0", Rate: 399, Category: "Traditional Starters", VegNonVeg: "Veg"},
+    {Name: "Hara Dilbahar Kebabs", Description: "Spinach and peas patties, wholesome, green and aromatic.", PcsDisplay: "", Unit: "", Calculate: "0", Rate: 399, Category: "Traditional Starters", VegNonVeg: "Veg"},
+    {Name: "Soya Tandoori Chaap", Description: "Delhi’s beloved chaap, smoky, spiced and cooked to perfection in the tandoor.", PcsDisplay: "", Unit: "", Calculate: "0", Rate: 399, Category: "Traditional Starters", VegNonVeg: "Veg"},
+    {Name: "Broccoli Malai Noorani", Description: "Broccoli florets enriched with cream and grilled golden.", PcsDisplay: "", Unit: "", Calculate: "0", Rate: 449, Category: "Traditional Starters", VegNonVeg: "Veg"},
+    {Name: "Gobhi-e-Tandoor", Description: "Cauliflower roasted with robust masalas, rustic and homely.", PcsDisplay: "", Unit: "", Calculate: "0", Rate: 399, Category: "Traditional Starters", VegNonVeg: "Veg"},
+    {Name: "Sholey-e-Dahi", Description: "Crisp golden rolls stuffed with spiced curd filling, creamy inside.", PcsDisplay: "", Unit: "", Calculate: "0", Rate: 399, Category: "Traditional Starters", VegNonVeg: "Veg"},
+    {Name: "Zesty Chilli Paneer", Description: "Paneer cubes tossed in spicy Indo-Chinese sauce, tangy and bold.", PcsDisplay: "", Unit: "", Calculate: "0", Rate: 459, Category: "Traditional Starters", VegNonVeg: "Veg"},
+    {Name: "Honey Chilli Aloo", Description: "Crispy potato strips glazed in sweet and spicy sauce.", PcsDisplay: "", Unit: "", Calculate: "0", Rate: 349, Category: "Traditional Starters", VegNonVeg: "Veg"},
+    {Name: "Veg Spring Rolls", Description: "Golden-fried rolls stuffed with spiced vegetables.", PcsDisplay: "", Unit: "", Calculate: "0", Rate: 399, Category: "Traditional Starters", VegNonVeg: "Veg"},
+    {Name: "Golden Baby Corn Delight", Description: "Crisp-fried baby corn seasoned to perfection.", PcsDisplay: "", Unit: "", Calculate: "0", Rate: 399, Category: "Traditional Starters", VegNonVeg: "Veg"},
+    {Name: "Crispy Pepper Corn", Description: "Corn kernels tossed with salt, pepper and tangy spices.", PcsDisplay: "", Unit: "", Calculate: "0", Rate: 399, Category: "Traditional Starters", VegNonVeg: "Veg"},
+    {Name: "Dim-Sum Bites", Description: "Steamed dumplings with delicate vegetable filling.", PcsDisplay: "", Unit: "", Calculate: "0", Rate: 349, Category: "Traditional Starters", VegNonVeg: "Veg"},
+
+    // MAIN COURSE
+    {Name: "Nawabi Malai Kofta", Description: "Golden dumplings of paneer and dry fruits simmered in a velvety Mughlai-style gravy, indulgent and royal.", PcsDisplay: "", Unit: "", Calculate: "0", Rate: 449, Category: "Main Course", VegNonVeg: "Veg"},
+    {Name: "Navratan Korma", Description: "A fragrant medley of vegetables, nuts and raisins, cooked in a mildly spiced creamy curry.", PcsDisplay: "", Unit: "", Calculate: "0", Rate: 379, Category: "Main Course", VegNonVeg: "Veg"},
+    {Name: "Subz-e-Mausam", Description: "Seasonal vegetables gently tossed with homestyle spices, celebrating freshness in every bite.", PcsDisplay: "", Unit: "", Calculate: "0", Rate: 399, Category: "Main Course", VegNonVeg: "Veg"},
+    {Name: "Mattar Mushroom", Description: "Tender mushrooms and green peas in a rustic onion-tomato masala.", PcsDisplay: "", Unit: "", Calculate: "0", Rate: 399, Category: "Main Course", VegNonVeg: "Veg"},
+    {Name: "Corn Palak Saag", Description: "Spinach and sweet corn blended into a wholesome, nourishing curry.", PcsDisplay: "", Unit: "", Calculate: "0", Rate: 379, Category: "Main Course", VegNonVeg: "Veg"},
+    {Name: "Sarson ka Saag (Seasonal)", Description: "Mustard greens slow-cooked with garlic and spices, a true Punjabi winter classic.", PcsDisplay: "", Unit: "", Calculate: "0", Rate: 429, Category: "Main Course", VegNonVeg: "Veg"},
+    {Name: "Gatte ki Subzi", Description: "Rajasthani gram flour dumplings simmered in a spiced yogurt gravy.", PcsDisplay: "", Unit: "", Calculate: "0", Rate: 329, Category: "Main Course", VegNonVeg: "Veg"},
+    {Name: "Kadhi Pakoda", Description: "Comforting curd-based curry with crisp besan fritters, a Punjabi staple.", PcsDisplay: "", Unit: "", Calculate: "0", Rate: 379, Category: "Main Course", VegNonVeg: "Veg"},
+    {Name: "Dum Aloo Kashmiri", Description: "Baby potatoes cooked in a rich Kashmiri yogurt gravy with traditional spices.", PcsDisplay: "", Unit: "", Calculate: "0", Rate: 379, Category: "Main Course", VegNonVeg: "Veg"},
+    {Name: "Palak Kofta", Description: "Soft spinach koftas served in a rich, mildly spiced gravy with comforting homestyle flavours.", PcsDisplay: "", Unit: "", Calculate: "0", Rate: 379, Category: "Main Course", VegNonVeg: "Veg"},
+    {Name: "Hing Dhaniya ke Chatpate Aloo", Description: "Potatoes tossed with hing and coriander, tangy and chatpata.", PcsDisplay: "", Unit: "", Calculate: "0", Rate: 379, Category: "Main Course", VegNonVeg: "Veg"},
+    {Name: "Achari Aloo", Description: "Baby potatoes flavoured with tangy pickle spices, rustic and bold.", PcsDisplay: "", Unit: "", Calculate: "0", Rate: 379, Category: "Main Course", VegNonVeg: "Veg"},
+    {Name: "Jeera Aloo", Description: "Simple and comforting potatoes tempered with cumin seeds.", PcsDisplay: "", Unit: "", Calculate: "0", Rate: 399, Category: "Main Course", VegNonVeg: "Veg"},
+    {Name: "Aloo Gobhi Masala", Description: "Potato and cauliflower cooked together with robust masalas.", PcsDisplay: "", Unit: "", Calculate: "0", Rate: 399, Category: "Main Course", VegNonVeg: "Veg"},
+    {Name: "Aloo Methi", Description: "A winter favourite – potatoes tossed with fresh fenugreek leaves.", PcsDisplay: "", Unit: "", Calculate: "0", Rate: 299, Category: "Main Course", VegNonVeg: "Veg"},
+    {Name: "Kurkuri Bhindi", Description: "Crisp, golden-fried okra sprinkled with tangy masala.", PcsDisplay: "", Unit: "", Calculate: "0", Rate: 379, Category: "Main Course", VegNonVeg: "Veg"},
+    {Name: "Bhindi Do Pyaza", Description: "Okra stir-fried with plenty of onions and spices, homestyle classic.", PcsDisplay: "", Unit: "", Calculate: "0", Rate: 379, Category: "Main Course", VegNonVeg: "Veg"},
+    {Name: "Chana Masala", Description: "Chickpeas simmered in tangy onion-tomato gravy, a hearty favourite.", PcsDisplay: "", Unit: "", Calculate: "0", Rate: 349, Category: "Main Course", VegNonVeg: "Veg"},
+    {Name: "Shahi Paneer Nawabi", Description: "Paneer cubes in a creamy, royal Mughlai gravy, rich with cashews and mild spices.", PcsDisplay: "", Unit: "", Calculate: "0", Rate: 499, Category: "Main Course", VegNonVeg: "Veg"},
+    {Name: "Paneer Pasanda Shahi", Description: "Stuffed paneer triangles in a luxurious cashew and cream gravy, fit for royalty.", PcsDisplay: "", Unit: "", Calculate: "0", Rate: 529, Category: "Main Course", VegNonVeg: "Veg"},
+    {Name: "Paneer Lababdar", Description: "Paneer cooked in a luscious tomato-onion gravy, balanced with aromatic spices.", PcsDisplay: "", Unit: "", Calculate: "0", Rate: 499, Category: "Main Course", VegNonVeg: "Veg"},
+    {Name: "Kadhai Paneer Lazeez", Description: "Paneer cooked with onions and capsicum in robust kadai masala.", PcsDisplay: "", Unit: "", Calculate: "0", Rate: 499, Category: "Main Course", VegNonVeg: "Veg"},
+    {Name: "Paneer Kali Mirch Zaika", Description: "Paneer in a peppery, creamy gravy, bold and indulgent.", PcsDisplay: "", Unit: "", Calculate: "0", Rate: 499, Category: "Main Course", VegNonVeg: "Veg"},
+    {Name: "Methi Paneer", Description: "Paneer simmered with fresh fenugreek leaves, earthy and aromatic.", PcsDisplay: "", Unit: "", Calculate: "0", Rate: 499, Category: "Main Course", VegNonVeg: "Veg"},
+    {Name: "Mattar Paneer Rasila", Description: "Paneer and green peas in a comforting tomato-based curry.", PcsDisplay: "", Unit: "", Calculate: "0", Rate: 499, Category: "Main Course", VegNonVeg: "Veg"},
+    {Name: "Palak Paneer", Description: "Cottage cheese simmered in a smooth spinach puree, healthy and soulful.", PcsDisplay: "", Unit: "", Calculate: "0", Rate: 499, Category: "Main Course", VegNonVeg: "Veg"},
+    {Name: "Paneer Bhurji", Description: "Scrambled paneer cooked with onions, tomatoes and spices, homely and rustic.", PcsDisplay: "", Unit: "", Calculate: "0", Rate: 499, Category: "Main Course", VegNonVeg: "Veg"},
+    {Name: "Dal Makhani Lazeez", Description: "Black lentils simmered on slow flame, enriched with butter and cream for a velvety taste.", PcsDisplay: "", Unit: "", Calculate: "0", Rate: 479, Category: "Main Course", VegNonVeg: "Veg"},
+    {Name: "Rajma Dil Pasand", Description: "Kidney beans cooked in a creamy onion-tomato gravy, a true Punjabi comfort dish.", PcsDisplay: "", Unit: "", Calculate: "0", Rate: 349, Category: "Main Course", VegNonVeg: "Veg"},
+    {Name: "Dal Tadka Zaika", Description: "Yellow dal tempered with ghee, cumin, garlic and red chillies, homestyle comfort.", PcsDisplay: "", Unit: "", Calculate: "0", Rate: 339, Category: "Main Course", VegNonVeg: "Veg"},
+    {Name: "Panchmel Dal Rajasthani", Description: "A five-lentil mix, rustic and nourishing, flavoured with Rajasthani spices.", PcsDisplay: "", Unit: "", Calculate: "0", Rate: 339, Category: "Main Course", VegNonVeg: "Veg"},
+    {Name: "Chana Dal Masala", Description: "Bengal gram dal cooked with onions, tomatoes and homestyle masalas.", PcsDisplay: "", Unit: "", Calculate: "0", Rate: 339, Category: "Main Course", VegNonVeg: "Veg"},
+    {Name: "Lahsooni Palak Dal", Description: "Spinach and lentils tempered with ghee and garlic, aromatic and healthy.", PcsDisplay: "", Unit: "", Calculate: "0", Rate: 339, Category: "Main Course", VegNonVeg: "Veg"},
+    {Name: "Arhar Dal-e-Zaika", Description: "Toor dal simmered with homely spices and finished with a ghee tadka.", PcsDisplay: "", Unit: "", Calculate: "0", Rate: 339, Category: "Main Course", VegNonVeg: "Veg"},
+    {Name: "Sookhi Urad Dal", Description: "Dry-style urad dal stir-fried with spices, rustic and satisfying.", PcsDisplay: "", Unit: "", Calculate: "0", Rate: 339, Category: "Main Course", VegNonVeg: "Veg"},
+    {Name: "Green/Red Thai Curry", Description: "Fresh vegetables simmered in a fragrant Thai curry with coconut milk & subtle Asian herbs.", PcsDisplay: "", Unit: "", Calculate: "0", Rate: 499, Category: "Main Course", VegNonVeg: "Veg"},
+    {Name: "White/Red/Pink Sauce Pasta", Description: "Delicious pasta tossed in flavourful sauces with fresh vegetables, herbs & comforting flavours loved by all age groups.", PcsDisplay: "", Unit: "", Calculate: "0", Rate: 399, Category: "Main Course", VegNonVeg: "Veg"},
+    {Name: "Veggies in Butter Garlic Sauce", Description: "Seasonal vegetables sautéed in aromatic butter garlic sauce with mild herbs & seasoning.", PcsDisplay: "", Unit: "", Calculate: "0", Rate: 469, Category: "Main Course", VegNonVeg: "Veg"},
+    {Name: "Veggies in Hot Garlic Sauce", Description: "Crispy vegetables tossed in a bold hot garlic sauce with Asian-style flavours.", PcsDisplay: "", Unit: "", Calculate: "0", Rate: 469, Category: "Main Course", VegNonVeg: "Veg"},
+    {Name: "Veg Manchurian (Gravy)", Description: "Soft vegetable dumplings served in a savoury Indo-Chinese gravy with garlic & spring onions.", PcsDisplay: "", Unit: "", Calculate: "0", Rate: 399, Category: "Main Course", VegNonVeg: "Veg"},
+    {Name: "Chilli Paneer (Gravy)", Description: "Cottage cheese cubes tossed in a spicy Indo-Chinese gravy with peppers & onions.", PcsDisplay: "", Unit: "", Calculate: "0", Rate: 499, Category: "Main Course", VegNonVeg: "Veg"},
+
+    // SALADS
+    {Name: "Heritage Green Salad", Description: "A crisp medley of seasonal greens, dressed lightly for freshness.", PcsDisplay: "", Unit: "", Calculate: "0", Rate: 159, Category: "Salads", VegNonVeg: "Veg"},
+    {Name: "Imperial Russian Salad", Description: "Classic creamy salad with garden vegetables, apples, and pineapple.", PcsDisplay: "", Unit: "", Calculate: "0", Rate: 159, Category: "Salads", VegNonVeg: "Veg"},
+    {Name: "Kachumber-e-Zaika", Description: "Finely diced cucumber, onion, and tomato with lemon and mild spices.", PcsDisplay: "", Unit: "", Calculate: "0", Rate: 159, Category: "Salads", VegNonVeg: "Veg"},
+    {Name: "Royal Three-Bean Salad", Description: "Protein-rich beans tossed with herbs and a delicate vinaigrette.", PcsDisplay: "", Unit: "", Calculate: "0", Rate: 159, Category: "Salads", VegNonVeg: "Veg"},
+    {Name: "Channa Chaat-e-Khaas", Description: "Tangy chickpeas blended with onions, tomatoes, coriander, and spices.", PcsDisplay: "", Unit: "", Calculate: "0", Rate: 159, Category: "Salads", VegNonVeg: "Veg"},
+    {Name: "Nawabi Aloo Chaat", Description: "Golden potatoes tossed with chutneys and royal spice accents.", PcsDisplay: "", Unit: "", Calculate: "0", Rate: 159, Category: "Salads", VegNonVeg: "Veg"},
+    {Name: "Broccoli & Corn Mélange", Description: "Tender broccoli and sweet corn in a light, creamy dressing.", PcsDisplay: "", Unit: "", Calculate: "0", Rate: 199, Category: "Salads", VegNonVeg: "Veg"},
+
+    // YOGHURTS & RAITAS
+    {Name: "Dahi Bhalla-e-Khaas", Description: "Soft lentil dumplings in chilled yoghurt, topped with saunth and chutneys.", PcsDisplay: "", Unit: "", Calculate: "0", Rate: 189, Category: "Yoghurts", VegNonVeg: "Veg"},
+    {Name: "Cucumber Pudina Raita", Description: "Refreshing yoghurt with grated cucumber and a hint of mint.", PcsDisplay: "", Unit: "", Calculate: "0", Rate: 159, Category: "Yoghurts", VegNonVeg: "Veg"},
+    {Name: "Ananas Raita", Description: "Creamy yoghurt with fresh pineapple chunks for a sweet-savoury balance.", PcsDisplay: "", Unit: "", Calculate: "0", Rate: 159, Category: "Yoghurts", VegNonVeg: "Veg"},
+    {Name: "Subz Raita", Description: "Assorted seasonal vegetables in lightly spiced yoghurt.", PcsDisplay: "", Unit: "", Calculate: "0", Rate: 159, Category: "Yoghurts", VegNonVeg: "Veg"},
+    {Name: "Boondi Raita", Description: "Golden fried boondi pearls immersed in chilled yoghurt.", PcsDisplay: "", Unit: "", Calculate: "0", Rate: 159, Category: "Yoghurts", VegNonVeg: "Veg"},
+    {Name: "Aloo Raita", Description: "Diced potatoes blended into smooth, seasoned yoghurt.", PcsDisplay: "", Unit: "", Calculate: "0", Rate: 159, Category: "Yoghurts", VegNonVeg: "Veg"},
+    {Name: "Plain Dahi", Description: "Fresh, homestyle curd served chilled.", PcsDisplay: "", Unit: "", Calculate: "0", Rate: 129, Category: "Yoghurts", VegNonVeg: "Veg"},
+
+    // BREADS
+    {Name: "Tandoori Roti", Description: "Classic wholewheat roti baked in the tandoor.", PcsDisplay: "", Unit: "", Calculate: "0", Rate: 59, Category: "Breads", VegNonVeg: "Veg"},
+    {Name: "Punjabi Missi Roti", Description: "Traditional spiced roti made with gram flour and wheat.", PcsDisplay: "", Unit: "", Calculate: "0", Rate: 59, Category: "Breads", VegNonVeg: "Veg"},
+    {Name: "Garlic Butter Naan", Description: "Soft refined-flour naan brushed with garlic butter.", PcsDisplay: "", Unit: "", Calculate: "0", Rate: 59, Category: "Breads", VegNonVeg: "Veg"},
+    {Name: "Butter Naan", Description: "Fluffy naan enriched with butter, served hot from the tandoor.", PcsDisplay: "", Unit: "", Calculate: "0", Rate: 59, Category: "Breads", VegNonVeg: "Veg"},
+    {Name: "Plain Naan", Description: "Soft tandoor-baked naan, a timeless accompaniment.", PcsDisplay: "", Unit: "", Calculate: "0", Rate: 59, Category: "Breads", VegNonVeg: "Veg"},
+    {Name: "Lachha Parantha", Description: "Layered flaky parantha cooked crisp on the tawa.", PcsDisplay: "", Unit: "", Calculate: "0", Rate: 59, Category: "Breads", VegNonVeg: "Veg"},
+    {Name: "Tawa Roti", Description: "Wholewheat roti cooked home-style on the tawa.", PcsDisplay: "", Unit: "", Calculate: "0", Rate: 59, Category: "Breads", VegNonVeg: "Veg"},
+    {Name: "Malabari Parantha", Description: "South Indian flaky parantha, rich and buttery.", PcsDisplay: "", Unit: "", Calculate: "0", Rate: 59, Category: "Breads", VegNonVeg: "Veg"},
+
+    // RICE & BIRYANI
+    {Name: "Zafrani Jeera Pulao", Description: "Basmati rice tempered with roasted cumin.", PcsDisplay: "", Unit: "", Calculate: "0", Rate: 349, Category: "Rice", VegNonVeg: "Veg"},
+    {Name: "Navrattan Pulao", Description: "A royal medley of rice, vegetables, and dry fruits.", PcsDisplay: "", Unit: "", Calculate: "0", Rate: 379, Category: "Rice", VegNonVeg: "Veg"},
+    {Name: "Hari Matar Pulao", Description: "Fragrant rice tossed with green peas.", PcsDisplay: "", Unit: "", Calculate: "0", Rate: 349, Category: "Rice", VegNonVeg: "Veg"},
+    {Name: "Kashmiri Pulao", Description: "Basmati rice with saffron, fruits, and dry nuts.", PcsDisplay: "", Unit: "", Calculate: "0", Rate: 379, Category: "Rice", VegNonVeg: "Veg"},
+    {Name: "Steamed Basmati Rice", Description: "Fluffy, fragrant long-grain rice, simply steamed.", PcsDisplay: "", Unit: "", Calculate: "0", Rate: 329, Category: "Rice", VegNonVeg: "Veg"},
+    {Name: "Wok Tossed Vegetable Fried Rice", Description: "Indo-Chinese style wok-tossed rice with vegetables.", PcsDisplay: "", Unit: "", Calculate: "0", Rate: 329, Category: "Rice", VegNonVeg: "Veg"},
+    {Name: "Dum Vegetable Biryani", Description: "Fragrant basmati rice layered with garden-fresh vegetables, aromatic spices & slow-cooked on dum for rich flavours.", PcsDisplay: "", Unit: "", Calculate: "0", Rate: 399, Category: "Rice", VegNonVeg: "Veg"},
+
+    // NOODLES
+    {Name: "Hakka Noodles", Description: "Wok-tossed noodles with fresh vegetables, Asian sauces & comforting street-style flavours.", PcsDisplay: "", Unit: "", Calculate: "0", Rate: 329, Category: "Noodles", VegNonVeg: "Veg"},
+
+    // BEVERAGES
+    {Name: "Lassi (Sweet/Salted)", Description: "Refreshing traditional yogurt-based drink served sweet or lightly salted.", PcsDisplay: "", Unit: "", Calculate: "0", Rate: 79, Category: "Beverages", VegNonVeg: "Veg"},
+    {Name: "Lemonade", Description: "A cooling citrus refresher with balanced sweet & tangy flavours.", PcsDisplay: "", Unit: "", Calculate: "0", Rate: 49, Category: "Beverages", VegNonVeg: "Veg"},
+    {Name: "Ice Tea", Description: "Chilled tea infused with refreshing flavours for a light cooling sip.", PcsDisplay: "", Unit: "", Calculate: "0", Rate: 59, Category: "Beverages", VegNonVeg: "Veg"},
+    {Name: "Mint Mojito", Description: "A refreshing blend of mint, lime & fizzy flavours served chilled.", PcsDisplay: "", Unit: "", Calculate: "0", Rate: 99, Category: "Beverages", VegNonVeg: "Veg"},
+    {Name: "Blue Curacao", Description: "A vibrant blue refresher with citrusy flavours and a cooling finish.", PcsDisplay: "", Unit: "", Calculate: "0", Rate: 99, Category: "Beverages", VegNonVeg: "Veg"},
+    {Name: "Cold Coffee", Description: "chilled coffee blended to perfection for a smooth indulgence.", PcsDisplay: "", Unit: "", Calculate: "0", Rate: 99, Category: "Beverages", VegNonVeg: "Veg"},
+    {Name: "Hot Tea", Description: "Freshly brewed tea served warm with comforting flavours.", PcsDisplay: "", Unit: "", Calculate: "0", Rate: 49, Category: "Beverages", VegNonVeg: "Veg"},
+    {Name: "Hot Coffee", Description: "Rich and aromatic hot coffee brewed for a comforting experience.", PcsDisplay: "", Unit: "", Calculate: "0", Rate: 79, Category: "Beverages", VegNonVeg: "Veg"},
+
+    // DESSERTS
+    {Name: "Badam Kheer-e-Khaas", Description: "Traditional slow-cooked rice pudding with rich milky flavours and a comforting festive touch.", PcsDisplay: "", Unit: "", Calculate: "0", Rate: 189, Category: "Desserts", VegNonVeg: "Veg"},
+    {Name: "Moong Dal Halwa", Description: "A classic North Indian sweet, slow-roasted moong dal cooked in ghee.", PcsDisplay: "250 ml", Unit: "ml", Calculate: "0", Rate: 229, Category: "Desserts", VegNonVeg: "Veg"},
+    {Name: "Gulab Jamun", Description: "Soft khoya dumplings fried and soaked in rose-scented sugar syrup.", PcsDisplay: "1 pc", Unit: "pc", Calculate: "0", Rate: 69, Category: "Desserts", VegNonVeg: "Veg"},
+    {Name: "Gajar ka Halwa (Seasonal)", Description: "Seasonal carrots slow-cooked with milk, ghee, and dry fruits.", PcsDisplay: "250 ml", Unit: "ml", Calculate: "0", Rate: 329, Category: "Desserts", VegNonVeg: "Veg"},
+    {Name: "Jalebi with Rabri", Description: "Crisp jalebis paired with thick, creamy rabri.", PcsDisplay: "250 ml", Unit: "ml", Calculate: "0", Rate: 299, Category: "Desserts", VegNonVeg: "Veg"},
+    {Name: "Royal Rasmallai", Description: "Soft saffron-infused cottage cheese discs served in chilled creamy milk with delicate festive flavours.", PcsDisplay: "", Unit: "", Calculate: "0", Rate: 159, Category: "Desserts", VegNonVeg: "Veg"},
+    {Name: "Phirni", Description: "Creamy slow-cooked rice pudding delicately flavoured with traditional Indian sweetness.", PcsDisplay: "", Unit: "", Calculate: "0", Rate: 149, Category: "Desserts", VegNonVeg: "Veg"},
+    {Name: "Vanilla Ice Cream with Hot Chocolate Sauce", Description: "Classic vanilla ice cream drizzled with warm chocolate sauce.", PcsDisplay: "", Unit: "", Calculate: "0", Rate: 79, Category: "Desserts", VegNonVeg: "Veg"},
+    {Name: "Chocolate Mousse", Description: "A rich, velvety chocolate dessert with a light, airy texture.", PcsDisplay: "", Unit: "", Calculate: "0", Rate: 129, Category: "Desserts", VegNonVeg: "Veg"},
+
+    // ADD-ONS
+    {Name: "Gol Gappe", Description: "Crispy hollow puris served with spicy tangy water and potato filling.", PcsDisplay: "", Unit: "", Calculate: "0", Rate: 0, Category: "Add-Ons", VegNonVeg: "Veg"},
+    {Name: "Pav Bhaji", Description: "Buttery mashed vegetable curry served with soft toasted pav.", PcsDisplay: "", Unit: "", Calculate: "0", Rate: 0, Category: "Add-Ons", VegNonVeg: "Veg"},
+    {Name: "Aloo Tikki", Description: "Crispy spiced potato patties served with chutneys.", PcsDisplay: "", Unit: "", Calculate: "0", Rate: 0, Category: "Add-Ons", VegNonVeg: "Veg"},
+    {Name: "Fresh Fruits", Description: "A selection of seasonal hand-picked fresh fruits.", PcsDisplay: "", Unit: "", Calculate: "0", Rate: 0, Category: "Add-Ons", VegNonVeg: "Veg"},
+    {Name: "PASTA", Description: "Choice of pasta cooked in flavourful sauces with herbs.", PcsDisplay: "", Unit: "", Calculate: "0", Rate: 0, Category: "Add-Ons", VegNonVeg: "Veg"},
+    {Name: "Idli Sambhar", Description: "Soft steamed rice cakes served with aromatic lentil stew.", PcsDisplay: "", Unit: "", Calculate: "0", Rate: 0, Category: "Add-Ons", VegNonVeg: "Veg"},
+    {Name: "Bhalla Papri", Description: "Soft bhallas and crunchy papris topped with yogurt and tangy chutneys.", PcsDisplay: "", Unit: "", Calculate: "0", Rate: 0, Category: "Add-Ons", VegNonVeg: "Veg"},
+    {Name: "Moong Dal Chilla", Description: "Savory pancakes made from ground moong dal, served crisp.", PcsDisplay: "", Unit: "", Calculate: "0", Rate: 0, Category: "Add-Ons", VegNonVeg: "Veg"},
+    {Name: "Mattra Kulcha", Description: "Spiced white peas served with soft, fluffy kulchas.", PcsDisplay: "", Unit: "", Calculate: "0", Rate: 0, Category: "Add-Ons", VegNonVeg: "Veg"},
+    {Name: "Shakarkhani ki chaat", Description: "Roasted sweet potato chunks tossed with tangy spices and lemon.", PcsDisplay: "", Unit: "", Calculate: "0", Rate: 0, Category: "Add-Ons", VegNonVeg: "Veg"},
+    {Name: "Aloo Chaat", Description: "Fried potato cubes tossed in spicy and tangy chaat masala.", PcsDisplay: "", Unit: "", Calculate: "0", Rate: 0, Category: "Add-Ons", VegNonVeg: "Veg"},
+    {Name: "Bhel Puri", Description: "Puffed rice tossed with onions, tomatoes, and zingy chutneys.", PcsDisplay: "", Unit: "", Calculate: "0", Rate: 0, Category: "Add-Ons", VegNonVeg: "Veg"},
+    {Name: "Sev Puri", Description: "Crispy papris topped with potatoes, onions, and plenty of sev.", PcsDisplay: "", Unit: "", Calculate: "0", Rate: 0, Category: "Add-Ons", VegNonVeg: "Veg"},
+    {Name: "Sambhar Vada", Description: "Crispy fried lentil donuts soaked in hot aromatic sambhar.", PcsDisplay: "", Unit: "", Calculate: "0", Rate: 0, Category: "Add-Ons", VegNonVeg: "Veg"}
+];
+  renderMenu(menuItems);
+}
+
+function renderMenu(items){
+  menuListEl.innerHTML = '';
+  // group items by Category and render a structured list
+  const groups = {};
+  items.forEach((m, idx)=>{
+    const cat = m.Category || 'Other';
+    if (!groups[cat]) groups[cat] = [];
+    groups[cat].push({ item: m, idx });
+  });
+
+  Object.keys(groups).forEach(cat => {
+    const container = document.createElement('div'); container.className = 'category';
+    const header = document.createElement('div'); header.className = 'category-header'; header.textContent = cat;
+    container.appendChild(header);
+
+    groups[cat].forEach(({ item, idx }) => {
+      const el = document.createElement('div'); el.className = 'menu-item';
+      const cb = document.createElement('input'); cb.type='checkbox'; cb.id = 'm_'+idx; cb.dataset.idx = idx;
+      const meta = document.createElement('div'); meta.className = 'meta'; meta.innerHTML = `<strong>${item.Name||'Unnamed'}</strong>`;
+      const right = document.createElement('div'); right.className = 'right';
+      right.innerHTML = `${item.PcsDisplay ? '<div class="small">'+item.PcsDisplay+'</div>' : ''}<div>${item.Rate?formatCurrency(item.Rate):''}</div>`;
+
+      el.appendChild(cb); el.appendChild(meta); el.appendChild(right);
+      container.appendChild(el);
+
+      cb.addEventListener('change', (e)=>{
+        if (e.target.checked) addItemToTable(item, idx);
+        else removeItemFromTable(idx);
+      });
+    });
+
+    menuListEl.appendChild(container);
+  });
+  renderFilterButtons(items);
+}
+
+let currentCategoryFilter = null; // Track active category filter
+
+// Define the desired order of categories
+const categoryOrder = ['Table Snacks', 'Main Course', 'Rice', 'Noodles', 'Dessert', 'Drinks', 'Live Stations'];
+
+function renderFilterButtons(items){
+  const filterBtnEl = document.getElementById('filterButtons');
+  const filterDropdownEl = document.getElementById('filterDropdown');
+  filterBtnEl.innerHTML = '';
+  filterDropdownEl.innerHTML = '';
+  
+  // Extract unique categories from items
+  const allCategories = [...new Set(items.map(m => m.Category || 'Other'))];
+  
+  // Sort categories according to predefined order
+  const categories = allCategories.sort((a, b) => {
+    const indexA = categoryOrder.indexOf(a);
+    const indexB = categoryOrder.indexOf(b);
+    // If both are in the predefined order, use that order
+    if (indexA !== -1 && indexB !== -1) return indexA - indexB;
+    // If only one is in the predefined order, it comes first
+    if (indexA !== -1) return -1;
+    if (indexB !== -1) return 1;
+    // If neither is in the predefined order, sort alphabetically
+    return a.localeCompare(b);
+  });
+  
+  // Add "All" button
+  const allBtn = document.createElement('button');
+  allBtn.type = 'button';
+  allBtn.className = 'filter-btn active';
+
+  allBtn.textContent = 'All Items';
+  allBtn.addEventListener('click', ()=>{
+    currentCategoryFilter = null;
+    updateFilterButtons();
+    updateFilterDropdown();
+    applyFilters();
+  });
+  filterBtnEl.appendChild(allBtn);
+  
+  // Add "All" option to dropdown
+  const allOption = document.createElement('option');
+  allOption.value = '';
+  allOption.textContent = 'All Items';
+  filterDropdownEl.appendChild(allOption);
+  
+  // Add category buttons and dropdown options
+  categories.forEach(cat => {
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'filter-btn';
+    btn.textContent = cat;
+    btn.addEventListener('click', ()=>{
+      currentCategoryFilter = cat;
+      updateFilterButtons();
+      updateFilterDropdown();
+      applyFilters();
+    });
+    filterBtnEl.appendChild(btn);
+    
+    // Add to dropdown
+    const option = document.createElement('option');
+    option.value = cat;
+    option.textContent = cat;
+    filterDropdownEl.appendChild(option);
+  });
+  
+  // Add dropdown change listener
+  filterDropdownEl.addEventListener('change', (e)=>{
+    currentCategoryFilter = e.target.value || null;
+    updateFilterButtons();
+    applyFilters();
+  });
+}
+
+function updateFilterButtons(){
+  const buttons = document.querySelectorAll('.filter-btn');
+  buttons.forEach(btn => {
+    if ((currentCategoryFilter === null && btn.textContent === 'All Items') ||
+        (currentCategoryFilter !== null && btn.textContent === currentCategoryFilter)) {
+      btn.classList.add('active');
+    } else {
+      btn.classList.remove('active');
+    }
+  });
+}
+
+function updateFilterDropdown(){
+  const filterDropdownEl = document.getElementById('filterDropdown');
+  filterDropdownEl.value = currentCategoryFilter || '';
+}
+
+function applyFilters(){
+  const q = searchEl.value.trim().toLowerCase();
+  const nodes = menuListEl.querySelectorAll('.menu-item');
+  
+  nodes.forEach((n, i)=>{
+    const txt = n.querySelector('.meta').textContent.toLowerCase();
+    const categoryHeader = n.closest('.category').querySelector('.category-header').textContent;
+    
+    const matchesSearch = txt.indexOf(q) !== -1;
+    const matchesCategory = currentCategoryFilter === null || categoryHeader === currentCategoryFilter;
+    
+    n.style.display = (matchesSearch && matchesCategory) ? 'flex' : 'none';
+  });
+  
+  // hide empty categories
+  const cats = menuListEl.querySelectorAll('.category');
+  cats.forEach(cat => {
+    const visibleItems = Array.from(cat.querySelectorAll('.menu-item')).filter(item => item.style.display !== 'none');
+    cat.style.display = visibleItems.length > 0 ? 'block' : 'none';
+  });
+}
+
+searchEl.addEventListener('input', ()=>{
+  applyFilters();
+})
+
+function addItemToTable(item, idx){
+  // prevent duplicates (search entire table)
+  if (document.querySelector('#selectedTable [data-idx="'+idx+'"]')) return;
+  const tr = document.createElement('tr');
+  tr.dataset.idx = idx;
+  const rate = Number(item['Rate']||0);
+  const pcsDisplay = item['PcsDisplay'] || '';
+  const unit = item['Unit'] !== undefined ? item['Unit'] : '';
+  const vegLabel = (item['VegNonVeg'] || '').toString().trim();
+  const vegClass = vegLabel.toLowerCase().includes('non') ? 'non-veg' : (vegLabel ? 'veg' : 'veg');
+  const calculateChecked = (item['Calculate'] === '1' || item['Calculate'] === 1) ? 'checked' : '';
+  const isLiveStation = (item.Category || '') === 'Live Stations';
+  
+  if (isLiveStation) {
+    // LIVE STATIONS: Different column structure with editable name
+    tr.innerHTML = `<td colspan="2"><input class="itemName" type="text" value="${item['Name']||''}" style="font-weight:700;border:none;background:transparent;width:100%;" /> <button type="button" class="veg-toggle ${vegClass}" aria-pressed="${vegLabel.toLowerCase().includes('non')}">${vegLabel || 'Veg'}</button>
+      <div style="margin-top:6px;font-size:12px;color:#666;"><textarea class="description-input" rows="2" placeholder="Description" style="font-size:12px">${item['Description']||''}</textarea></div>
+    </td>
+    <td style="text-align:center"><input class="setup" type="number" min="0" step="0.01" value="${item['Setup'] || ''}" style="width:65px;padding:4px;border:1px solid #ccc;border-radius:4px;text-align:right" /></td>
+    <td style="text-align:center"><input class="rate" type="number" min="0" step="0.01" value="${rate}" style="width:65px;padding:4px;border:1px solid #ccc;border-radius:4px;text-align:right" /></td>
+    <td style="text-align:center"><input class="noOfPeople" type="number" min="0" value="0" style="width:65px;padding:4px;border:1px solid #ccc;border-radius:4px;text-align:center" /></td>
+    <td style="text-align:center" class="amount">₹0</td>
+    <td style="text-align:center">
+      <div style="display:flex;gap:4px;align-items:center;justify-content:center;flex-wrap:wrap">
+        <button class="icon-btn mobile-move upBtn" title="Move up" aria-label="Move up" style="padding:4px">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M12 19V6" stroke="#666" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M5 12l7-7 7 7" stroke="#666" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <button class="icon-btn mobile-move downBtn" title="Move down" aria-label="Move down" style="padding:4px">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M12 5v14" stroke="#666" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M19 12l-7 7-7-7" stroke="#666" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <button class="icon-btn deleteBtn" title="Delete" aria-label="Delete" style="padding:4px"> 
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M3 6h18" stroke="#d32f2f" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M8 6V4a2 2 0 012-2h4a2 2 0 012 2v2" stroke="#d32f2f" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6" stroke="#d32f2f" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <span class="drag-handle" title="Drag to reorder" aria-label="Drag to reorder">☰</span>
+      </div>
+    </td>`;
+    tr.dataset.setup = '0';
+    tr.dataset.noOfPeople = '0';
+  } else {
+    // REGULAR ITEMS: Editable name field in row
+    tr.innerHTML = `<td><input class="itemName" type="text" value="${item['Name']||''}" style="font-weight:700;border:none;background:transparent;width:100%;" /> <button type="button" class="veg-toggle ${vegClass}" aria-pressed="${vegLabel.toLowerCase().includes('non')}">${vegLabel || 'Veg'}</button>
+      <div style="margin-top:6px;font-size:12px;color:#666;"><textarea class="description-input" rows="2" placeholder="Description" style="font-size:12px">${item['Description']||''}</textarea></div>
+    </td>
+    <td style="text-align:center"><input class="portions" type="number" min="0" value="1" style="width:55px;padding:4px;border:1px solid #ccc;border-radius:4px;text-align:center" /></td>
+    <td style="text-align:center"><input class="rate" type="number" min="0" step="0.01" value="${rate}" style="width:70px;padding:4px;border:1px solid #ccc;border-radius:4px;text-align:right" /></td>
+    <td style="text-align:center" class="amount">${formatCurrency(rate)}</td>
+    <td style="text-align:center"><input class="pcsQty" type="text" value="${pcsDisplay}" style="width:70px;padding:4px;border:1px solid #ccc;border-radius:4px;text-align:center" /><div class="pcsDisplayReview" style="font-size:10px;color:#666;margin-top:2px;font-weight:500">→ ${pcsDisplay}</div></td>
+    <td style="text-align:center"><select class="pcsUnit" style="width:70px;padding:4px;border:1px solid #ccc;border-radius:4px;font-size:12px"><option value="" ${unit===''?'selected':''}>NA</option><option value="PCS" ${unit==='PCS'?'selected':''}>PCS</option><option value="PC" ${unit==='PC'?'selected':''}>PC</option><option value="GMS" ${unit==='GMS'?'selected':''}>GMS</option><option value="ML" ${unit==='ML'?'selected':''}>ML</option><option value="ml per portion" ${unit==='ml per portion'?'selected':''}>ml per portion</option></select></td>
+    <td style="text-align:center"><input class="calculateToggle" type="checkbox" ${calculateChecked} style="width:16px;height:16px;cursor:pointer" /></td>
+    <td style="text-align:center">
+      <div style="display:flex;gap:4px;align-items:center;justify-content:center;flex-wrap:wrap">
+        <button class="icon-btn mobile-move upBtn" title="Move up" aria-label="Move up" style="padding:4px">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M12 19V6" stroke="#666" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M5 12l7-7 7 7" stroke="#666" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <button class="icon-btn mobile-move downBtn" title="Move down" aria-label="Move down" style="padding:4px">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M12 5v14" stroke="#666" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M19 12l-7 7-7-7" stroke="#666" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <button class="icon-btn deleteBtn" title="Delete" aria-label="Delete" style="padding:4px"> 
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M3 6h18" stroke="#d32f2f" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M8 6V4a2 2 0 012-2h4a2 2 0 012 2v2" stroke="#d32f2f" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6" stroke="#d32f2f" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <span class="drag-handle" title="Drag to reorder" aria-label="Drag to reorder">☰</span>
+      </div>
+    </td>`;
+  }
+  
+  tr.dataset.name = item['Name'] || '';
+  tr.dataset.rate = rate;
+  tr.dataset.pcsDisplay = pcsDisplay;
+  tr.dataset.unit = unit;
+  tr.dataset.category = item.Category || 'Other';
+  tr.dataset.vegNonVeg = item.VegNonVeg || '';
+  tr.dataset.description = item.Description || '';
+  tr.dataset.calculate = (item['Calculate'] === '1' || item['Calculate'] === 1) ? '1' : '0';
+  
+  // Append row into category tbody
+  const cat = tr.dataset.category || 'Other';
+  const catBody = getCategoryBody(cat);
+  catBody.appendChild(tr);
+  
+  const nameInput = tr.querySelector('.itemName');
+  if (nameInput){
+    nameInput.addEventListener('input', ()=>{ tr.dataset.name = nameInput.value; });
+  }
+  const descInput = tr.querySelector('.description-input');
+  if (descInput){
+    descInput.addEventListener('input', ()=>{ tr.dataset.description = descInput.value; });
+  }
+  
+  if (isLiveStation) {
+    // Live Stations event listeners
+    const vegBtn = tr.querySelector('.veg-toggle');
+    if (vegBtn){
+      vegBtn.addEventListener('click', (e)=>{
+        e.preventDefault();
+        e.stopPropagation();
+        const cur = (tr.dataset.vegNonVeg||'').toString().trim();
+        let next = 'Veg';
+        if (cur === 'Veg') next = 'Non-Veg';
+        else if (cur === 'Non-Veg') next = 'Veg & Non-Veg';
+        else if (cur === 'Veg & Non-Veg') next = 'Veg';
+        
+        tr.dataset.vegNonVeg = next;
+        vegBtn.textContent = next;
+        vegBtn.classList.remove('non-veg', 'veg');
+        
+        if (next === 'Non-Veg' || next === 'Veg & Non-Veg') {
+          vegBtn.classList.add('non-veg');
+          vegBtn.setAttribute('aria-pressed', 'true');
+        } else {
+          vegBtn.classList.add('veg');
+          vegBtn.setAttribute('aria-pressed', 'false');
+        }
+      });
+      // ensure button reflects initial state
+      const initial = (tr.dataset.vegNonVeg||'').toString().trim();
+      if (initial === 'Non-Veg' || initial === 'Veg & Non-Veg'){ vegBtn.textContent=initial; vegBtn.classList.add('non-veg'); vegBtn.setAttribute('aria-pressed', 'true'); }
+      else { vegBtn.textContent = initial || 'Veg'; vegBtn.classList.add('veg'); vegBtn.setAttribute('aria-pressed', 'false'); }
+    }
+    
+    const setupInput = tr.querySelector('.setup');
+    const rateInput = tr.querySelector('.rate');
+    const noOfPeopleInput = tr.querySelector('.noOfPeople');
+    
+    if (setupInput) {
+      setupInput.addEventListener('input', ()=>{
+        tr.dataset.setup = setupInput.value;
+        updateLiveStationAmount(tr);
+      });
+    }
+    if (rateInput) {
+      rateInput.addEventListener('input', ()=>{
+        tr.dataset.rate = Number(rateInput.value) || 0;
+        updateLiveStationAmount(tr);
+      });
+    }
+    if (noOfPeopleInput) {
+      noOfPeopleInput.addEventListener('input', ()=>{
+        tr.dataset.noOfPeople = noOfPeopleInput.value;
+        updateLiveStationAmount(tr);
+      });
+    }
+    updateLiveStationAmount(tr);
+  } else {
+    // Regular items event listeners
+    const vegBtn = tr.querySelector('.veg-toggle');
+    if (vegBtn){
+      vegBtn.addEventListener('click', (e)=>{
+        e.preventDefault();
+        e.stopPropagation();
+        const cur = (tr.dataset.vegNonVeg||'').toString().trim();
+        let next = 'Veg';
+        if (cur === 'Veg') next = 'Non-Veg';
+        else if (cur === 'Non-Veg') next = 'Veg & Non-Veg';
+        else if (cur === 'Veg & Non-Veg') next = 'Veg';
+        
+        tr.dataset.vegNonVeg = next;
+        vegBtn.textContent = next;
+        vegBtn.classList.remove('non-veg', 'veg');
+        
+        if (next === 'Non-Veg' || next === 'Veg & Non-Veg') {
+          vegBtn.classList.add('non-veg');
+          vegBtn.setAttribute('aria-pressed', 'true');
+        } else {
+          vegBtn.classList.add('veg');
+          vegBtn.setAttribute('aria-pressed', 'false');
+        }
+      });
+      // ensure button reflects initial state
+      const initial = (tr.dataset.vegNonVeg||'').toString().trim();
+      if (initial === 'Non-Veg' || initial === 'Veg & Non-Veg'){ vegBtn.textContent=initial; vegBtn.classList.add('non-veg'); vegBtn.setAttribute('aria-pressed', 'true'); }
+      else { vegBtn.textContent = initial || 'Veg'; vegBtn.classList.add('veg'); vegBtn.setAttribute('aria-pressed', 'false'); }
+    }
+    
+    const portionsInput = tr.querySelector('.portions');
+    portionsInput.addEventListener('input', ()=>updateRowAmount(tr));
+    const rateInput = tr.querySelector('.rate');
+    if (rateInput){
+      rateInput.addEventListener('input', ()=>{ updateRowAmount(tr); });
+    }
+    const pcsQtyInput = tr.querySelector('.pcsQty');
+    if (pcsQtyInput){
+      pcsQtyInput.addEventListener('input', ()=>{ 
+        tr.dataset.pcsDisplay = pcsQtyInput.value;
+        // If calculate is enabled, update amount when pcsQty changes
+        if (tr.dataset.calculate === '1'){
+          updateRowAmount(tr);
+        }
+      });
+    }
+    const unitSelect = tr.querySelector('.pcsUnit');
+    if (unitSelect){
+      unitSelect.addEventListener('change', ()=>{ tr.dataset.unit = unitSelect.value; });
+    }
+    const calculateToggle = tr.querySelector('.calculateToggle');
+    if (calculateToggle){
+      calculateToggle.addEventListener('change', ()=>{
+        tr.dataset.calculate = calculateToggle.checked ? '1' : '0';
+        updateRowAmount(tr);
+      });
+    }
+  }
+  
+  // delete button (common for both)
+  tr.querySelector('.deleteBtn').addEventListener('click', (e)=>{ handleDeleteRow(tr); });
+  const upBtn = tr.querySelector('.upBtn');
+  if (upBtn) upBtn.addEventListener('click', ()=>moveRowUp(tr));
+  const downBtn = tr.querySelector('.downBtn');
+  if (downBtn) downBtn.addEventListener('click', ()=>moveRowDown(tr));
+  makeRowDraggable(tr);
+  
+  if (!isLiveStation) {
+    updateRowAmount(tr);
+  }
+}
+
+function getCategoryBody(category){
+  const table = document.getElementById('selectedTable');
+  const existing = table.querySelector('tbody[data-category="'+category+'"]');
+  if (existing) return existing;
+  // create new tbody with a category header row
+  const tb = document.createElement('tbody');
+  tb.dataset.category = category;
+  const colCount = table.querySelectorAll('thead th').length || 6;
+  const headerRow = document.createElement('tr');
+  headerRow.className = 'category-row';
+  
+  // For Live Stations, show different column structure
+  if (category === 'Live Stations') {
+    headerRow.innerHTML = `<td colspan="2" style="font-weight:700;padding:8px;"><strong>${category}</strong></td>
+      <td style="text-align:center;font-weight:600;font-size:12px;padding:8px;width:70px">Setup</td>
+      <td style="text-align:center;font-weight:600;font-size:12px;padding:8px;width:70px">Rate</td>
+      <td style="text-align:center;font-weight:600;font-size:12px;padding:8px;width:70px">No. People</td>
+      <td style="text-align:center;font-weight:600;font-size:12px;padding:8px;width:70px">Amount</td>
+      <td style="text-align:center;font-weight:600;font-size:12px;padding:8px;width:90px">Action</td>`;
+  } else {
+    headerRow.innerHTML = `<td colspan="${colCount}"><strong>${category}</strong></td>`;
+  }
+  
+  tb.appendChild(headerRow);
+  // insert before tfoot
+  const tfoot = table.querySelector('tfoot');
+  table.insertBefore(tb, tfoot);
+  return tb;
+}
+
+function handleDeleteRow(tr){
+  // Uncheck checkbox in menu if row originated from menu
+  const idx = tr.dataset.idx;
+  if (idx){
+    const cb = document.getElementById('m_'+idx);
+    if (cb) cb.checked = false;
+  }
+  const tbody = tr.parentElement;
+  tr.remove();
+  // If tbody has only header row left, remove it
+  if (tbody && tbody.dataset && tbody.querySelectorAll('tr').length <= 1){
+    tbody.remove();
+  }
+  updateTotal();
+}
+
+// Drag & Drop reordering
+let _draggedRow = null;
+function makeRowDraggable(tr){
+  if (!tr) return;
+  // Only allow dragging via the drag-handle to avoid interfering with inputs
+  tr.draggable = false;
+  const handle = tr.querySelector('.drag-handle');
+  if (handle){
+    handle.addEventListener('mousedown', ()=>{ tr.draggable = true; });
+    handle.addEventListener('mouseup', ()=>{ tr.draggable = false; });
+    handle.addEventListener('mouseleave', ()=>{ tr.draggable = false; });
+  } else {
+    tr.draggable = true; // fallback
+  }
+
+  tr.addEventListener('dragstart', (e)=>{
+    _draggedRow = tr;
+    tr.classList.add('dragging');
+    try{ e.dataTransfer.effectAllowed = 'move'; }catch(e){}
+  });
+  tr.addEventListener('dragend', ()=>{
+    if (tr) tr.classList.remove('dragging');
+    tr.draggable = false;
+    _draggedRow = null;
+  });
+}
+
+function getDragAfterElement(container, y){
+  const draggableElements = [...container.querySelectorAll('tr:not(.category-row):not(.dragging)')];
+  let closest = {offset: Number.NEGATIVE_INFINITY, element: null};
+  for (const child of draggableElements){
+    const box = child.getBoundingClientRect();
+    const offset = y - box.top - box.height/2;
+    if (offset < 0 && offset > closest.offset){
+      closest = {offset: offset, element: child};
+    }
+  }
+  return closest.element;
+}
+
+document.addEventListener('dragover', (e)=>{
+  e.preventDefault();
+  if (!_draggedRow) return;
+  const tbody = e.target.closest('#selectedTable tbody');
+  if (!tbody) return;
+  // don't allow dropping onto header row's container (tbody is fine)
+  const afterEl = getDragAfterElement(tbody, e.clientY);
+  if (!afterEl) tbody.appendChild(_draggedRow);
+  else tbody.insertBefore(_draggedRow, afterEl);
+});
+
+document.addEventListener('drop', (e)=>{
+  e.preventDefault();
+  if (!_draggedRow) return;
+  // Update category if moved into a different tbody
+  const parent = _draggedRow.parentElement;
+  if (parent && parent.dataset && parent.dataset.category){
+    _draggedRow.dataset.category = parent.dataset.category;
+  }
+  // Remove empty tbody headers if needed
+  cleanupEmptyTbody(parent);
+  if (_draggedRow) _draggedRow.classList.remove('dragging');
+  _draggedRow = null;
+  updateTotal();
+});
+
+function cleanupEmptyTbody(tbody){
+  if (!tbody) return;
+  if (tbody.querySelectorAll('tr').length <= 1){
+    tbody.remove();
+  }
+}
+
+function moveRowUp(tr){
+  if (!tr) return;
+  const tbody = tr.parentElement;
+  // find previous non-category row
+  let prev = tr.previousElementSibling;
+  while (prev && prev.classList && prev.classList.contains('category-row')) prev = prev.previousElementSibling;
+  if (prev && !prev.classList.contains('category-row')){
+    tbody.insertBefore(tr, prev);
+    updateTotal();
+    return;
+  }
+  // try previous tbody
+  let prevTbody = tbody.previousElementSibling;
+  while (prevTbody && (!prevTbody.dataset || !prevTbody.dataset.category)) prevTbody = prevTbody.previousElementSibling;
+  if (prevTbody){
+    // insert before last data row or append
+    const lastData = [...prevTbody.querySelectorAll('tr:not(.category-row)')].pop();
+    if (lastData) prevTbody.insertBefore(tr, lastData.nextSibling);
+    else prevTbody.appendChild(tr);
+    tr.dataset.category = prevTbody.dataset.category;
+    cleanupEmptyTbody(tbody);
+    updateTotal();
+  }
+}
+
+function moveRowDown(tr){
+  if (!tr) return;
+  const tbody = tr.parentElement;
+  // find next non-category row
+  let next = tr.nextElementSibling;
+  while (next && next.classList && next.classList.contains('category-row')) next = next.nextElementSibling;
+  if (next && !next.classList.contains('category-row')){
+    // insert after next
+    tbody.insertBefore(next, tr);
+    updateTotal();
+    return;
+  }
+  // try next tbody
+  let nextTbody = tbody.nextElementSibling;
+  while (nextTbody && (!nextTbody.dataset || !nextTbody.dataset.category)) nextTbody = nextTbody.nextElementSibling;
+  if (nextTbody){
+    const firstData = nextTbody.querySelector('tr:not(.category-row)');
+    if (firstData) nextTbody.insertBefore(tr, firstData);
+    else nextTbody.appendChild(tr);
+    tr.dataset.category = nextTbody.dataset.category;
+    cleanupEmptyTbody(tbody);
+    updateTotal();
+  }
+}
+
+function removeItemFromTable(idx){
+  const row = document.querySelector('#selectedTable tbody [data-idx="'+idx+'"]');
+  if (row) {
+    const parent = row.parentElement;
+    row.remove();
+    if (parent && parent.querySelectorAll('tr').length <= 1){ parent.remove(); }
+    updateTotal();
+  }
+}
+
+function addCustomItem(){
+  const name = document.getElementById('customName').value.trim();
+  const desc = document.getElementById('customDesc').value.trim();
+  const category = document.getElementById('customCategory').value.trim();
+  const vegNonVeg = document.getElementById('customVegNonVeg').value.trim();
+  const pcsDisplay = document.getElementById('customPcs').value.trim();
+  const unit = 'PCS'; // default unit for custom items
+  const portions = Number(document.getElementById('customPortions').value) || 0;
+  const rate = Number(document.getElementById('customRate').value) || 0;
+  const setup = Number(document.getElementById('customSetup')?.value) || 0;
+  const noPeople = Number(document.getElementById('customNoPeople')?.value) || 0;
+
+  // Allow adding items even with empty/default values - all fields are optional
+
+  // Create table row
+  const tr = document.createElement('tr');
+  tr.dataset.isCustom = 'true';
+  tr.dataset.name = name;
+  tr.dataset.description = desc;
+  tr.dataset.rate = rate;
+  tr.dataset.pcsDisplay = pcsDisplay;
+  tr.dataset.unit = unit;
+  tr.dataset.category = category || '';
+  tr.dataset.vegNonVeg = vegNonVeg || '';
+
+  const catBody = getCategoryBody(category || 'Other');
+
+  if (category === 'Live Stations'){
+    // Live station specific row
+    tr.dataset.setup = setup;
+    tr.dataset.noOfPeople = noPeople;
+    tr.innerHTML = buildLiveStationRow({ Name: name, Description: desc, Setup: setup, Rate: rate, NoOfPeople: noPeople, VegNonVeg: vegNonVeg });
+    catBody.appendChild(tr);
+    bindRowEventListeners(tr, true);
+  } else {
+    // Regular custom item
+    tr.innerHTML = `<td><input class="itemName" type="text" value="${name||''}" style="font-weight:700;border:none;background:transparent;width:100%;" /> <button type="button" class="veg-toggle ${vegNonVeg && vegNonVeg.toLowerCase().includes('non') ? 'non-veg' : (vegNonVeg ? 'veg' : 'veg') }" aria-pressed="${(vegNonVeg||'').toLowerCase().includes('non')}">${vegNonVeg || 'Veg'}</button>
+      <div style="margin-top:6px;font-size:12px;color:#666;"><textarea class="description-input" rows="2" placeholder="Description" style="font-size:12px">${desc}</textarea></div>
+    </td>
+    <td style="text-align:center"><input class="portions" type="number" min="0" value="${portions}" style="width:55px;padding:4px;border:1px solid #ccc;border-radius:4px;text-align:center" /></td>
+    <td style="text-align:center"><input class="rate" type="number" min="0" step="0.01" value="${rate}" style="width:70px;padding:4px;border:1px solid #ccc;border-radius:4px;text-align:right" /></td>
+    <td style="text-align:center" class="amount">${formatCurrency(portions * rate)}</td>
+    <td style="text-align:center"><input class="pcsQty" type="text" value="${pcsDisplay}" style="width:70px;padding:4px;border:1px solid #ccc;border-radius:4px;text-align:center" /><div class="pcsDisplayReview" style="font-size:10px;color:#666;margin-top:2px;font-weight:500">→ ${pcsDisplay}</div></td>
+    <td style="text-align:center"><select class="pcsUnit" style="width:70px;padding:4px;border:1px solid #ccc;border-radius:4px;font-size:12px"><option value="">NA</option><option value="PCS">PCS</option><option value="PC">PC</option><option value="GMS">GMS</option><option value="ML">ML</option><option value="ml per portion">ml per portion</option></select></td>
+    <td style="text-align:center"><input class="calculateToggle" type="checkbox" style="width:16px;height:16px;cursor:pointer" /></td>
+    <td style="text-align:center">
+      <div style="display:flex;gap:4px;align-items:center;justify-content:center;flex-wrap:wrap">
+        <button class="icon-btn mobile-move upBtn" title="Move up" aria-label="Move up" style="padding:4px">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M12 19V6" stroke="#666" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M5 12l7-7 7 7" stroke="#666" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <button class="icon-btn mobile-move downBtn" title="Move down" aria-label="Move down" style="padding:4px">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M12 5v14" stroke="#666" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M19 12l-7 7-7-7" stroke="#666" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <button class="icon-btn deleteBtn" title="Delete" aria-label="Delete" style="padding:4px"> 
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M3 6h18" stroke="#d32f2f" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M8 6V4a2 2 0 012-2h4a2 2 0 012 2v2" stroke="#d32f2f" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6" stroke="#d32f2f" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <span class="drag-handle" title="Drag to reorder" aria-label="Drag to reorder">☰</span>
+      </div>
+    </td>`;
+
+    catBody.appendChild(tr);
+    // Use central binder for regular rows
+    bindRowEventListeners(tr, false);
+  }
+
+  // Append to category tbody
+  // const cat = tr.dataset.category || 'Other';
+  // const catBody = getCategoryBody(cat);
+  // catBody.appendChild(tr);
+
+  // Clear form
+  document.getElementById('customName').value = '';
+  document.getElementById('customDesc').value = '';
+  document.getElementById('customCategory').value = '';
+  document.getElementById('customVegNonVeg').value = '';
+  document.getElementById('customPcs').value = '';
+  document.getElementById('customPortions').value = '1';
+  document.getElementById('customRate').value = '';
+  document.getElementById('customSetup').value = '0';
+  document.getElementById('customNoPeople').value = '0';
+
+  updateTotal();
+
+  // Add event listeners (guard elements; Live Stations won't have all fields)
+  const portionsEl = tr.querySelector('.portions');
+  if (portionsEl) portionsEl.addEventListener('input', ()=>updateCustomRowAmount(tr));
+  const rateInputC = tr.querySelector('.rate');
+  if (rateInputC){ rateInputC.addEventListener('input', ()=>updateCustomRowAmount(tr)); }
+  const pcsQtyInputC = tr.querySelector('.pcsQty');
+  if (pcsQtyInputC){ 
+    pcsQtyInputC.addEventListener('input', ()=>{ 
+      tr.dataset.pcsDisplay = pcsQtyInputC.value;
+      if (tr.dataset.calculate === '1'){
+        updateCustomRowAmount(tr);
+      }
+    }); 
+  }
+  const unitSelectC = tr.querySelector('.pcsUnit');
+  if (unitSelectC){ unitSelectC.addEventListener('change', ()=>{ tr.dataset.unit = unitSelectC.value; }); }
+  const calculateToggleC = tr.querySelector('.calculateToggle');
+  if (calculateToggleC){
+    calculateToggleC.addEventListener('change', ()=>{
+      tr.dataset.calculate = calculateToggleC.checked ? '1' : '0';
+      updateCustomRowAmount(tr);
+    });
+  }
+  tr.querySelector('.deleteBtn').addEventListener('click', ()=>{ handleDeleteRow(tr); });
+  const upBtnC = tr.querySelector('.upBtn');
+  if (upBtnC) upBtnC.addEventListener('click', ()=>moveRowUp(tr));
+  const downBtnC = tr.querySelector('.downBtn');
+  if (downBtnC) downBtnC.addEventListener('click', ()=>moveRowDown(tr));
+  makeRowDraggable(tr);
+  const vegBtnC = tr.querySelector('.veg-toggle');
+  if (vegBtnC){
+    vegBtnC.addEventListener('click', ()=>{
+      const cur = (tr.dataset.vegNonVeg||'').toString().toLowerCase().includes('non') ? 'Veg' : 'Non-Veg';
+      tr.dataset.vegNonVeg = cur;
+      vegBtnC.textContent = cur;
+      vegBtnC.classList.toggle('non-veg', cur === 'Non-Veg');
+      vegBtnC.classList.toggle('veg', cur === 'Veg');
+      vegBtnC.setAttribute('aria-pressed', cur === 'Non-Veg');
+    });
+    const initialC = (tr.dataset.vegNonVeg||'').toString().trim();
+    if (initialC.toLowerCase().includes('non')){ vegBtnC.textContent='Non-Veg'; vegBtnC.classList.add('non-veg'); vegBtnC.setAttribute('aria-pressed', 'true'); }
+    else { vegBtnC.textContent = tr.dataset.vegNonVeg || 'Veg'; vegBtnC.classList.add('veg'); vegBtnC.setAttribute('aria-pressed', 'false'); }
+  }
+  const nameInputC = tr.querySelector('.itemName');
+  if (nameInputC){ nameInputC.addEventListener('input', ()=>{ tr.dataset.name = nameInputC.value; }); }
+  const descInputC = tr.querySelector('.description-input');
+  if (descInputC){ descInputC.addEventListener('input', ()=>{ tr.dataset.description = descInputC.value; }); }
+
+  // Clear form
+  document.getElementById('customName').value = '';
+  document.getElementById('customDesc').value = '';
+  document.getElementById('customCategory').value = '';
+  document.getElementById('customVegNonVeg').value = '';
+  document.getElementById('customPcs').value = '';
+  document.getElementById('customPortions').value = '1';
+  document.getElementById('customRate').value = '';
+
+  updateTotal();
+}
+
+function updateCustomRowAmount(tr){
+  // Amount is ALWAYS: Portions field × Rate
+  const portions = Number(tr.querySelector('.portions').value) || 0;
+  const rateEl = tr.querySelector('.rate');
+  const rate = rateEl ? Number(rateEl.value) : (Number(tr.dataset.rate) || 0);
+  
+  const amt = portions * rate;
+  tr.querySelector('.amount').textContent = formatCurrency(amt);
+  updatePcsDisplay(tr);
+  updateTotal();
+  updatePcsDisplayReview(tr);
+}
+
+function updatePcsDisplayReview(tr){
+  const pcsQtyEl = tr.querySelector('.pcsQty');
+  const portionsEl = tr.querySelector('.portions');
+  const calculateToggle = tr.querySelector('.calculateToggle');
+  const reviewEl = tr.querySelector('.pcsDisplayReview');
+  
+  if (!pcsQtyEl || !reviewEl) return;
+  
+  const pcsQty = pcsQtyEl.value || '0';
+  const portions = portionsEl ? Number(portionsEl.value) || 0 : 0;
+  const isCalculate = calculateToggle && calculateToggle.checked;
+  
+  let finalPcs = pcsQty;
+  if (isCalculate){
+    const baseNum = extractNumber(pcsQty);
+    finalPcs = String(baseNum * portions);
+  }
+  
+  reviewEl.textContent = '→ ' + finalPcs;
+}
+
+function updateLiveStationAmount(tr){
+  // Amount = Setup + (Rate × No. Of People)
+  const setup = Number(tr.querySelector('.setup').value) || 0;
+  const rate = Number(tr.querySelector('.rate').value) || 0;
+  const noOfPeople = Number(tr.querySelector('.noOfPeople').value) || 0;
+  
+  const amt = setup + (rate * noOfPeople);
+  tr.querySelector('.amount').textContent = formatCurrency(amt);
+  updateTotal();
+}
+
+function updateRowAmount(tr){
+  // Amount is ALWAYS: Portions field × Rate
+  const portions = Number(tr.querySelector('.portions').value) || 0;
+  const rateEl = tr.querySelector('.rate');
+  const rate = rateEl ? Number(rateEl.value) : (Number(tr.dataset.rate) || 0);
+  
+  const amt = portions * rate;
+  tr.querySelector('.amount').textContent = formatCurrency(amt);
+  updateTotal();
+  updatePcsDisplayReview(tr);
+}
+
+function updatePcsDisplay(tr){
+  // No automatic calculation - user manually enters PCS value
+  // This function is kept for backward compatibility but does nothing
+}
+
+function extractNumber(val) {
+  if (!val) return 0;
+  const str = String(val).trim();
+  // Try to extract numeric value, ignore text like "Included", "As Per Actual"
+  const match = str.match(/[\d.,]+/);
+  if (!match) return 0;
+  // Remove commas and convert to number
+  return Number(match[0].replace(/,/g, '')) || 0;
+}
+
+function updateSummary() {
+  // Get subtotal from items
+  let itemsSubtotal = 0;
+  document.querySelectorAll('#selectedTable tbody tr:not(.category-row)').forEach(tr=>{
+    const aEl = tr.querySelector('.amount');
+    if (!aEl) return;
+    const a = aEl.textContent.replace(/[^0-9.-]+/g,'');
+    itemsSubtotal += Number(a) || 0;
+  });
+
+  // Get service charges (extract numbers, handle text gracefully)
+  const chefVal = extractNumber(document.getElementById('chefServers').value);
+  const decorVal = extractNumber(document.getElementById('tableDecor').value);
+  const cutleryVal = extractNumber(document.getElementById('cutlery').value);
+  const chaffingVal = extractNumber(document.getElementById('chaffing').value);
+  const conveyanceVal = extractNumber(document.getElementById('conveyance').value);
+  const venueVal = extractNumber(document.getElementById('venueCharges').value);
+
+  // Update display values
+  document.getElementById('subtotalItems').textContent = formatCurrency(itemsSubtotal);
+  document.getElementById('summaryChef').textContent = chefVal > 0 ? formatCurrency(chefVal) : (document.getElementById('chefServers').value || '—');
+  document.getElementById('summaryDecor').textContent = decorVal > 0 ? formatCurrency(decorVal) : (document.getElementById('tableDecor').value || '—');
+  document.getElementById('summaryCutlery').textContent = cutleryVal > 0 ? formatCurrency(cutleryVal) : (document.getElementById('cutlery').value || '—');
+  document.getElementById('summaryChaffing').textContent = chaffingVal > 0 ? formatCurrency(chaffingVal) : (document.getElementById('chaffing').value || '—');
+  document.getElementById('summaryConveyance').textContent = conveyanceVal > 0 ? formatCurrency(conveyanceVal) : (document.getElementById('conveyance').value || '—');
+  document.getElementById('summaryVenue').textContent = venueVal > 0 ? formatCurrency(venueVal) : (document.getElementById('venueCharges').value || '—');
+
+  // Calculate subtotal with services
+  const subtotalWithServices = itemsSubtotal + chefVal + decorVal + cutleryVal + chaffingVal + conveyanceVal + venueVal;
+  document.getElementById('subtotalWithServices').textContent = formatCurrency(subtotalWithServices);
+
+  // Calculate GST 5%
+  const gst = subtotalWithServices * 0.05;
+  document.getElementById('gstAmount').textContent = formatCurrency(gst);
+
+  // Calculate final total
+  const finalTotal = subtotalWithServices + gst;
+  document.getElementById('finalTotal').textContent = formatCurrency(finalTotal);
+}
+
+function updateTotal(){
+  let total = 0;
+  document.querySelectorAll('#selectedTable tbody tr:not(.category-row)').forEach(tr=>{
+    const aEl = tr.querySelector('.amount');
+    if (!aEl) return;
+    const a = aEl.textContent.replace(/[^0-9.-]+/g,'');
+    total += Number(a) || 0;
+  });
+  totalAmountEl.textContent = formatCurrency(total);
+  updateSummary(); // Also update the summary table
+}
+
+function collectPayload(){
+  const items = [];
+  document.querySelectorAll('#selectedTable tbody tr:not(.category-row)').forEach(tr=>{
+    let name = tr.dataset.name || '';
+  const nameEl = tr.querySelector('.itemName');
+  if (nameEl) name = nameEl.value.trim();
+    let desc = tr.dataset.description || '';
+    const descEl = tr.querySelector('.description-input');
+    if (descEl) desc = descEl.value.trim();
+    const category = tr.dataset.category || 'Other';
+    const vegNonVeg = tr.dataset.vegNonVeg || '';
+    
+    // Check if it's a Live Stations item
+    if (category === 'Live Stations') {
+      const setup = Number(tr.querySelector('.setup') ? tr.querySelector('.setup').value : 0) || 0;
+      const rateEl = tr.querySelector('.rate');
+      const rate = rateEl ? Number(rateEl.value) : 0;
+      const noOfPeople = Number(tr.querySelector('.noOfPeople') ? tr.querySelector('.noOfPeople').value : 0) || 0;
+      const amount = setup + (rate * noOfPeople);
+      
+      items.push({ 
+        Name: name, 
+        Description: desc, 
+        Category: category, 
+        VegNonVeg: vegNonVeg, 
+        Setup: setup,
+        Rate: rate,
+        NoOfPeople: noOfPeople,
+        Amount: amount
+      });
+    } else {
+      // Regular item
+      const portions = Number(tr.querySelector('.portions') ? tr.querySelector('.portions').value : 0) || 0;
+      const pcsQtyEl = tr.querySelector('.pcsQty');
+      const pcsQtyBase = pcsQtyEl ? pcsQtyEl.value.trim() : (tr.dataset.pcsDisplay || '');
+      const unitEl = tr.querySelector('.pcsUnit');
+      const unit = unitEl ? unitEl.value : (tr.dataset.unit || 'PCS');
+      const rateEl = tr.querySelector('.rate');
+      const rate = rateEl ? Number(rateEl.value) : (Number(tr.dataset.rate) || 0);
+      const calculate = tr.dataset.calculate || '0';
+      
+      // Calculate PcsDisplay: if Calculate=1, multiply by Portions; otherwise use base value
+      let pcsDisplay = pcsQtyBase;
+      if (calculate === '1'){
+        const baseNum = extractNumber(pcsQtyBase);
+        pcsDisplay = String(baseNum * portions);
+      }
+      
+      items.push({ Name: name, Description: desc, Category: category, VegNonVeg: vegNonVeg, Portions: portions, PcsDisplay: pcsDisplay, Unit: unit, Rate: rate, Amount: portions*rate, Calculate: calculate });
+    }
+  });
+
+  // Format date as dd/mm/yyyy
+  const dateInput = document.getElementById('eventDate').value;
+  let dateFormatted = '';
+  if (dateInput) {
+    const [yyyy, mm, dd] = dateInput.split('-');
+    dateFormatted = `${dd}/${mm}/${yyyy}`;
+  }
+
+  // Format time as 12-hour AM/PM
+  const timeInput = document.getElementById('time').value;
+  let timeFormatted = '';
+  if (timeInput) {
+    const [hours, minutes] = timeInput.split(':');
+    const h = parseInt(hours);
+    const m = parseInt(minutes);
+    const ampm = h >= 12 ? 'PM' : 'AM';
+    const h12 = h % 12 || 12;
+    timeFormatted = `${String(h12).padStart(2, '0')}:${String(m).padStart(2, '0')} ${ampm}`;
+  }
+
+  // Compute totals including service charges
+  const itemsTotal = items.reduce((s,i)=>s+i.Amount,0);
+  const chefVal = extractNumber(document.getElementById('chefServers').value);
+  const decorVal = extractNumber(document.getElementById('tableDecor').value);
+  const cutleryVal = extractNumber(document.getElementById('cutlery').value);
+  const chaffingVal = extractNumber(document.getElementById('chaffing').value);
+  const conveyanceVal = extractNumber(document.getElementById('conveyance').value);
+  const venueVal = extractNumber(document.getElementById('venueCharges').value);
+  const grandTotal = itemsTotal + chefVal + decorVal + cutleryVal + chaffingVal + conveyanceVal + venueVal;
+
+  const payload = {
+    EventDate: dateFormatted,
+    HostName: document.getElementById('hostName').value,
+    QuotationId: document.getElementById('quoteId').value,
+    MobileNo: document.getElementById('mobile').value,
+    Time: timeFormatted,
+    Pax: document.getElementById('pax').value,
+    Location: document.getElementById('location').value,
+    Items: items,
+    // Keep `Total` as items subtotal only (per requirement)
+    Total: itemsTotal,
+    // Also include computed grand total (items + services) for clarity if needed
+    GrandTotal: grandTotal,
+    ChefServers: document.getElementById('chefServers').value,
+    TableDecor: document.getElementById('tableDecor').value,
+    Cutlery: document.getElementById('cutlery').value,
+    Chaffing: document.getElementById('chaffing').value,
+    Conveyance: document.getElementById('conveyance').value,
+    VenueCharges: document.getElementById('venueCharges').value,
+    Tables: document.getElementById('tables').value,
+    KitchenSpace: document.getElementById('kitchenSpace').value,
+    ImageGrid: selectedImages.slice(0,9) // array of image URLs (max 9)
+  };
+  return payload;
+}
+
+document.getElementById('submitBtn').addEventListener('click', ()=>{
+  const url = webhookEl.value.trim();
+  if (!url){ alert('Please set the n8n Webhook URL'); return }
+  const payload = collectPayload();
+  document.getElementById('statusText').textContent = 'Generating quotation PDF...';
+  document.getElementById('spinner').classList.add('show');
+  
+  // Always call the n8n webhook (localhost or production)
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), 30000); // 30 second timeout
+  
+  fetch(url, { 
+    method:'POST', 
+    headers:{'Content-Type':'application/json', 'x-webhook-token': document.getElementById('webhookToken').value }, 
+    body: JSON.stringify(payload),
+    signal: controller.signal
+  })
+      .then(r=>{
+        if(!r.ok) throw new Error('Network response was not ok: '+r.status);
+        // Check if response is binary (PDF file)
+        const contentType = r.headers.get('content-type');
+        if (contentType && contentType.includes('application/pdf')) {
+          const contentDisposition = r.headers.get('content-disposition') || '';
+          return r.blob().then(blob => ({ type: 'pdf', blob: blob, contentDisposition }));
+        }
+        // Otherwise try to parse as JSON
+        return r.json().then(data => ({ type: 'json', data: data }));
+      })
+      .then(response=>{
+        clearTimeout(timeoutId);
+        
+        if (response.type === 'pdf') {
+          // Handle PDF file
+          console.log('✓ PDF received');
+          const pdfBlob = response.blob;
+          const pdfUrl = URL.createObjectURL(pdfBlob);
+          const cd = response.contentDisposition || '';
+
+          // try to extract filename from Content-Disposition header
+          let filename = '';
+          const m = cd.match(/filename\*?=([^;]+)/i);
+          if (m) {
+            filename = m[1].trim().replace(/UTF-8''/i, '');
+            filename = filename.replace(/^"|"$/g, '');
+            try{ filename = decodeURIComponent(filename); }catch(e){}
+          }
+
+          // fallback to HostName + EventDate
+          if (!filename) {
+            const host = hostNameEl.value.trim() || 'quotation';
+            const dateInput = document.getElementById('eventDate').value;
+            let dateFormatted = '';
+            if (dateInput) { const [yyyy, mm, dd] = dateInput.split('-'); dateFormatted = `${dd}-${mm}-${yyyy}`; }
+            const safe = (s) => String(s).trim().replace(/[^A-Za-z0-9-]+/g, '_').replace(/^_+|_+$/g, '');
+            filename = `${safe(host)}_${safe(dateFormatted)}.pdf`;
+          }
+
+          document.getElementById('statusText').textContent = 'Quotation ready!';
+          document.getElementById('spinner').classList.remove('show');
+          showPdfModal(pdfUrl, filename);
+        } else {
+          // Handle legacy JSON response with PDF URL
+          const data = response.data;
+          console.log('✓ Response received:', data);
+          
+          let pdfUrl = '';
+          
+          // If response is an array, get first item
+          if (Array.isArray(data) && data.length > 0) {
+            const item = data[0];
+            pdfUrl = item.signedUrl || item.pdfUrl || item.pdf_url || item.url || '';
+          } else if (typeof data === 'object') {
+            // If response is an object
+            pdfUrl = data.signedUrl || data.pdfUrl || data.pdf_url || data.url || '';
+          }
+          
+          if (pdfUrl) {
+            document.getElementById('statusText').textContent = 'Quotation ready!';
+            document.getElementById('spinner').classList.remove('show');
+            // Use HostName + EventDate as filename for remote URL fallback
+            const host = hostNameEl.value.trim() || 'quotation';
+            const dateInput = document.getElementById('eventDate').value;
+            let dateFormatted = '';
+            if (dateInput) { const [yyyy, mm, dd] = dateInput.split('-'); dateFormatted = `${dd}-${mm}-${yyyy}`; }
+            const safe = (s) => String(s).trim().replace(/[^A-Za-z0-9-]+/g, '_').replace(/^_+|_+$/g, '');
+            const filename = `${safe(host)}_${safe(dateFormatted)}.pdf`;
+            showPdfModal(pdfUrl, filename);
+          } else {
+            document.getElementById('statusText').textContent = 'Submitted, but no PDF URL received. Check n8n response.';
+            document.getElementById('spinner').classList.remove('show');
+            console.log('Full response:', data);
+          }
+        }
+      })
+    .catch(err=>{ 
+      clearTimeout(timeoutId);
+      document.getElementById('spinner').classList.remove('show');
+      if (err.name === 'AbortError') {
+        document.getElementById('statusText').textContent = 'Request timeout (30s). n8n may be slow or offline.';
+      } else {
+        document.getElementById('statusText').textContent = 'Submit failed: '+err.message;
+      }
+    })
+});
+
+// download JSON
+document.getElementById('downloadBtn').addEventListener('click', (e)=>{
+  e.preventDefault();
+  const data = collectPayload();
+  const blob = new Blob([JSON.stringify(data, null, 2)], {type:'application/json'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a'); a.href = url; a.download = 'quotation.json'; a.click(); URL.revokeObjectURL(url);
+});
+
+// Initialize
+document.getElementById('addCustomItemBtn').addEventListener('click', addCustomItem);
+
+// Category-aware custom form: show/hide fields for Live Stations
+const customCategoryEl = document.getElementById('customCategory');
+function toggleCustomFieldsForCategory(){
+  const isLive = customCategoryEl && customCategoryEl.value === 'Live Stations';
+  document.getElementById('customPortionsDiv').style.display = isLive ? 'none' : '';
+  document.getElementById('customPcsDiv').style.display = isLive ? 'none' : '';
+  document.getElementById('customSetupDiv').style.display = isLive ? '' : 'none';
+  document.getElementById('customNoPeopleDiv').style.display = isLive ? '' : 'none';
+}
+customCategoryEl && customCategoryEl.addEventListener('change', toggleCustomFieldsForCategory);
+// Ensure correct initial state
+document.addEventListener('DOMContentLoaded', toggleCustomFieldsForCategory);
+
+fetchSheet();
+// Add listeners to service fields for real-time summary update
+document.getElementById('chefServers').addEventListener('input', updateSummary);
+document.getElementById('tableDecor').addEventListener('input', updateSummary);
+document.getElementById('cutlery').addEventListener('input', updateSummary);
+document.getElementById('chaffing').addEventListener('input', updateSummary);
+document.getElementById('conveyance').addEventListener('input', updateSummary);
+document.getElementById('venueCharges')?.addEventListener('input', updateSummary);
+document.getElementById('venueCharges')?.addEventListener('input', updateSummary);
+// Initial summary calculation
+updateSummary();
+
+// Modal Functions
+function showPdfModal(pdfUrl, filename) {
+  // Store PDF URL and filename for download
+  document.getElementById('pdfModal').dataset.pdfUrl = pdfUrl;
+  document.getElementById('pdfModal').dataset.pdfFileName = filename || 'quotation.pdf';
+  document.getElementById('pdfModal').classList.add('show');
+}
+
+function downloadPdf() {
+  const pdfUrl = document.getElementById('pdfModal').dataset.pdfUrl;
+  const filename = document.getElementById('pdfModal').dataset.pdfFileName || 'quotation.pdf';
+  if (pdfUrl) {
+    const a = document.createElement('a');
+    a.href = pdfUrl;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+  }
+}
+
+function closePdfModal() {
+  document.getElementById('pdfModal').classList.remove('show');
+}
+
+// Close modal when clicking outside of it
+window.addEventListener('click', (event) => {
+  const modal = document.getElementById('pdfModal');
+  if (event.target === modal) {
+    closePdfModal();
+  }
+});
+
+// ==================== HELPER FUNCTION FOR ROW EVENT LISTENERS ====================
+function bindRowEventListeners(tr, isLiveStation) {
+  const descInput = tr.querySelector('.description-input');
+  if (descInput) {
+    descInput.addEventListener('input', () => { tr.dataset.description = descInput.value; });
+  }
+  
+  if (isLiveStation) {
+    const vegBtn = tr.querySelector('.veg-toggle');
+    if (vegBtn) {
+      vegBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        const cur = (tr.dataset.vegNonVeg || '').toString().trim();
+        let next = 'Veg';
+        if (cur === 'Veg') next = 'Non-Veg';
+        else if (cur === 'Non-Veg') next = 'Veg & Non-Veg';
+        else if (cur === 'Veg & Non-Veg') next = 'Veg';
+        tr.dataset.vegNonVeg = next;
+        vegBtn.textContent = next;
+        vegBtn.classList.remove('non-veg', 'veg');
+        if (next === 'Non-Veg' || next === 'Veg & Non-Veg') {
+          vegBtn.classList.add('non-veg');
+          vegBtn.setAttribute('aria-pressed', 'true');
+        } else {
+          vegBtn.classList.add('veg');
+          vegBtn.setAttribute('aria-pressed', 'false');
+        }
+      });
+    }
+    
+    const setupInput = tr.querySelector('.setup');
+    const rateInput = tr.querySelector('.rate');
+    const noOfPeopleInput = tr.querySelector('.noOfPeople');
+    
+    if (setupInput) {
+      setupInput.addEventListener('input', () => {
+        tr.dataset.setup = setupInput.value;
+        updateLiveStationAmount(tr);
+      });
+    }
+    if (rateInput) {
+      rateInput.addEventListener('input', () => {
+        tr.dataset.rate = Number(rateInput.value) || 0;
+        updateLiveStationAmount(tr);
+      });
+    }
+    if (noOfPeopleInput) {
+      noOfPeopleInput.addEventListener('input', () => {
+        tr.dataset.noOfPeople = noOfPeopleInput.value;
+        updateLiveStationAmount(tr);
+      });
+    }
+    updateLiveStationAmount(tr);
+  } else {
+    const vegBtn = tr.querySelector('.veg-toggle');
+    if (vegBtn) {
+      vegBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        const cur = (tr.dataset.vegNonVeg || '').toString().trim();
+        let next = 'Veg';
+        if (cur === 'Veg') next = 'Non-Veg';
+        else if (cur === 'Non-Veg') next = 'Veg & Non-Veg';
+        else if (cur === 'Veg & Non-Veg') next = 'Veg';
+        tr.dataset.vegNonVeg = next;
+        vegBtn.textContent = next;
+        vegBtn.classList.remove('non-veg', 'veg');
+        if (next === 'Non-Veg' || next === 'Veg & Non-Veg') {
+          vegBtn.classList.add('non-veg');
+          vegBtn.setAttribute('aria-pressed', 'true');
+        } else {
+          vegBtn.classList.add('veg');
+          vegBtn.setAttribute('aria-pressed', 'false');
+        }
+      });
+      const initial = (tr.dataset.vegNonVeg || '').toString().trim();
+      if (initial === 'Non-Veg' || initial === 'Veg & Non-Veg') { vegBtn.textContent = initial; vegBtn.classList.add('non-veg'); vegBtn.setAttribute('aria-pressed', 'true'); }
+      else { vegBtn.textContent = initial || 'Veg'; vegBtn.classList.add('veg'); vegBtn.setAttribute('aria-pressed', 'false'); }
+    }
+    
+    const portionsInput = tr.querySelector('.portions');
+    if (portionsInput) {
+      portionsInput.addEventListener('input', () => updateRowAmount(tr));
+    }
+    const rateInput = tr.querySelector('.rate');
+    if (rateInput) {
+      rateInput.addEventListener('input', () => { updateRowAmount(tr); });
+    }
+    const pcsQtyInput = tr.querySelector('.pcsQty');
+    if (pcsQtyInput) {
+      pcsQtyInput.addEventListener('input', () => {
+        tr.dataset.pcsDisplay = pcsQtyInput.value;
+        if (tr.dataset.calculate === '1') {
+          updateRowAmount(tr);
+        }
+      });
+    }
+    const unitSelect = tr.querySelector('.pcsUnit');
+    if (unitSelect) {
+      unitSelect.addEventListener('change', () => { tr.dataset.unit = unitSelect.value; });
+    }
+    const calculateToggle = tr.querySelector('.calculateToggle');
+    if (calculateToggle) {
+      calculateToggle.addEventListener('change', () => {
+        tr.dataset.calculate = calculateToggle.checked ? '1' : '0';
+        updateRowAmount(tr);
+      });
+    }
+    updateRowAmount(tr);
+  }
+  
+  tr.querySelector('.deleteBtn')?.addEventListener('click', () => { handleDeleteRow(tr); });
+  const upBtn = tr.querySelector('.upBtn');
+  if (upBtn) upBtn.addEventListener('click', () => moveRowUp(tr));
+  const downBtn = tr.querySelector('.downBtn');
+  if (downBtn) downBtn.addEventListener('click', () => moveRowDown(tr));
+  makeRowDraggable(tr);
+}
+
+// ==================== LOAD EXISTING QUOTATION FUNCTIONALITY ====================
+// Call Supabase directly (has proper CORS headers)
+const SUPABASE_URL = 'https://wtqtnpjliyhcwxjkincj.supabase.co/rest/v1/quotations';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Ind0cXRucGpsaXloY3d4amtpbmNqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njk0MjgyMjQsImV4cCI6MjA4NTAwNDIyNH0.AlfAv9B1Qx4fRYFio90Qa6Md4viQ2bw6F7p-DKT_aFs';
+
+// Store all quotations for search filtering
+let allQuotations = [];
+
+// Fetch list of quotations for dropdown
+async function fetchQuotationsList() {
+  const select = document.getElementById('quotationSelect');
+  select.innerHTML = '<option value="">Loading...</option>';
+  
+  try {
+    const response = await fetch(`${SUPABASE_URL}?select=quotation_id,host_name,event_date,created_at&order=created_at.desc&limit=100`, {
+      headers: {
+        'apikey': SUPABASE_KEY,
+        'Authorization': `Bearer ${SUPABASE_KEY}`
+      }
+    });
+    if (!response.ok) throw new Error('Failed to fetch quotations');
+    const data = await response.json();
+    
+    // Store all quotations for search
+    allQuotations = Array.isArray(data) ? data : [];
+    
+    // Clear search box
+    document.getElementById('quotationSearch').value = '';
+    
+    // Populate dropdown with all quotations
+    populateQuotationSelect(allQuotations);
+  } catch (err) {
+    console.error('Error fetching quotations:', err);
+    select.innerHTML = '<option value="">-- New Quotation --</option>';
+  }
+}
+
+// Populate the dropdown with quotations
+function populateQuotationSelect(quotations) {
+  const select = document.getElementById('quotationSelect');
+  select.innerHTML = '<option value="">-- New Quotation --</option>';
+  
+  quotations.forEach(q => {
+    const opt = document.createElement('option');
+    opt.value = q.quotation_id || '';
+    opt.textContent = `${q.quotation_id || 'N/A'} - ${q.host_name || 'Unknown'} (${q.event_date || 'No date'})`;
+    select.appendChild(opt);
+  });
+}
+
+// Filter quotations based on search input
+function filterQuotations(searchTerm) {
+  if (!searchTerm.trim()) {
+    // If search is empty, show all quotations
+    populateQuotationSelect(allQuotations);
+    return;
+  }
+  
+  const lowerSearch = searchTerm.toLowerCase();
+  const filtered = allQuotations.filter(q => {
+    const id = (q.quotation_id || '').toLowerCase();
+    const host = (q.host_name || '').toLowerCase();
+    const date = (q.event_date || '').toLowerCase();
+    
+    return id.includes(lowerSearch) || host.includes(lowerSearch) || date.includes(lowerSearch);
+  });
+  
+  populateQuotationSelect(filtered);
+}
+
+// Load a specific quotation by ID
+async function loadQuotation(quotationId) {
+  if (!quotationId) {
+    clearForm();
+    return;
+  }
+  
+  document.getElementById('statusText').textContent = 'Loading quotation...';
+  document.getElementById('spinner').classList.add('show');
+  
+  try {
+    const response = await fetch(`${SUPABASE_URL}?quotation_id=eq.${encodeURIComponent(quotationId)}&limit=1`, {
+      headers: {
+        'apikey': SUPABASE_KEY,
+        'Authorization': `Bearer ${SUPABASE_KEY}`
+      }
+    });
+    if (!response.ok) throw new Error('Failed to fetch quotation');
+    const data = await response.json();
+    
+    // data is an array, get first item
+    const q = Array.isArray(data) ? data[0] : data;
+    if (!q) throw new Error('Quotation not found');
+    
+    populateForm(q);
+    document.getElementById('statusText').textContent = 'Quotation loaded successfully!';
+  } catch (err) {
+    console.error('Error loading quotation:', err);
+    document.getElementById('statusText').textContent = 'Failed to load quotation: ' + err.message;
+  } finally {
+    document.getElementById('spinner').classList.remove('show');
+  }
+}
+
+// Populate form with quotation data
+function populateForm(q) {
+  console.log('Populating form with data:', q);
+  console.log('Items field:', q.items, 'Type:', typeof q.items);
+  
+  // Parse items if it's a string (JSON stored as text)
+  let items = q.items;
+  if (typeof items === 'string') {
+    try {
+      items = JSON.parse(items);
+    } catch (e) {
+      console.error('Failed to parse items JSON:', e);
+      items = [];
+    }
+  }
+  q.items = items;
+  
+  // Similarly parse image_grid if it's a string
+  let imageGrid = q.image_grid;
+  if (typeof imageGrid === 'string') {
+    try {
+      imageGrid = JSON.parse(imageGrid);
+    } catch (e) {
+      console.error('Failed to parse image_grid JSON:', e);
+      imageGrid = [];
+    }
+  }
+  q.image_grid = imageGrid;
+  
+  // Helper to safely set form values
+  function setFieldValue(id, value) {
+    const el = document.getElementById(id);
+    if (el) el.value = value;
+    else console.warn(`Element #${id} not found`);
+  }
+  
+  // Parse event_date from dd/mm/yyyy to yyyy-mm-dd for input[type=date]
+  if (q.event_date) {
+    const parts = q.event_date.split('/');
+    if (parts.length === 3) {
+      setFieldValue('eventDate', `${parts[2]}-${parts[1]}-${parts[0]}`);
+    }
+  }
+  
+  setFieldValue('hostName', q.host_name || '');
+  setFieldValue('mobile', q.mobile_no || '');
+  
+  // Parse time from "HH:MM AM/PM" to 24-hour format for input[type=time]
+  if (q.time) {
+    const timeMatch = q.time.match(/(\d{1,2}):(\d{2})\s*(AM|PM)/i);
+    if (timeMatch) {
+      let hours = parseInt(timeMatch[1]);
+      const minutes = timeMatch[2];
+      const ampm = timeMatch[3].toUpperCase();
+      if (ampm === 'PM' && hours !== 12) hours += 12;
+      if (ampm === 'AM' && hours === 12) hours = 0;
+      setFieldValue('time', `${String(hours).padStart(2,'0')}:${minutes}`);
+    }
+  }
+  
+  setFieldValue('pax', q.pax || '');
+  setFieldValue('location', q.location || '');
+  setFieldValue('quoteId', q.quotation_id || '');
+  
+  // Service fields
+  setFieldValue('chefServers', q.chef_servers || '');
+  setFieldValue('tableDecor', q.table_decor || 'Included');
+  setFieldValue('cutlery', q.cutlery || '');
+  setFieldValue('chaffing', q.chaffing || '');
+  setFieldValue('conveyance', q.conveyance || 'As Per Actual');
+  setFieldValue('venueCharges', q.venue_charges || '');
+  
+  // Host requirements
+  setFieldValue('tables', q.tables || 'As Required');
+  setFieldValue('kitchenSpace', q.kitchen_space || 'As Required');
+  
+  // Load images
+  if (q.image_grid && Array.isArray(q.image_grid)) {
+    selectedImages = q.image_grid.slice(0, 9);
+    renderSelectedPreview();
+  }
+  
+  // Clear existing selected items
+  document.querySelectorAll('#selectedTable tbody').forEach(tb => {
+    if (tb.dataset.category) tb.remove();
+  });
+  
+  // Uncheck all menu checkboxes
+  document.querySelectorAll('#menuList input[type=checkbox]').forEach(cb => cb.checked = false);
+  
+  // Load menu items
+  if (q.items && Array.isArray(q.items)) {
+    q.items.forEach(item => {
+      // Find matching menu item or add as custom
+      const menuIdx = menuItems.findIndex(m => m.Name === item.Name);
+      
+      if (menuIdx !== -1) {
+        // Check the checkbox
+        const cb = document.querySelector(`#m_${menuIdx}`);
+        if (cb) cb.checked = true;
+        
+        // Add to table with saved values
+        addItemToTableWithData(menuItems[menuIdx], menuIdx, item);
+      } else {
+        // Add as custom item
+        addCustomItemFromData(item);
+      }
+    });
+  }
+  
+  updateTotal();
+  updateSummary();
+}
+
+// Add item to table with pre-filled data
+function addItemToTableWithData(menuItem, idx, savedData) {
+  const category = savedData.Category || menuItem.Category || 'Other';
+  const tbody = getCategoryBody(category);
+  const isLiveStation = category === 'Live Stations';
+  
+  const tr = document.createElement('tr');
+  tr.dataset.idx = idx;
+  tr.dataset.category = category;
+  tr.dataset.name = menuItem.Name || '';
+  tr.dataset.description = savedData.Description || menuItem.Description || '';
+  tr.dataset.rate = savedData.Rate || menuItem.Rate || 0;
+  // convert stored pcs value back to per‑portion when calculate flag is on
+  let basePcs = savedData.PcsDisplay || menuItem.PcsDisplay || '';
+  const portions = savedData.Portions || menuItem.Portions || 1;
+  const calcFlag = savedData.Calculate || menuItem.Calculate || '0';
+  if (calcFlag === '1' && portions && basePcs) {
+    const num = extractNumber(basePcs);
+    if (num) basePcs = String(num / portions);
+  }
+  tr.dataset.pcsDisplay = basePcs;
+  tr.dataset.unit = savedData.Unit || menuItem.Unit || 'PCS';
+  tr.dataset.calculate = calcFlag;
+  tr.dataset.vegNonVeg = savedData.VegNonVeg || menuItem.VegNonVeg || 'Veg';
+  
+  if (isLiveStation) {
+    tr.dataset.setup = savedData.Setup || menuItem.Setup || 0;
+    tr.dataset.noOfPeople = savedData.NoOfPeople || 0;
+    tr.innerHTML = buildLiveStationRow(menuItem, savedData);
+  } else {
+    tr.innerHTML = buildRegularRow(menuItem, savedData);
+  }
+  
+  tbody.appendChild(tr);
+  bindRowEventListeners(tr, isLiveStation);
+}
+
+// Build HTML for live station row with saved data (supports being called with either (menuItem, savedData) or (item))
+function buildLiveStationRow(menuItem, savedData) {
+  const saved = savedData || {};
+  const item = menuItem || {};
+
+  const name = (saved.Name !== undefined ? saved.Name : item.Name) || '';
+  const desc = (saved.Description !== undefined ? saved.Description : item.Description) || '';
+  const setup = Number((saved.Setup !== undefined ? saved.Setup : item.Setup) || 0) || 0;
+  const rate = Number((saved.Rate !== undefined ? saved.Rate : item.Rate) || 0) || 0;
+  const noOfPeople = Number((saved.NoOfPeople !== undefined ? saved.NoOfPeople : (item.NoOfPeople || item.NoOfPeople)) || 0) || 0;
+  const vegNonVeg = (saved.VegNonVeg !== undefined ? saved.VegNonVeg : item.VegNonVeg) || 'Veg';
+  const amount = setup + (rate * noOfPeople);
+
+  return `
+    <td colspan="2" style="min-width:220px">
+      <input class="itemName" type="text" value="${name}" style="font-weight:700;border:none;background:transparent;width:100%;" />
+      <button type="button" class="veg-toggle ${vegNonVeg.toLowerCase().includes('non') ? 'non-veg' : 'veg'}" aria-pressed="${vegNonVeg.toLowerCase().includes('non')}">${vegNonVeg}</button>
+      <textarea class="description-input" placeholder="Description...">${desc}</textarea>
+    </td>
+    <td><input class="setup" type="number" min="0" value="${setup}" style="width:60px;text-align:center"/></td>
+    <td><input class="rate" type="number" min="0" value="${rate}" style="width:60px;text-align:center"/></td>
+    <td><input class="noOfPeople" type="number" min="0" value="${noOfPeople}" style="width:60px;text-align:center"/></td>
+    <td class="amount col-right">${formatCurrency(amount)}</td>
+    <td style="text-align:center">
+      <div style="display:flex;gap:4px;align-items:center;justify-content:center;flex-wrap:wrap">
+        <button class="icon-btn mobile-move upBtn" title="Move up" aria-label="Move up" style="padding:4px">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M12 19V6" stroke="#666" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M5 12l7-7 7 7" stroke="#666" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <button class="icon-btn mobile-move downBtn" title="Move down" aria-label="Move down" style="padding:4px">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M12 5v14" stroke="#666" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M19 12l-7 7-7-7" stroke="#666" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <button class="icon-btn deleteBtn" title="Delete" aria-label="Delete" style="padding:4px">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M3 6h18" stroke="#d32f2f" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M8 6V4a2 2 0 012-2h4a2 2 0 012 2v2" stroke="#d32f2f" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6" stroke="#d32f2f" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <span class="drag-handle" title="Drag to reorder" aria-label="Drag to reorder">☰</span>
+      </div>
+    </td>`;}
+
+// Build HTML for regular row with saved data
+function buildRegularRow(menuItem, savedData) {
+  const name = menuItem.Name || '';
+  const desc = savedData.Description || menuItem.Description || '';
+  const portions = savedData.Portions || 1;
+  const rate = savedData.Rate || menuItem.Rate || 0;
+  // when Calculate is enabled the stored PcsDisplay is the *final* value (portions × per‑portion qty),
+  // so we need to convert back to a base qty so the input doesn't get multiplied again on load.
+  let pcsDisplay = savedData.PcsDisplay || menuItem.PcsDisplay || '';
+  const calculate = savedData.Calculate || menuItem.Calculate || '0';
+  if (calculate === '1' && portions && pcsDisplay) {
+    const num = extractNumber(pcsDisplay);
+    if (num) {
+      pcsDisplay = String(num / portions);
+    }
+  }
+  const unit = savedData.Unit || menuItem.Unit || 'PCS';
+  const vegNonVeg = savedData.VegNonVeg || menuItem.VegNonVeg || 'Veg';
+  const amount = portions * rate;
+  
+  return `
+    <td style="min-width:220px">
+      <input class="itemName" type="text" value="${name}" style="font-weight:700;border:none;background:transparent;width:100%;" />
+      <button type="button" class="veg-toggle ${vegNonVeg.toLowerCase().includes('non') ? 'non-veg' : 'veg'}" aria-pressed="${vegNonVeg.toLowerCase().includes('non')}">${vegNonVeg}</button>
+      <textarea class="description-input" placeholder="Description...">${desc}</textarea>
+    </td>
+    <td><input class="portions" type="number" min="0" value="${portions}" style="width:50px;text-align:center"/></td>
+    <td><input class="rate" type="number" min="0" value="${rate}" style="width:60px;text-align:center"/></td>
+    <td class="amount col-right">${formatCurrency(amount)}</td>
+    <td class="pcsDisplay">
+      <input class="pcsQty" type="text" value="${pcsDisplay}" style="width:40px;text-align:center" placeholder="0"/>
+      <span class="pcsDisplayReview" style="font-size:11px;color:#666;"></span>
+    </td>
+    <td>
+      <select class="pcsUnit" style="width:60px;font-size:11px">
+        <option value="" ${unit===''?'selected':''}>NA</option>
+        <option value="PCS" ${unit==='PCS'?'selected':''}>PCS</option>
+        <option value="PC" ${unit==='PC'?'selected':''}>PC</option>
+        <option value="GMS" ${unit==='GMS'?'selected':''}>GMS</option>
+        <option value="ML" ${unit==='ML'?'selected':''}>ML</option>
+        <option value="ml per portion" ${unit==='ml per portion'?'selected':''}>ml per portion</option>
+      </select>
+    </td>
+    <td style="text-align:center"><input class="calculateToggle" type="checkbox" ${calculate==='1'?'checked':''} style="width:16px;height:16px;cursor:pointer" title="Auto-calculate PCS × Portions"/></td>
+    <td style="text-align:center">
+      <div style="display:flex;gap:4px;align-items:center;justify-content:center;flex-wrap:wrap">
+        <button class="icon-btn mobile-move upBtn" title="Move up" aria-label="Move up" style="padding:4px">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M12 19V6" stroke="#666" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M5 12l7-7 7 7" stroke="#666" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <button class="icon-btn mobile-move downBtn" title="Move down" aria-label="Move down" style="padding:4px">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M12 5v14" stroke="#666" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M19 12l-7 7-7-7" stroke="#666" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <button class="icon-btn deleteBtn" title="Delete" aria-label="Delete" style="padding:4px">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M3 6h18" stroke="#d32f2f" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M8 6V4a2 2 0 012-2h4a2 2 0 012 2v2" stroke="#d32f2f" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6" stroke="#d32f2f" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <span class="drag-handle" title="Drag to reorder" aria-label="Drag to reorder">☰</span>
+      </div>
+    </td>`;
+
+
+}
+
+// Add custom item from loaded data
+function addCustomItemFromData(item) {
+  const category = item.Category || 'Other';
+  const tbody = getCategoryBody(category);
+  
+  const tr = document.createElement('tr');
+  tr.dataset.custom = '1';
+  tr.dataset.category = category;
+  tr.dataset.name = item.Name || '';
+  tr.dataset.description = item.Description || '';
+  tr.dataset.rate = item.Rate || 0;
+  tr.dataset.pcsDisplay = item.PcsDisplay || '';
+  tr.dataset.unit = item.Unit || 'PCS';
+  tr.dataset.calculate = item.Calculate || '0';
+  tr.dataset.vegNonVeg = item.VegNonVeg || 'Veg';
+  
+  if (category === 'Live Stations') {
+    tr.innerHTML = buildLiveStationRow(item);
+    tbody.appendChild(tr);
+    bindRowEventListeners(tr, true);
+  } else {
+    tr.innerHTML = buildRegularRow({ Name: item.Name, Description: '', Rate: 0, PcsDisplay: '', Unit: 'PCS', Calculate: '0', VegNonVeg: 'Veg' }, item);
+    tbody.appendChild(tr);
+    bindRowEventListeners(tr, false);
+  }
+}
+
+// Clear form for new quotation
+function clearForm() {
+  document.getElementById('eventDate').value = '';
+  document.getElementById('hostName').value = '';
+  document.getElementById('mobile').value = '';
+  document.getElementById('time').value = '';
+  document.getElementById('pax').value = '';
+  document.getElementById('location').value = '';
+  document.getElementById('quoteId').value = '';
+  document.getElementById('chefServers').value = '';
+  document.getElementById('tableDecor').value = 'Included';
+  document.getElementById('cutlery').value = '';
+  document.getElementById('chaffing').value = '';
+  document.getElementById('conveyance').value = 'As Per Actual';
+  document.getElementById('venueCharges').value = '';
+  document.getElementById('venueCharges').value = '';
+  document.getElementById('tables').value = 'As Required';
+  document.getElementById('kitchenSpace').value = 'As Required';
+  
+  // Clear images
+  selectedImages = [];
+  renderSelectedPreview();
+  
+  // Clear selected items
+  document.querySelectorAll('#selectedTable tbody').forEach(tb => {
+    if (tb.dataset.category) tb.remove();
+  });
+  
+  // Uncheck all menu checkboxes
+  document.querySelectorAll('#menuList input[type=checkbox]').forEach(cb => cb.checked = false);
+  
+  updateTotal();
+  updateSummary();
+  document.getElementById('statusText').textContent = '';
+}
+
+// Event listeners for load functionality
+document.getElementById('loadQuotationBtn').addEventListener('click', () => {
+  const selectedId = document.getElementById('quotationSelect').value;
+  loadQuotation(selectedId);
+});
+
+document.getElementById('refreshListBtn').addEventListener('click', () => {
+  fetchQuotationsList();
+});
+
+// Search functionality for quotations
+document.getElementById('quotationSearch').addEventListener('input', (e) => {
+  filterQuotations(e.target.value);
+});
+
+// Load quotations list on page load
+fetchQuotationsList();
+</script>
+</body>
+</html>
