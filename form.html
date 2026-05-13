@@ -360,12 +360,9 @@
         <thead>
           <tr>
             <th style="flex:2;min-width:220px">Item Details</th>
-            <th style="width:70px;text-align:center">Portions</th>
+            <th style="width:70px;text-align:center">Qty</th>
             <th style="width:80px;text-align:center">Rate (₹)</th>
             <th style="width:90px;text-align:center">Amt (₹)</th>
-            <th style="width:90px;text-align:center">Pcs.</th>
-            <th style="width:75px;text-align:center">Unit</th>
-            <th style="width:45px;text-align:center" title="Auto calculate">Calc.</th>
             <th style="width:90px;text-align:center">Action</th>
           </tr>
         </thead>
@@ -374,7 +371,7 @@
           <tr>
             <td colspan="3" style="text-align: right; font-weight: bold; padding: 8px;">Total:</td>
             <td style="text-align: center; font-weight: bold; padding: 8px;"><span id="totalAmount">₹0</span></td>
-            <td colspan="4" style="padding: 8px;"></td>
+            <td style="padding: 8px;"></td>
           </tr>
         </tfoot>
       </table>
@@ -395,12 +392,18 @@
           <label>Category</label>
           <select id="customCategory" style="padding:8px;border:1px solid #ccc;border-radius:6px;width:100%;box-sizing:border-box">
             <option value="">— Select Category —</option>
-            <option value="Table Snacks">Table Snacks</option>
+            <option value="Soups">Soups</option>
+            <option value="Chatori Chaat & Nostalgic Bites">Chatori Chaat & Nostalgic Bites</option>
+            <option value="Traditional Starters">Traditional Starters</option>
+            <option value="Salads">Salads</option>
+            <option value="Yoghurts">Yoghurts</option>
+            <option value="Breads">Breads</option>
             <option value="Main Course">Main Course</option>
             <option value="Rice">Rice</option>
             <option value="Noodles">Noodles</option>
-            <option value="Dessert">Dessert</option>
-            <option value="Drinks">Drinks</option>
+            <option value="Add-Ons">Add-Ons</option>
+            <option value="Beverages">Beverages</option>
+            <option value="Desserts">Desserts</option>
             <option value="Live Stations">Live Stations</option>
           </select>
         </div>
@@ -413,12 +416,8 @@
             <option value="Veg & Non-Veg">Veg & Non-Veg</option>
           </select>
         </div>
-        <div id="customPcsDiv">
-          <label>Pcs.</label>
-          <input id="customPcs" type="text" placeholder="e.g., 1 KG, 6 PCS" />
-        </div>
         <div id="customPortionsDiv">
-          <label>Portions</label>
+          <label>Qty</label>
           <input id="customPortions" type="number" min="0" value="1" />
         </div>
         <div id="customSetupDiv" style="display:none">
@@ -717,168 +716,168 @@ function fetchSheet(){
   // Hardcoded menu items for offline/testing when the sheet is not public
 const menuItems = [
     // SOUPS
-    {Name: "Velvety Cream of Tomato", Description: "A smooth tomato purée, delicately finished with cream and herbs.", PcsDisplay: "", Unit: "", Calculate: "0", Rate: 159, Category: "Soups", VegNonVeg: "Veg"},
-    {Name: "Hariyali Shorba", Description: "A soothing green vegetable broth made of spinach & peas delicately seasoned with herbs and mild spices.", PcsDisplay: "", Unit: "", Calculate: "0", Rate: 159, Category: "Soups", VegNonVeg: "Veg"},
-    {Name: "Cream Of Veg", Description: "Garden vegetables slow-cooked and blended into creamy, smooth and comforting soup preparation.", PcsDisplay: "", Unit: "", Calculate: "0", Rate: 159, Category: "Soups", VegNonVeg: "Veg"},
-    {Name: "Silken Cream of Mushroom", Description: "A velvety mushroom soup, rich and earthy in flavour.", PcsDisplay: "", Unit: "", Calculate: "0", Rate: 159, Category: "Soups", VegNonVeg: "Veg"},
+    {Name: "Velvety Cream of Tomato", Description: "A smooth tomato purée, delicately finished with cream and herbs.", PcsDisplay: "", Unit: "ml", Calculate: "0", Rate: 159, Category: "Soups", VegNonVeg: "Veg"},
+    {Name: "Hariyali Shorba", Description: "A soothing green vegetable broth made of spinach & peas delicately seasoned with herbs and mild spices.", PcsDisplay: "", Unit: "ml", Calculate: "0", Rate: 159, Category: "Soups", VegNonVeg: "Veg"},
+    {Name: "Cream Of Veg", Description: "Garden vegetables slow-cooked and blended into creamy, smooth and comforting soup preparation.", PcsDisplay: "", Unit: "ml", Calculate: "0", Rate: 159, Category: "Soups", VegNonVeg: "Veg"},
+    {Name: "Silken Cream of Mushroom", Description: "A velvety mushroom soup, rich and earthy in flavour.", PcsDisplay: "", Unit: "ml", Calculate: "0", Rate: 159, Category: "Soups", VegNonVeg: "Veg"},
 
     // CHATORI CHAAT & NOSTALGIC BITES
-    {Name: "Palak Patta Chaat", Description: "Crispy spinach leaves topped with sweet curd, tangy chutneys & crunchy sev for a perfect chatpata bite.", PcsDisplay: "", Unit: "", Calculate: "0", Rate: 249, Category: "Chatori Chaat & Nostalgic Bites", VegNonVeg: "Veg"},
-    {Name: "Dilli ke Dahi Bhalle", Description: "Soft lentil dumplings dunked in creamy curd with sweet and tangy chutneys.", PcsDisplay: "", Unit: "", Calculate: "0", Rate: 249, Category: "Chatori Chaat & Nostalgic Bites", VegNonVeg: "Veg"},
-    {Name: "Swadisht Aloo Tikki", Description: "Classic shallow-fried potato snack, simple yet beloved at every gathering.", PcsDisplay: "", Unit: "", Calculate: "0", Rate: 249, Category: "Chatori Chaat & Nostalgic Bites", VegNonVeg: "Veg"},
-    {Name: "Mumbaiya Batata Vada", Description: "Mini potato vadas coated in gram flour, spiced and fried crisp.", PcsDisplay: "", Unit: "", Calculate: "0", Rate: 249, Category: "Chatori Chaat & Nostalgic Bites", VegNonVeg: "Veg"},
-    {Name: "Podi Idli Bites", Description: "Soft idlis tossed in South Indian podi masala, spicy and comforting.", PcsDisplay: "", Unit: "", Calculate: "0", Rate: 249, Category: "Chatori Chaat & Nostalgic Bites", VegNonVeg: "Veg"},
-    {Name: "Chatori Chaat Canapés", Description: "Crisp canapés topped with zesty, tangy chaat flavours.", PcsDisplay: "", Unit: "", Calculate: "0", Rate: 249, Category: "Chatori Chaat & Nostalgic Bites", VegNonVeg: "Veg"},
-    {Name: "Samosa-e-Khaas", Description: "Cocktail samosas with spiced potato filling, flaky and golden.", PcsDisplay: "", Unit: "", Calculate: "0", Rate: 299, Category: "Chatori Chaat & Nostalgic Bites", VegNonVeg: "Veg"},
-    {Name: "Paneer Pakode Nostalgia", Description: "Paneer fritters in homestyle_besan batter, warm and hearty.", PcsDisplay: "", Unit: "", Calculate: "0", Rate: 399, Category: "Chatori Chaat & Nostalgic Bites", VegNonVeg: "Veg"},
-    {Name: "Pakoda-e-Mausam", Description: "Seasonal vegetables dipped in spiced batter, fried to perfection.", PcsDisplay: "", Unit: "", Calculate: "0", Rate: 399, Category: "Chatori Chaat & Nostalgic Bites", VegNonVeg: "Veg"},
-    {Name: "Mini Vada Pav", Description: "Soft pav filled with a spiced potato fritter, served with chutneys for the perfect street-style flavour in a mini size.", PcsDisplay: "", Unit: "", Calculate: "0", Rate: 299, Category: "Chatori Chaat & Nostalgic Bites", VegNonVeg: "Veg"},
-    {Name: "Channa Kulcha", Description: "Spiced Punjabi-style channa served with soft kulchas, packed with comforting North Indian flavours.", PcsDisplay: "", Unit: "", Calculate: "0", Rate: 319, Category: "Chatori Chaat & Nostalgic Bites", VegNonVeg: "Veg"},
-    {Name: "Punjabi Channa Bhatura", Description: "Fluffy bhaturas served with spicy Punjabi-style channa, packed with rich North Indian flavours.", PcsDisplay: "", Unit: "", Calculate: "0", Rate: 319, Category: "Chatori Chaat & Nostalgic Bites", VegNonVeg: "Veg"},
-    {Name: "Bombay Pav Bhaji", Description: "A buttery mix of mashed vegetables cooked with spices, served hot with soft pav for that authentic Mumbai taste.", PcsDisplay: "", Unit: "", Calculate: "0", Rate: 319, Category: "Chatori Chaat & Nostalgic Bites", VegNonVeg: "Veg"},
-    {Name: "Dilliwale Aloo Poori", Description: "Fluffy pooris served with flavourful homestyle potato curry, inspired by classic North Indian breakfasts & festive gatherings.", PcsDisplay: "", Unit: "", Calculate: "0", Rate: 319, Category: "Chatori Chaat & Nostalgic Bites", VegNonVeg: "Veg"},
-    {Name: "Cheese Balls", Description: "Golden-fried cheese balls, gooey and indulgent inside.", PcsDisplay: "", Unit: "", Calculate: "0", Rate: 319, Category: "Chatori Chaat & Nostalgic Bites", VegNonVeg: "Veg"},
-    {Name: "Veg Sandwiches", Description: "Classic vegetable sandwich, simple and comforting.", PcsDisplay: "", Unit: "", Calculate: "0", Rate: 189, Category: "Chatori Chaat & Nostalgic Bites", VegNonVeg: "Veg"},
-    {Name: "Mini Pizzas", Description: "Cheesy cocktail pizzas baked to bite-sized perfection.", PcsDisplay: "", Unit: "", Calculate: "0", Rate: 119, Category: "Chatori Chaat & Nostalgic Bites", VegNonVeg: "Veg"},
-    {Name: "Falafel-e-Dilli", Description: "Chickpea fritters served with a homestyle dip twist.", PcsDisplay: "", Unit: "", Calculate: "0", Rate: 319, Category: "Chatori Chaat & Nostalgic Bites", VegNonVeg: "Veg"},
+    {Name: "Palak Patta Chaat", Description: "Crispy spinach leaves topped with sweet curd, tangy chutneys & crunchy sev for a perfect chatpata bite.", PcsDisplay: "", Unit: "PC", Calculate: "0", Rate: 249, Category: "Chatori Chaat & Nostalgic Bites", VegNonVeg: "Veg"},
+    {Name: "Dilli ke Dahi Bhalle", Description: "Soft lentil dumplings dunked in creamy curd with sweet and tangy chutneys.", PcsDisplay: "", Unit: "PC", Calculate: "0", Rate: 249, Category: "Chatori Chaat & Nostalgic Bites", VegNonVeg: "Veg"},
+    {Name: "Swadisht Aloo Tikki", Description: "Classic shallow-fried potato snack, simple yet beloved at every gathering.", PcsDisplay: "", Unit: "PC", Calculate: "0", Rate: 249, Category: "Chatori Chaat & Nostalgic Bites", VegNonVeg: "Veg"},
+    {Name: "Mumbaiya Batata Vada", Description: "Mini potato vadas coated in gram flour, spiced and fried crisp.", PcsDisplay: "", Unit: "PC", Calculate: "0", Rate: 249, Category: "Chatori Chaat & Nostalgic Bites", VegNonVeg: "Veg"},
+    {Name: "Podi Idli Bites", Description: "Soft idlis tossed in South Indian podi masala, spicy and comforting.", PcsDisplay: "", Unit: "PC", Calculate: "0", Rate: 249, Category: "Chatori Chaat & Nostalgic Bites", VegNonVeg: "Veg"},
+    {Name: "Chatori Chaat Canapés", Description: "Crisp canapés topped with zesty, tangy chaat flavours.", PcsDisplay: "", Unit: "PC", Calculate: "0", Rate: 249, Category: "Chatori Chaat & Nostalgic Bites", VegNonVeg: "Veg"},
+    {Name: "Samosa-e-Khaas", Description: "Cocktail samosas with spiced potato filling, flaky and golden.", PcsDisplay: "", Unit: "PC", Calculate: "0", Rate: 299, Category: "Chatori Chaat & Nostalgic Bites", VegNonVeg: "Veg"},
+    {Name: "Paneer Pakode Nostalgia", Description: "Paneer fritters in homestyle_besan batter, warm and hearty.", PcsDisplay: "", Unit: "PC", Calculate: "0", Rate: 399, Category: "Chatori Chaat & Nostalgic Bites", VegNonVeg: "Veg"},
+    {Name: "Pakoda-e-Mausam", Description: "Seasonal vegetables dipped in spiced batter, fried to perfection.", PcsDisplay: "", Unit: "PC", Calculate: "0", Rate: 399, Category: "Chatori Chaat & Nostalgic Bites", VegNonVeg: "Veg"},
+    {Name: "Mini Vada Pav", Description: "Soft pav filled with a spiced potato fritter, served with chutneys for the perfect street-style flavour in a mini size.", PcsDisplay: "", Unit: "PC", Calculate: "0", Rate: 299, Category: "Chatori Chaat & Nostalgic Bites", VegNonVeg: "Veg"},
+    {Name: "Channa Kulcha", Description: "Spiced Punjabi-style channa served with soft kulchas, packed with comforting North Indian flavours.", PcsDisplay: "", Unit: "PC", Calculate: "0", Rate: 319, Category: "Chatori Chaat & Nostalgic Bites", VegNonVeg: "Veg"},
+    {Name: "Punjabi Channa Bhatura", Description: "Fluffy bhaturas served with spicy Punjabi-style channa, packed with rich North Indian flavours.", PcsDisplay: "", Unit: "PC", Calculate: "0", Rate: 319, Category: "Chatori Chaat & Nostalgic Bites", VegNonVeg: "Veg"},
+    {Name: "Bombay Pav Bhaji", Description: "A buttery mix of mashed vegetables cooked with spices, served hot with soft pav for that authentic Mumbai taste.", PcsDisplay: "", Unit: "PC", Calculate: "0", Rate: 319, Category: "Chatori Chaat & Nostalgic Bites", VegNonVeg: "Veg"},
+    {Name: "Dilliwale Aloo Poori", Description: "Fluffy pooris served with flavourful homestyle potato curry, inspired by classic North Indian breakfasts & festive gatherings.", PcsDisplay: "", Unit: "PC", Calculate: "0", Rate: 319, Category: "Chatori Chaat & Nostalgic Bites", VegNonVeg: "Veg"},
+    {Name: "Cheese Balls", Description: "Golden-fried cheese balls, gooey and indulgent inside.", PcsDisplay: "", Unit: "PC", Calculate: "0", Rate: 319, Category: "Chatori Chaat & Nostalgic Bites", VegNonVeg: "Veg"},
+    {Name: "Veg Sandwiches", Description: "Classic vegetable sandwich, simple and comforting.", PcsDisplay: "", Unit: "PC", Calculate: "0", Rate: 189, Category: "Chatori Chaat & Nostalgic Bites", VegNonVeg: "Veg"},
+    {Name: "Mini Pizzas", Description: "Cheesy cocktail pizzas baked to bite-sized perfection.", PcsDisplay: "", Unit: "PC", Calculate: "0", Rate: 119, Category: "Chatori Chaat & Nostalgic Bites", VegNonVeg: "Veg"},
+    {Name: "Falafel-e-Dilli", Description: "Chickpea fritters served with a homestyle dip twist.", PcsDisplay: "", Unit: "PC", Calculate: "0", Rate: 319, Category: "Chatori Chaat & Nostalgic Bites", VegNonVeg: "Veg"},
 
     // TRADITIONAL STARTERS
-    {Name: "Noor-e-Paneer Tikka", Description: "Creamy paneer cubes marinated in malai and spices, char-grilled for a melt-in-mouth bite", PcsDisplay: "", Unit: "", Calculate: "0", Rate: 429, Category: "Traditional Starters", VegNonVeg: "Veg"},
-    {Name: "Achari Paneer Lazeez", Description: "Paneer infused with tangy pickle spices, smoky and full of flavour.", PcsDisplay: "", Unit: "", Calculate: "0", Rate: 429, Category: "Traditional Starters", VegNonVeg: "Veg"},
-    {Name: "Shahi Dahi Kebabs", Description: "Delicate hung curd kebabs, crisp outside and luxuriously soft within.", PcsDisplay: "", Unit: "", Calculate: "0", Rate: 399, Category: "Traditional Starters", VegNonVeg: "Veg"},
-    {Name: "Subz Seekh-e-Khaas", Description: "Juicy veg mince seekh, roasted in the tandoor with aromatic masalas.", PcsDisplay: "", Unit: "", Calculate: "0", Rate: 429, Category: "Traditional Starters", VegNonVeg: "Veg"},
-    {Name: "Nawabi Shammi Kebabs", Description: "Rustic lentil patties spiced with heritage flavours, pan-fried to perfection.", PcsDisplay: "", Unit: "", Calculate: "0", Rate: 399, Category: "Traditional Starters", VegNonVeg: "Veg"},
-    {Name: "Hara Dilbahar Kebabs", Description: "Spinach and peas patties, wholesome, green and aromatic.", PcsDisplay: "", Unit: "", Calculate: "0", Rate: 399, Category: "Traditional Starters", VegNonVeg: "Veg"},
-    {Name: "Soya Tandoori Chaap", Description: "Delhi’s beloved chaap, smoky, spiced and cooked to perfection in the tandoor.", PcsDisplay: "", Unit: "", Calculate: "0", Rate: 399, Category: "Traditional Starters", VegNonVeg: "Veg"},
-    {Name: "Broccoli Malai Noorani", Description: "Broccoli florets enriched with cream and grilled golden.", PcsDisplay: "", Unit: "", Calculate: "0", Rate: 449, Category: "Traditional Starters", VegNonVeg: "Veg"},
-    {Name: "Gobhi-e-Tandoor", Description: "Cauliflower roasted with robust masalas, rustic and homely.", PcsDisplay: "", Unit: "", Calculate: "0", Rate: 399, Category: "Traditional Starters", VegNonVeg: "Veg"},
-    {Name: "Sholey-e-Dahi", Description: "Crisp golden rolls stuffed with spiced curd filling, creamy inside.", PcsDisplay: "", Unit: "", Calculate: "0", Rate: 399, Category: "Traditional Starters", VegNonVeg: "Veg"},
-    {Name: "Zesty Chilli Paneer", Description: "Paneer cubes tossed in spicy Indo-Chinese sauce, tangy and bold.", PcsDisplay: "", Unit: "", Calculate: "0", Rate: 459, Category: "Traditional Starters", VegNonVeg: "Veg"},
-    {Name: "Honey Chilli Aloo", Description: "Crispy potato strips glazed in sweet and spicy sauce.", PcsDisplay: "", Unit: "", Calculate: "0", Rate: 349, Category: "Traditional Starters", VegNonVeg: "Veg"},
-    {Name: "Veg Spring Rolls", Description: "Golden-fried rolls stuffed with spiced vegetables.", PcsDisplay: "", Unit: "", Calculate: "0", Rate: 399, Category: "Traditional Starters", VegNonVeg: "Veg"},
-    {Name: "Golden Baby Corn Delight", Description: "Crisp-fried baby corn seasoned to perfection.", PcsDisplay: "", Unit: "", Calculate: "0", Rate: 399, Category: "Traditional Starters", VegNonVeg: "Veg"},
-    {Name: "Crispy Pepper Corn", Description: "Corn kernels tossed with salt, pepper and tangy spices.", PcsDisplay: "", Unit: "", Calculate: "0", Rate: 399, Category: "Traditional Starters", VegNonVeg: "Veg"},
-    {Name: "Dim-Sum Bites", Description: "Steamed dumplings with delicate vegetable filling.", PcsDisplay: "", Unit: "", Calculate: "0", Rate: 349, Category: "Traditional Starters", VegNonVeg: "Veg"},
+    {Name: "Noor-e-Paneer Tikka", Description: "Creamy paneer cubes marinated in malai and spices, char-grilled for a melt-in-mouth bite", PcsDisplay: "", Unit: "PC", Calculate: "0", Rate: 429, Category: "Traditional Starters", VegNonVeg: "Veg"},
+    {Name: "Achari Paneer Lazeez", Description: "Paneer infused with tangy pickle spices, smoky and full of flavour.", PcsDisplay: "", Unit: "PC", Calculate: "0", Rate: 429, Category: "Traditional Starters", VegNonVeg: "Veg"},
+    {Name: "Shahi Dahi Kebabs", Description: "Delicate hung curd kebabs, crisp outside and luxuriously soft within.", PcsDisplay: "", Unit: "PC", Calculate: "0", Rate: 399, Category: "Traditional Starters", VegNonVeg: "Veg"},
+    {Name: "Subz Seekh-e-Khaas", Description: "Juicy veg mince seekh, roasted in the tandoor with aromatic masalas.", PcsDisplay: "", Unit: "PC", Calculate: "0", Rate: 429, Category: "Traditional Starters", VegNonVeg: "Veg"},
+    {Name: "Nawabi Shammi Kebabs", Description: "Rustic lentil patties spiced with heritage flavours, pan-fried to perfection.", PcsDisplay: "", Unit: "PC", Calculate: "0", Rate: 399, Category: "Traditional Starters", VegNonVeg: "Veg"},
+    {Name: "Hara Dilbahar Kebabs", Description: "Spinach and peas patties, wholesome, green and aromatic.", PcsDisplay: "", Unit: "PC", Calculate: "0", Rate: 399, Category: "Traditional Starters", VegNonVeg: "Veg"},
+    {Name: "Soya Tandoori Chaap", Description: "Delhi’s beloved chaap, smoky, spiced and cooked to perfection in the tandoor.", PcsDisplay: "", Unit: "PC", Calculate: "0", Rate: 399, Category: "Traditional Starters", VegNonVeg: "Veg"},
+    {Name: "Broccoli Malai Noorani", Description: "Broccoli florets enriched with cream and grilled golden.", PcsDisplay: "", Unit: "PC", Calculate: "0", Rate: 449, Category: "Traditional Starters", VegNonVeg: "Veg"},
+    {Name: "Gobhi-e-Tandoor", Description: "Cauliflower roasted with robust masalas, rustic and homely.", PcsDisplay: "", Unit: "PC", Calculate: "0", Rate: 399, Category: "Traditional Starters", VegNonVeg: "Veg"},
+    {Name: "Sholey-e-Dahi", Description: "Crisp golden rolls stuffed with spiced curd filling, creamy inside.", PcsDisplay: "", Unit: "PC", Calculate: "0", Rate: 399, Category: "Traditional Starters", VegNonVeg: "Veg"},
+    {Name: "Zesty Chilli Paneer", Description: "Paneer cubes tossed in spicy Indo-Chinese sauce, tangy and bold.", PcsDisplay: "", Unit: "PC", Calculate: "0", Rate: 459, Category: "Traditional Starters", VegNonVeg: "Veg"},
+    {Name: "Honey Chilli Aloo", Description: "Crispy potato strips glazed in sweet and spicy sauce.", PcsDisplay: "", Unit: "PC", Calculate: "0", Rate: 349, Category: "Traditional Starters", VegNonVeg: "Veg"},
+    {Name: "Veg Spring Rolls", Description: "Golden-fried rolls stuffed with spiced vegetables.", PcsDisplay: "", Unit: "PC", Calculate: "0", Rate: 399, Category: "Traditional Starters", VegNonVeg: "Veg"},
+    {Name: "Golden Baby Corn Delight", Description: "Crisp-fried baby corn seasoned to perfection.", PcsDisplay: "", Unit: "PC", Calculate: "0", Rate: 399, Category: "Traditional Starters", VegNonVeg: "Veg"},
+    {Name: "Crispy Pepper Corn", Description: "Corn kernels tossed with salt, pepper and tangy spices.", PcsDisplay: "", Unit: "PC", Calculate: "0", Rate: 399, Category: "Traditional Starters", VegNonVeg: "Veg"},
+    {Name: "Dim-Sum Bites", Description: "Steamed dumplings with delicate vegetable filling.", PcsDisplay: "", Unit: "PC", Calculate: "0", Rate: 349, Category: "Traditional Starters", VegNonVeg: "Veg"},
 
     // MAIN COURSE
-    {Name: "Nawabi Malai Kofta", Description: "Golden dumplings of paneer and dry fruits simmered in a velvety Mughlai-style gravy, indulgent and royal.", PcsDisplay: "", Unit: "", Calculate: "0", Rate: 449, Category: "Main Course", VegNonVeg: "Veg"},
-    {Name: "Navratan Korma", Description: "A fragrant medley of vegetables, nuts and raisins, cooked in a mildly spiced creamy curry.", PcsDisplay: "", Unit: "", Calculate: "0", Rate: 379, Category: "Main Course", VegNonVeg: "Veg"},
-    {Name: "Subz-e-Mausam", Description: "Seasonal vegetables gently tossed with homestyle spices, celebrating freshness in every bite.", PcsDisplay: "", Unit: "", Calculate: "0", Rate: 399, Category: "Main Course", VegNonVeg: "Veg"},
-    {Name: "Mattar Mushroom", Description: "Tender mushrooms and green peas in a rustic onion-tomato masala.", PcsDisplay: "", Unit: "", Calculate: "0", Rate: 399, Category: "Main Course", VegNonVeg: "Veg"},
-    {Name: "Corn Palak Saag", Description: "Spinach and sweet corn blended into a wholesome, nourishing curry.", PcsDisplay: "", Unit: "", Calculate: "0", Rate: 379, Category: "Main Course", VegNonVeg: "Veg"},
-    {Name: "Sarson ka Saag (Seasonal)", Description: "Mustard greens slow-cooked with garlic and spices, a true Punjabi winter classic.", PcsDisplay: "", Unit: "", Calculate: "0", Rate: 429, Category: "Main Course", VegNonVeg: "Veg"},
-    {Name: "Gatte ki Subzi", Description: "Rajasthani gram flour dumplings simmered in a spiced yogurt gravy.", PcsDisplay: "", Unit: "", Calculate: "0", Rate: 329, Category: "Main Course", VegNonVeg: "Veg"},
-    {Name: "Kadhi Pakoda", Description: "Comforting curd-based curry with crisp besan fritters, a Punjabi staple.", PcsDisplay: "", Unit: "", Calculate: "0", Rate: 379, Category: "Main Course", VegNonVeg: "Veg"},
-    {Name: "Dum Aloo Kashmiri", Description: "Baby potatoes cooked in a rich Kashmiri yogurt gravy with traditional spices.", PcsDisplay: "", Unit: "", Calculate: "0", Rate: 379, Category: "Main Course", VegNonVeg: "Veg"},
-    {Name: "Palak Kofta", Description: "Soft spinach koftas served in a rich, mildly spiced gravy with comforting homestyle flavours.", PcsDisplay: "", Unit: "", Calculate: "0", Rate: 379, Category: "Main Course", VegNonVeg: "Veg"},
-    {Name: "Hing Dhaniya ke Chatpate Aloo", Description: "Potatoes tossed with hing and coriander, tangy and chatpata.", PcsDisplay: "", Unit: "", Calculate: "0", Rate: 379, Category: "Main Course", VegNonVeg: "Veg"},
-    {Name: "Achari Aloo", Description: "Baby potatoes flavoured with tangy pickle spices, rustic and bold.", PcsDisplay: "", Unit: "", Calculate: "0", Rate: 379, Category: "Main Course", VegNonVeg: "Veg"},
-    {Name: "Jeera Aloo", Description: "Simple and comforting potatoes tempered with cumin seeds.", PcsDisplay: "", Unit: "", Calculate: "0", Rate: 399, Category: "Main Course", VegNonVeg: "Veg"},
-    {Name: "Aloo Gobhi Masala", Description: "Potato and cauliflower cooked together with robust masalas.", PcsDisplay: "", Unit: "", Calculate: "0", Rate: 399, Category: "Main Course", VegNonVeg: "Veg"},
-    {Name: "Aloo Methi", Description: "A winter favourite – potatoes tossed with fresh fenugreek leaves.", PcsDisplay: "", Unit: "", Calculate: "0", Rate: 299, Category: "Main Course", VegNonVeg: "Veg"},
-    {Name: "Kurkuri Bhindi", Description: "Crisp, golden-fried okra sprinkled with tangy masala.", PcsDisplay: "", Unit: "", Calculate: "0", Rate: 379, Category: "Main Course", VegNonVeg: "Veg"},
-    {Name: "Bhindi Do Pyaza", Description: "Okra stir-fried with plenty of onions and spices, homestyle classic.", PcsDisplay: "", Unit: "", Calculate: "0", Rate: 379, Category: "Main Course", VegNonVeg: "Veg"},
-    {Name: "Chana Masala", Description: "Chickpeas simmered in tangy onion-tomato gravy, a hearty favourite.", PcsDisplay: "", Unit: "", Calculate: "0", Rate: 349, Category: "Main Course", VegNonVeg: "Veg"},
-    {Name: "Shahi Paneer Nawabi", Description: "Paneer cubes in a creamy, royal Mughlai gravy, rich with cashews and mild spices.", PcsDisplay: "", Unit: "", Calculate: "0", Rate: 499, Category: "Main Course", VegNonVeg: "Veg"},
-    {Name: "Paneer Pasanda Shahi", Description: "Stuffed paneer triangles in a luxurious cashew and cream gravy, fit for royalty.", PcsDisplay: "", Unit: "", Calculate: "0", Rate: 529, Category: "Main Course", VegNonVeg: "Veg"},
-    {Name: "Paneer Lababdar", Description: "Paneer cooked in a luscious tomato-onion gravy, balanced with aromatic spices.", PcsDisplay: "", Unit: "", Calculate: "0", Rate: 499, Category: "Main Course", VegNonVeg: "Veg"},
-    {Name: "Kadhai Paneer Lazeez", Description: "Paneer cooked with onions and capsicum in robust kadai masala.", PcsDisplay: "", Unit: "", Calculate: "0", Rate: 499, Category: "Main Course", VegNonVeg: "Veg"},
-    {Name: "Paneer Kali Mirch Zaika", Description: "Paneer in a peppery, creamy gravy, bold and indulgent.", PcsDisplay: "", Unit: "", Calculate: "0", Rate: 499, Category: "Main Course", VegNonVeg: "Veg"},
-    {Name: "Methi Paneer", Description: "Paneer simmered with fresh fenugreek leaves, earthy and aromatic.", PcsDisplay: "", Unit: "", Calculate: "0", Rate: 499, Category: "Main Course", VegNonVeg: "Veg"},
-    {Name: "Mattar Paneer Rasila", Description: "Paneer and green peas in a comforting tomato-based curry.", PcsDisplay: "", Unit: "", Calculate: "0", Rate: 499, Category: "Main Course", VegNonVeg: "Veg"},
-    {Name: "Palak Paneer", Description: "Cottage cheese simmered in a smooth spinach puree, healthy and soulful.", PcsDisplay: "", Unit: "", Calculate: "0", Rate: 499, Category: "Main Course", VegNonVeg: "Veg"},
-    {Name: "Paneer Bhurji", Description: "Scrambled paneer cooked with onions, tomatoes and spices, homely and rustic.", PcsDisplay: "", Unit: "", Calculate: "0", Rate: 499, Category: "Main Course", VegNonVeg: "Veg"},
-    {Name: "Dal Makhani Lazeez", Description: "Black lentils simmered on slow flame, enriched with butter and cream for a velvety taste.", PcsDisplay: "", Unit: "", Calculate: "0", Rate: 479, Category: "Main Course", VegNonVeg: "Veg"},
-    {Name: "Rajma Dil Pasand", Description: "Kidney beans cooked in a creamy onion-tomato gravy, a true Punjabi comfort dish.", PcsDisplay: "", Unit: "", Calculate: "0", Rate: 349, Category: "Main Course", VegNonVeg: "Veg"},
-    {Name: "Dal Tadka Zaika", Description: "Yellow dal tempered with ghee, cumin, garlic and red chillies, homestyle comfort.", PcsDisplay: "", Unit: "", Calculate: "0", Rate: 339, Category: "Main Course", VegNonVeg: "Veg"},
-    {Name: "Panchmel Dal Rajasthani", Description: "A five-lentil mix, rustic and nourishing, flavoured with Rajasthani spices.", PcsDisplay: "", Unit: "", Calculate: "0", Rate: 339, Category: "Main Course", VegNonVeg: "Veg"},
-    {Name: "Chana Dal Masala", Description: "Bengal gram dal cooked with onions, tomatoes and homestyle masalas.", PcsDisplay: "", Unit: "", Calculate: "0", Rate: 339, Category: "Main Course", VegNonVeg: "Veg"},
-    {Name: "Lahsooni Palak Dal", Description: "Spinach and lentils tempered with ghee and garlic, aromatic and healthy.", PcsDisplay: "", Unit: "", Calculate: "0", Rate: 339, Category: "Main Course", VegNonVeg: "Veg"},
-    {Name: "Arhar Dal-e-Zaika", Description: "Toor dal simmered with homely spices and finished with a ghee tadka.", PcsDisplay: "", Unit: "", Calculate: "0", Rate: 339, Category: "Main Course", VegNonVeg: "Veg"},
-    {Name: "Sookhi Urad Dal", Description: "Dry-style urad dal stir-fried with spices, rustic and satisfying.", PcsDisplay: "", Unit: "", Calculate: "0", Rate: 339, Category: "Main Course", VegNonVeg: "Veg"},
-    {Name: "Green/Red Thai Curry", Description: "Fresh vegetables simmered in a fragrant Thai curry with coconut milk & subtle Asian herbs.", PcsDisplay: "", Unit: "", Calculate: "0", Rate: 499, Category: "Main Course", VegNonVeg: "Veg"},
-    {Name: "White/Red/Pink Sauce Pasta", Description: "Delicious pasta tossed in flavourful sauces with fresh vegetables, herbs & comforting flavours loved by all age groups.", PcsDisplay: "", Unit: "", Calculate: "0", Rate: 399, Category: "Main Course", VegNonVeg: "Veg"},
-    {Name: "Veggies in Butter Garlic Sauce", Description: "Seasonal vegetables sautéed in aromatic butter garlic sauce with mild herbs & seasoning.", PcsDisplay: "", Unit: "", Calculate: "0", Rate: 469, Category: "Main Course", VegNonVeg: "Veg"},
-    {Name: "Veggies in Hot Garlic Sauce", Description: "Crispy vegetables tossed in a bold hot garlic sauce with Asian-style flavours.", PcsDisplay: "", Unit: "", Calculate: "0", Rate: 469, Category: "Main Course", VegNonVeg: "Veg"},
-    {Name: "Veg Manchurian (Gravy)", Description: "Soft vegetable dumplings served in a savoury Indo-Chinese gravy with garlic & spring onions.", PcsDisplay: "", Unit: "", Calculate: "0", Rate: 399, Category: "Main Course", VegNonVeg: "Veg"},
-    {Name: "Chilli Paneer (Gravy)", Description: "Cottage cheese cubes tossed in a spicy Indo-Chinese gravy with peppers & onions.", PcsDisplay: "", Unit: "", Calculate: "0", Rate: 499, Category: "Main Course", VegNonVeg: "Veg"},
+    {Name: "Nawabi Malai Kofta", Description: "Golden dumplings of paneer and dry fruits simmered in a velvety Mughlai-style gravy, indulgent and royal.", PcsDisplay: "", Unit: "NA", Calculate: "0", Rate: 449, Category: "Main Course", VegNonVeg: "Veg"},
+    {Name: "Navratan Korma", Description: "A fragrant medley of vegetables, nuts and raisins, cooked in a mildly spiced creamy curry.", PcsDisplay: "", Unit: "NA", Calculate: "0", Rate: 379, Category: "Main Course", VegNonVeg: "Veg"},
+    {Name: "Subz-e-Mausam", Description: "Seasonal vegetables gently tossed with homestyle spices, celebrating freshness in every bite.", PcsDisplay: "", Unit: "NA", Calculate: "0", Rate: 399, Category: "Main Course", VegNonVeg: "Veg"},
+    {Name: "Mattar Mushroom", Description: "Tender mushrooms and green peas in a rustic onion-tomato masala.", PcsDisplay: "", Unit: "NA", Calculate: "0", Rate: 399, Category: "Main Course", VegNonVeg: "Veg"},
+    {Name: "Corn Palak Saag", Description: "Spinach and sweet corn blended into a wholesome, nourishing curry.", PcsDisplay: "", Unit: "NA", Calculate: "0", Rate: 379, Category: "Main Course", VegNonVeg: "Veg"},
+    {Name: "Sarson ka Saag (Seasonal)", Description: "Mustard greens slow-cooked with garlic and spices, a true Punjabi winter classic.", PcsDisplay: "", Unit: "NA", Calculate: "0", Rate: 429, Category: "Main Course", VegNonVeg: "Veg"},
+    {Name: "Gatte ki Subzi", Description: "Rajasthani gram flour dumplings simmered in a spiced yogurt gravy.", PcsDisplay: "", Unit: "NA", Calculate: "0", Rate: 329, Category: "Main Course", VegNonVeg: "Veg"},
+    {Name: "Kadhi Pakoda", Description: "Comforting curd-based curry with crisp besan fritters, a Punjabi staple.", PcsDisplay: "", Unit: "NA", Calculate: "0", Rate: 379, Category: "Main Course", VegNonVeg: "Veg"},
+    {Name: "Dum Aloo Kashmiri", Description: "Baby potatoes cooked in a rich Kashmiri yogurt gravy with traditional spices.", PcsDisplay: "", Unit: "NA", Calculate: "0", Rate: 379, Category: "Main Course", VegNonVeg: "Veg"},
+    {Name: "Palak Kofta", Description: "Soft spinach koftas served in a rich, mildly spiced gravy with comforting homestyle flavours.", PcsDisplay: "", Unit: "NA", Calculate: "0", Rate: 379, Category: "Main Course", VegNonVeg: "Veg"},
+    {Name: "Hing Dhaniya ke Chatpate Aloo", Description: "Potatoes tossed with hing and coriander, tangy and chatpata.", PcsDisplay: "", Unit: "NA", Calculate: "0", Rate: 379, Category: "Main Course", VegNonVeg: "Veg"},
+    {Name: "Achari Aloo", Description: "Baby potatoes flavoured with tangy pickle spices, rustic and bold.", PcsDisplay: "", Unit: "NA", Calculate: "0", Rate: 379, Category: "Main Course", VegNonVeg: "Veg"},
+    {Name: "Jeera Aloo", Description: "Simple and comforting potatoes tempered with cumin seeds.", PcsDisplay: "", Unit: "NA", Calculate: "0", Rate: 399, Category: "Main Course", VegNonVeg: "Veg"},
+    {Name: "Aloo Gobhi Masala", Description: "Potato and cauliflower cooked together with robust masalas.", PcsDisplay: "", Unit: "NA", Calculate: "0", Rate: 399, Category: "Main Course", VegNonVeg: "Veg"},
+    {Name: "Aloo Methi", Description: "A winter favourite – potatoes tossed with fresh fenugreek leaves.", PcsDisplay: "", Unit: "NA", Calculate: "0", Rate: 299, Category: "Main Course", VegNonVeg: "Veg"},
+    {Name: "Kurkuri Bhindi", Description: "Crisp, golden-fried okra sprinkled with tangy masala.", PcsDisplay: "", Unit: "NA", Calculate: "0", Rate: 379, Category: "Main Course", VegNonVeg: "Veg"},
+    {Name: "Bhindi Do Pyaza", Description: "Okra stir-fried with plenty of onions and spices, homestyle classic.", PcsDisplay: "", Unit: "NA", Calculate: "0", Rate: 379, Category: "Main Course", VegNonVeg: "Veg"},
+    {Name: "Chana Masala", Description: "Chickpeas simmered in tangy onion-tomato gravy, a hearty favourite.", PcsDisplay: "", Unit: "NA", Calculate: "0", Rate: 349, Category: "Main Course", VegNonVeg: "Veg"},
+    {Name: "Shahi Paneer Nawabi", Description: "Paneer cubes in a creamy, royal Mughlai gravy, rich with cashews and mild spices.", PcsDisplay: "", Unit: "NA", Calculate: "0", Rate: 499, Category: "Main Course", VegNonVeg: "Veg"},
+    {Name: "Paneer Pasanda Shahi", Description: "Stuffed paneer triangles in a luxurious cashew and cream gravy, fit for royalty.", PcsDisplay: "", Unit: "NA", Calculate: "0", Rate: 529, Category: "Main Course", VegNonVeg: "Veg"},
+    {Name: "Paneer Lababdar", Description: "Paneer cooked in a luscious tomato-onion gravy, balanced with aromatic spices.", PcsDisplay: "", Unit: "NA", Calculate: "0", Rate: 499, Category: "Main Course", VegNonVeg: "Veg"},
+    {Name: "Kadhai Paneer Lazeez", Description: "Paneer cooked with onions and capsicum in robust kadai masala.", PcsDisplay: "", Unit: "NA", Calculate: "0", Rate: 499, Category: "Main Course", VegNonVeg: "Veg"},
+    {Name: "Paneer Kali Mirch Zaika", Description: "Paneer in a peppery, creamy gravy, bold and indulgent.", PcsDisplay: "", Unit: "NA", Calculate: "0", Rate: 499, Category: "Main Course", VegNonVeg: "Veg"},
+    {Name: "Methi Paneer", Description: "Paneer simmered with fresh fenugreek leaves, earthy and aromatic.", PcsDisplay: "", Unit: "NA", Calculate: "0", Rate: 499, Category: "Main Course", VegNonVeg: "Veg"},
+    {Name: "Mattar Paneer Rasila", Description: "Paneer and green peas in a comforting tomato-based curry.", PcsDisplay: "", Unit: "NA", Calculate: "0", Rate: 499, Category: "Main Course", VegNonVeg: "Veg"},
+    {Name: "Palak Paneer", Description: "Cottage cheese simmered in a smooth spinach puree, healthy and soulful.", PcsDisplay: "", Unit: "NA", Calculate: "0", Rate: 499, Category: "Main Course", VegNonVeg: "Veg"},
+    {Name: "Paneer Bhurji", Description: "Scrambled paneer cooked with onions, tomatoes and spices, homely and rustic.", PcsDisplay: "", Unit: "NA", Calculate: "0", Rate: 499, Category: "Main Course", VegNonVeg: "Veg"},
+    {Name: "Dal Makhani Lazeez", Description: "Black lentils simmered on slow flame, enriched with butter and cream for a velvety taste.", PcsDisplay: "", Unit: "NA", Calculate: "0", Rate: 479, Category: "Main Course", VegNonVeg: "Veg"},
+    {Name: "Rajma Dil Pasand", Description: "Kidney beans cooked in a creamy onion-tomato gravy, a true Punjabi comfort dish.", PcsDisplay: "", Unit: "NA", Calculate: "0", Rate: 349, Category: "Main Course", VegNonVeg: "Veg"},
+    {Name: "Dal Tadka Zaika", Description: "Yellow dal tempered with ghee, cumin, garlic and red chillies, homestyle comfort.", PcsDisplay: "", Unit: "NA", Calculate: "0", Rate: 339, Category: "Main Course", VegNonVeg: "Veg"},
+    {Name: "Panchmel Dal Rajasthani", Description: "A five-lentil mix, rustic and nourishing, flavoured with Rajasthani spices.", PcsDisplay: "", Unit: "NA", Calculate: "0", Rate: 339, Category: "Main Course", VegNonVeg: "Veg"},
+    {Name: "Chana Dal Masala", Description: "Bengal gram dal cooked with onions, tomatoes and homestyle masalas.", PcsDisplay: "", Unit: "NA", Calculate: "0", Rate: 339, Category: "Main Course", VegNonVeg: "Veg"},
+    {Name: "Lahsooni Palak Dal", Description: "Spinach and lentils tempered with ghee and garlic, aromatic and healthy.", PcsDisplay: "", Unit: "NA", Calculate: "0", Rate: 339, Category: "Main Course", VegNonVeg: "Veg"},
+    {Name: "Arhar Dal-e-Zaika", Description: "Toor dal simmered with homely spices and finished with a ghee tadka.", PcsDisplay: "", Unit: "NA", Calculate: "0", Rate: 339, Category: "Main Course", VegNonVeg: "Veg"},
+    {Name: "Sookhi Urad Dal", Description: "Dry-style urad dal stir-fried with spices, rustic and satisfying.", PcsDisplay: "", Unit: "NA", Calculate: "0", Rate: 339, Category: "Main Course", VegNonVeg: "Veg"},
+    {Name: "Green/Red Thai Curry", Description: "Fresh vegetables simmered in a fragrant Thai curry with coconut milk & subtle Asian herbs.", PcsDisplay: "", Unit: "NA", Calculate: "0", Rate: 499, Category: "Main Course", VegNonVeg: "Veg"},
+    {Name: "White/Red/Pink Sauce Pasta", Description: "Delicious pasta tossed in flavourful sauces with fresh vegetables, herbs & comforting flavours loved by all age groups.", PcsDisplay: "", Unit: "NA", Calculate: "0", Rate: 399, Category: "Main Course", VegNonVeg: "Veg"},
+    {Name: "Veggies in Butter Garlic Sauce", Description: "Seasonal vegetables sautéed in aromatic butter garlic sauce with mild herbs & seasoning.", PcsDisplay: "", Unit: "NA", Calculate: "0", Rate: 469, Category: "Main Course", VegNonVeg: "Veg"},
+    {Name: "Veggies in Hot Garlic Sauce", Description: "Crispy vegetables tossed in a bold hot garlic sauce with Asian-style flavours.", PcsDisplay: "", Unit: "NA", Calculate: "0", Rate: 469, Category: "Main Course", VegNonVeg: "Veg"},
+    {Name: "Veg Manchurian (Gravy)", Description: "Soft vegetable dumplings served in a savoury Indo-Chinese gravy with garlic & spring onions.", PcsDisplay: "", Unit: "NA", Calculate: "0", Rate: 399, Category: "Main Course", VegNonVeg: "Veg"},
+    {Name: "Chilli Paneer (Gravy)", Description: "Cottage cheese cubes tossed in a spicy Indo-Chinese gravy with peppers & onions.", PcsDisplay: "", Unit: "NA", Calculate: "0", Rate: 499, Category: "Main Course", VegNonVeg: "Veg"},
 
     // SALADS
-    {Name: "Heritage Green Salad", Description: "A crisp medley of seasonal greens, dressed lightly for freshness.", PcsDisplay: "", Unit: "", Calculate: "0", Rate: 159, Category: "Salads", VegNonVeg: "Veg"},
-    {Name: "Imperial Russian Salad", Description: "Classic creamy salad with garden vegetables, apples, and pineapple.", PcsDisplay: "", Unit: "", Calculate: "0", Rate: 159, Category: "Salads", VegNonVeg: "Veg"},
-    {Name: "Kachumber-e-Zaika", Description: "Finely diced cucumber, onion, and tomato with lemon and mild spices.", PcsDisplay: "", Unit: "", Calculate: "0", Rate: 159, Category: "Salads", VegNonVeg: "Veg"},
-    {Name: "Royal Three-Bean Salad", Description: "Protein-rich beans tossed with herbs and a delicate vinaigrette.", PcsDisplay: "", Unit: "", Calculate: "0", Rate: 159, Category: "Salads", VegNonVeg: "Veg"},
-    {Name: "Channa Chaat-e-Khaas", Description: "Tangy chickpeas blended with onions, tomatoes, coriander, and spices.", PcsDisplay: "", Unit: "", Calculate: "0", Rate: 159, Category: "Salads", VegNonVeg: "Veg"},
-    {Name: "Nawabi Aloo Chaat", Description: "Golden potatoes tossed with chutneys and royal spice accents.", PcsDisplay: "", Unit: "", Calculate: "0", Rate: 159, Category: "Salads", VegNonVeg: "Veg"},
-    {Name: "Broccoli & Corn Mélange", Description: "Tender broccoli and sweet corn in a light, creamy dressing.", PcsDisplay: "", Unit: "", Calculate: "0", Rate: 199, Category: "Salads", VegNonVeg: "Veg"},
+    {Name: "Heritage Green Salad", Description: "A crisp medley of seasonal greens, dressed lightly for freshness.", PcsDisplay: "", Unit: "PC", Calculate: "0", Rate: 159, Category: "Salads", VegNonVeg: "Veg"},
+    {Name: "Imperial Russian Salad", Description: "Classic creamy salad with garden vegetables, apples, and pineapple.", PcsDisplay: "", Unit: "PC", Calculate: "0", Rate: 159, Category: "Salads", VegNonVeg: "Veg"},
+    {Name: "Kachumber-e-Zaika", Description: "Finely diced cucumber, onion, and tomato with lemon and mild spices.", PcsDisplay: "", Unit: "PC", Calculate: "0", Rate: 159, Category: "Salads", VegNonVeg: "Veg"},
+    {Name: "Royal Three-Bean Salad", Description: "Protein-rich beans tossed with herbs and a delicate vinaigrette.", PcsDisplay: "", Unit: "PC", Calculate: "0", Rate: 159, Category: "Salads", VegNonVeg: "Veg"},
+    {Name: "Channa Chaat-e-Khaas", Description: "Tangy chickpeas blended with onions, tomatoes, coriander, and spices.", PcsDisplay: "", Unit: "PC", Calculate: "0", Rate: 159, Category: "Salads", VegNonVeg: "Veg"},
+    {Name: "Nawabi Aloo Chaat", Description: "Golden potatoes tossed with chutneys and royal spice accents.", PcsDisplay: "", Unit: "PC", Calculate: "0", Rate: 159, Category: "Salads", VegNonVeg: "Veg"},
+    {Name: "Broccoli & Corn Mélange", Description: "Tender broccoli and sweet corn in a light, creamy dressing.", PcsDisplay: "", Unit: "PC", Calculate: "0", Rate: 199, Category: "Salads", VegNonVeg: "Veg"},
 
     // YOGHURTS & RAITAS
-    {Name: "Dahi Bhalla-e-Khaas", Description: "Soft lentil dumplings in chilled yoghurt, topped with saunth and chutneys.", PcsDisplay: "", Unit: "", Calculate: "0", Rate: 189, Category: "Yoghurts", VegNonVeg: "Veg"},
-    {Name: "Cucumber Pudina Raita", Description: "Refreshing yoghurt with grated cucumber and a hint of mint.", PcsDisplay: "", Unit: "", Calculate: "0", Rate: 159, Category: "Yoghurts", VegNonVeg: "Veg"},
-    {Name: "Ananas Raita", Description: "Creamy yoghurt with fresh pineapple chunks for a sweet-savoury balance.", PcsDisplay: "", Unit: "", Calculate: "0", Rate: 159, Category: "Yoghurts", VegNonVeg: "Veg"},
-    {Name: "Subz Raita", Description: "Assorted seasonal vegetables in lightly spiced yoghurt.", PcsDisplay: "", Unit: "", Calculate: "0", Rate: 159, Category: "Yoghurts", VegNonVeg: "Veg"},
-    {Name: "Boondi Raita", Description: "Golden fried boondi pearls immersed in chilled yoghurt.", PcsDisplay: "", Unit: "", Calculate: "0", Rate: 159, Category: "Yoghurts", VegNonVeg: "Veg"},
-    {Name: "Aloo Raita", Description: "Diced potatoes blended into smooth, seasoned yoghurt.", PcsDisplay: "", Unit: "", Calculate: "0", Rate: 159, Category: "Yoghurts", VegNonVeg: "Veg"},
-    {Name: "Plain Dahi", Description: "Fresh, homestyle curd served chilled.", PcsDisplay: "", Unit: "", Calculate: "0", Rate: 129, Category: "Yoghurts", VegNonVeg: "Veg"},
+    {Name: "Dahi Bhalla-e-Khaas", Description: "Soft lentil dumplings in chilled yoghurt, topped with saunth and chutneys.", PcsDisplay: "", Unit: "ml", Calculate: "0", Rate: 189, Category: "Yoghurts", VegNonVeg: "Veg"},
+    {Name: "Cucumber Pudina Raita", Description: "Refreshing yoghurt with grated cucumber and a hint of mint.", PcsDisplay: "", Unit: "ml", Calculate: "0", Rate: 159, Category: "Yoghurts", VegNonVeg: "Veg"},
+    {Name: "Ananas Raita", Description: "Creamy yoghurt with fresh pineapple chunks for a sweet-savoury balance.", PcsDisplay: "", Unit: "ml", Calculate: "0", Rate: 159, Category: "Yoghurts", VegNonVeg: "Veg"},
+    {Name: "Subz Raita", Description: "Assorted seasonal vegetables in lightly spiced yoghurt.", PcsDisplay: "", Unit: "ml", Calculate: "0", Rate: 159, Category: "Yoghurts", VegNonVeg: "Veg"},
+    {Name: "Boondi Raita", Description: "Golden fried boondi pearls immersed in chilled yoghurt.", PcsDisplay: "", Unit: "ml", Calculate: "0", Rate: 159, Category: "Yoghurts", VegNonVeg: "Veg"},
+    {Name: "Aloo Raita", Description: "Diced potatoes blended into smooth, seasoned yoghurt.", PcsDisplay: "", Unit: "ml", Calculate: "0", Rate: 159, Category: "Yoghurts", VegNonVeg: "Veg"},
+    {Name: "Plain Dahi", Description: "Fresh, homestyle curd served chilled.", PcsDisplay: "", Unit: "ml", Calculate: "0", Rate: 129, Category: "Yoghurts", VegNonVeg: "Veg"},
 
     // BREADS
-    {Name: "Tandoori Roti", Description: "Classic wholewheat roti baked in the tandoor.", PcsDisplay: "", Unit: "", Calculate: "0", Rate: 59, Category: "Breads", VegNonVeg: "Veg"},
-    {Name: "Punjabi Missi Roti", Description: "Traditional spiced roti made with gram flour and wheat.", PcsDisplay: "", Unit: "", Calculate: "0", Rate: 59, Category: "Breads", VegNonVeg: "Veg"},
-    {Name: "Garlic Butter Naan", Description: "Soft refined-flour naan brushed with garlic butter.", PcsDisplay: "", Unit: "", Calculate: "0", Rate: 59, Category: "Breads", VegNonVeg: "Veg"},
-    {Name: "Butter Naan", Description: "Fluffy naan enriched with butter, served hot from the tandoor.", PcsDisplay: "", Unit: "", Calculate: "0", Rate: 59, Category: "Breads", VegNonVeg: "Veg"},
-    {Name: "Plain Naan", Description: "Soft tandoor-baked naan, a timeless accompaniment.", PcsDisplay: "", Unit: "", Calculate: "0", Rate: 59, Category: "Breads", VegNonVeg: "Veg"},
-    {Name: "Lachha Parantha", Description: "Layered flaky parantha cooked crisp on the tawa.", PcsDisplay: "", Unit: "", Calculate: "0", Rate: 59, Category: "Breads", VegNonVeg: "Veg"},
-    {Name: "Tawa Roti", Description: "Wholewheat roti cooked home-style on the tawa.", PcsDisplay: "", Unit: "", Calculate: "0", Rate: 59, Category: "Breads", VegNonVeg: "Veg"},
-    {Name: "Malabari Parantha", Description: "South Indian flaky parantha, rich and buttery.", PcsDisplay: "", Unit: "", Calculate: "0", Rate: 59, Category: "Breads", VegNonVeg: "Veg"},
+    {Name: "Tandoori Roti", Description: "Classic wholewheat roti baked in the tandoor.", PcsDisplay: "", Unit: "PC", Calculate: "0", Rate: 59, Category: "Breads", VegNonVeg: "Veg"},
+    {Name: "Punjabi Missi Roti", Description: "Traditional spiced roti made with gram flour and wheat.", PcsDisplay: "", Unit: "PC", Calculate: "0", Rate: 59, Category: "Breads", VegNonVeg: "Veg"},
+    {Name: "Garlic Butter Naan", Description: "Soft refined-flour naan brushed with garlic butter.", PcsDisplay: "", Unit: "PC", Calculate: "0", Rate: 59, Category: "Breads", VegNonVeg: "Veg"},
+    {Name: "Butter Naan", Description: "Fluffy naan enriched with butter, served hot from the tandoor.", PcsDisplay: "", Unit: "PC", Calculate: "0", Rate: 59, Category: "Breads", VegNonVeg: "Veg"},
+    {Name: "Plain Naan", Description: "Soft tandoor-baked naan, a timeless accompaniment.", PcsDisplay: "", Unit: "PC", Calculate: "0", Rate: 59, Category: "Breads", VegNonVeg: "Veg"},
+    {Name: "Lachha Parantha", Description: "Layered flaky parantha cooked crisp on the tawa.", PcsDisplay: "", Unit: "PC", Calculate: "0", Rate: 59, Category: "Breads", VegNonVeg: "Veg"},
+    {Name: "Tawa Roti", Description: "Wholewheat roti cooked home-style on the tawa.", PcsDisplay: "", Unit: "PC", Calculate: "0", Rate: 59, Category: "Breads", VegNonVeg: "Veg"},
+    {Name: "Malabari Parantha", Description: "South Indian flaky parantha, rich and buttery.", PcsDisplay: "", Unit: "PC", Calculate: "0", Rate: 59, Category: "Breads", VegNonVeg: "Veg"},
 
     // RICE & BIRYANI
-    {Name: "Zafrani Jeera Pulao", Description: "Basmati rice tempered with roasted cumin.", PcsDisplay: "", Unit: "", Calculate: "0", Rate: 349, Category: "Rice", VegNonVeg: "Veg"},
-    {Name: "Navrattan Pulao", Description: "A royal medley of rice, vegetables, and dry fruits.", PcsDisplay: "", Unit: "", Calculate: "0", Rate: 379, Category: "Rice", VegNonVeg: "Veg"},
-    {Name: "Hari Matar Pulao", Description: "Fragrant rice tossed with green peas.", PcsDisplay: "", Unit: "", Calculate: "0", Rate: 349, Category: "Rice", VegNonVeg: "Veg"},
-    {Name: "Kashmiri Pulao", Description: "Basmati rice with saffron, fruits, and dry nuts.", PcsDisplay: "", Unit: "", Calculate: "0", Rate: 379, Category: "Rice", VegNonVeg: "Veg"},
-    {Name: "Steamed Basmati Rice", Description: "Fluffy, fragrant long-grain rice, simply steamed.", PcsDisplay: "", Unit: "", Calculate: "0", Rate: 329, Category: "Rice", VegNonVeg: "Veg"},
-    {Name: "Wok Tossed Vegetable Fried Rice", Description: "Indo-Chinese style wok-tossed rice with vegetables.", PcsDisplay: "", Unit: "", Calculate: "0", Rate: 329, Category: "Rice", VegNonVeg: "Veg"},
-    {Name: "Dum Vegetable Biryani", Description: "Fragrant basmati rice layered with garden-fresh vegetables, aromatic spices & slow-cooked on dum for rich flavours.", PcsDisplay: "", Unit: "", Calculate: "0", Rate: 399, Category: "Rice", VegNonVeg: "Veg"},
+    {Name: "Zafrani Jeera Pulao", Description: "Basmati rice tempered with roasted cumin.", PcsDisplay: "", Unit: "NA", Calculate: "0", Rate: 349, Category: "Rice", VegNonVeg: "Veg"},
+    {Name: "Navrattan Pulao", Description: "A royal medley of rice, vegetables, and dry fruits.", PcsDisplay: "", Unit: "NA", Calculate: "0", Rate: 379, Category: "Rice", VegNonVeg: "Veg"},
+    {Name: "Hari Matar Pulao", Description: "Fragrant rice tossed with green peas.", PcsDisplay: "", Unit: "NA", Calculate: "0", Rate: 349, Category: "Rice", VegNonVeg: "Veg"},
+    {Name: "Kashmiri Pulao", Description: "Basmati rice with saffron, fruits, and dry nuts.", PcsDisplay: "", Unit: "NA", Calculate: "0", Rate: 379, Category: "Rice", VegNonVeg: "Veg"},
+    {Name: "Steamed Basmati Rice", Description: "Fluffy, fragrant long-grain rice, simply steamed.", PcsDisplay: "", Unit: "NA", Calculate: "0", Rate: 329, Category: "Rice", VegNonVeg: "Veg"},
+    {Name: "Wok Tossed Vegetable Fried Rice", Description: "Indo-Chinese style wok-tossed rice with vegetables.", PcsDisplay: "", Unit: "NA", Calculate: "0", Rate: 329, Category: "Rice", VegNonVeg: "Veg"},
+    {Name: "Dum Vegetable Biryani", Description: "Fragrant basmati rice layered with garden-fresh vegetables, aromatic spices & slow-cooked on dum for rich flavours.", PcsDisplay: "", Unit: "NA", Calculate: "0", Rate: 399, Category: "Rice", VegNonVeg: "Veg"},
 
     // NOODLES
-    {Name: "Hakka Noodles", Description: "Wok-tossed noodles with fresh vegetables, Asian sauces & comforting street-style flavours.", PcsDisplay: "", Unit: "", Calculate: "0", Rate: 329, Category: "Noodles", VegNonVeg: "Veg"},
+    {Name: "Hakka Noodles", Description: "Wok-tossed noodles with fresh vegetables, Asian sauces & comforting street-style flavours.", PcsDisplay: "", Unit: "NA", Calculate: "0", Rate: 329, Category: "Noodles", VegNonVeg: "Veg"},
 
     // BEVERAGES
-    {Name: "Lassi (Sweet/Salted)", Description: "Refreshing traditional yogurt-based drink served sweet or lightly salted.", PcsDisplay: "", Unit: "", Calculate: "0", Rate: 79, Category: "Beverages", VegNonVeg: "Veg"},
-    {Name: "Lemonade", Description: "A cooling citrus refresher with balanced sweet & tangy flavours.", PcsDisplay: "", Unit: "", Calculate: "0", Rate: 49, Category: "Beverages", VegNonVeg: "Veg"},
-    {Name: "Ice Tea", Description: "Chilled tea infused with refreshing flavours for a light cooling sip.", PcsDisplay: "", Unit: "", Calculate: "0", Rate: 59, Category: "Beverages", VegNonVeg: "Veg"},
-    {Name: "Mint Mojito", Description: "A refreshing blend of mint, lime & fizzy flavours served chilled.", PcsDisplay: "", Unit: "", Calculate: "0", Rate: 99, Category: "Beverages", VegNonVeg: "Veg"},
-    {Name: "Blue Curacao", Description: "A vibrant blue refresher with citrusy flavours and a cooling finish.", PcsDisplay: "", Unit: "", Calculate: "0", Rate: 99, Category: "Beverages", VegNonVeg: "Veg"},
-    {Name: "Cold Coffee", Description: "chilled coffee blended to perfection for a smooth indulgence.", PcsDisplay: "", Unit: "", Calculate: "0", Rate: 99, Category: "Beverages", VegNonVeg: "Veg"},
-    {Name: "Hot Tea", Description: "Freshly brewed tea served warm with comforting flavours.", PcsDisplay: "", Unit: "", Calculate: "0", Rate: 49, Category: "Beverages", VegNonVeg: "Veg"},
-    {Name: "Hot Coffee", Description: "Rich and aromatic hot coffee brewed for a comforting experience.", PcsDisplay: "", Unit: "", Calculate: "0", Rate: 79, Category: "Beverages", VegNonVeg: "Veg"},
+    {Name: "Lassi (Sweet/Salted)", Description: "Refreshing traditional yogurt-based drink served sweet or lightly salted.", PcsDisplay: "", Unit: "ml", Calculate: "0", Rate: 79, Category: "Beverages", VegNonVeg: "Veg"},
+    {Name: "Lemonade", Description: "A cooling citrus refresher with balanced sweet & tangy flavours.", PcsDisplay: "", Unit: "ml", Calculate: "0", Rate: 49, Category: "Beverages", VegNonVeg: "Veg"},
+    {Name: "Ice Tea", Description: "Chilled tea infused with refreshing flavours for a light cooling sip.", PcsDisplay: "", Unit: "ml", Calculate: "0", Rate: 59, Category: "Beverages", VegNonVeg: "Veg"},
+    {Name: "Mint Mojito", Description: "A refreshing blend of mint, lime & fizzy flavours served chilled.", PcsDisplay: "", Unit: "ml", Calculate: "0", Rate: 99, Category: "Beverages", VegNonVeg: "Veg"},
+    {Name: "Blue Curacao", Description: "A vibrant blue refresher with citrusy flavours and a cooling finish.", PcsDisplay: "", Unit: "ml", Calculate: "0", Rate: 99, Category: "Beverages", VegNonVeg: "Veg"},
+    {Name: "Cold Coffee", Description: "chilled coffee blended to perfection for a smooth indulgence.", PcsDisplay: "", Unit: "ml", Calculate: "0", Rate: 99, Category: "Beverages", VegNonVeg: "Veg"},
+    {Name: "Hot Tea", Description: "Freshly brewed tea served warm with comforting flavours.", PcsDisplay: "", Unit: "ml", Calculate: "0", Rate: 49, Category: "Beverages", VegNonVeg: "Veg"},
+    {Name: "Hot Coffee", Description: "Rich and aromatic hot coffee brewed for a comforting experience.", PcsDisplay: "", Unit: "ml", Calculate: "0", Rate: 79, Category: "Beverages", VegNonVeg: "Veg"},
 
     // DESSERTS
-    {Name: "Badam Kheer-e-Khaas", Description: "Traditional slow-cooked rice pudding with rich milky flavours and a comforting festive touch.", PcsDisplay: "", Unit: "", Calculate: "0", Rate: 189, Category: "Desserts", VegNonVeg: "Veg"},
+    {Name: "Badam Kheer-e-Khaas", Description: "Traditional slow-cooked rice pudding with rich milky flavours and a comforting festive touch.", PcsDisplay: "", Unit: "NA", Calculate: "0", Rate: 189, Category: "Desserts", VegNonVeg: "Veg"},
     {Name: "Moong Dal Halwa", Description: "A classic North Indian sweet, slow-roasted moong dal cooked in ghee.", PcsDisplay: "250 ml", Unit: "ml", Calculate: "0", Rate: 229, Category: "Desserts", VegNonVeg: "Veg"},
     {Name: "Gulab Jamun", Description: "Soft khoya dumplings fried and soaked in rose-scented sugar syrup.", PcsDisplay: "1 pc", Unit: "pc", Calculate: "0", Rate: 69, Category: "Desserts", VegNonVeg: "Veg"},
     {Name: "Gajar ka Halwa (Seasonal)", Description: "Seasonal carrots slow-cooked with milk, ghee, and dry fruits.", PcsDisplay: "250 ml", Unit: "ml", Calculate: "0", Rate: 329, Category: "Desserts", VegNonVeg: "Veg"},
     {Name: "Jalebi with Rabri", Description: "Crisp jalebis paired with thick, creamy rabri.", PcsDisplay: "250 ml", Unit: "ml", Calculate: "0", Rate: 299, Category: "Desserts", VegNonVeg: "Veg"},
-    {Name: "Royal Rasmallai", Description: "Soft saffron-infused cottage cheese discs served in chilled creamy milk with delicate festive flavours.", PcsDisplay: "", Unit: "", Calculate: "0", Rate: 159, Category: "Desserts", VegNonVeg: "Veg"},
-    {Name: "Phirni", Description: "Creamy slow-cooked rice pudding delicately flavoured with traditional Indian sweetness.", PcsDisplay: "", Unit: "", Calculate: "0", Rate: 149, Category: "Desserts", VegNonVeg: "Veg"},
-    {Name: "Vanilla Ice Cream with Hot Chocolate Sauce", Description: "Classic vanilla ice cream drizzled with warm chocolate sauce.", PcsDisplay: "", Unit: "", Calculate: "0", Rate: 79, Category: "Desserts", VegNonVeg: "Veg"},
-    {Name: "Chocolate Mousse", Description: "A rich, velvety chocolate dessert with a light, airy texture.", PcsDisplay: "", Unit: "", Calculate: "0", Rate: 129, Category: "Desserts", VegNonVeg: "Veg"},
+    {Name: "Royal Rasmallai", Description: "Soft saffron-infused cottage cheese discs served in chilled creamy milk with delicate festive flavours.", PcsDisplay: "", Unit: "NA", Calculate: "0", Rate: 159, Category: "Desserts", VegNonVeg: "Veg"},
+    {Name: "Phirni", Description: "Creamy slow-cooked rice pudding delicately flavoured with traditional Indian sweetness.", PcsDisplay: "", Unit: "NA", Calculate: "0", Rate: 149, Category: "Desserts", VegNonVeg: "Veg"},
+    {Name: "Vanilla Ice Cream with Hot Chocolate Sauce", Description: "Classic vanilla ice cream drizzled with warm chocolate sauce.", PcsDisplay: "", Unit: "NA", Calculate: "0", Rate: 79, Category: "Desserts", VegNonVeg: "Veg"},
+    {Name: "Chocolate Mousse", Description: "A rich, velvety chocolate dessert with a light, airy texture.", PcsDisplay: "", Unit: "NA", Calculate: "0", Rate: 129, Category: "Desserts", VegNonVeg: "Veg"},
 
     // ADD-ONS
-    {Name: "Gol Gappe", Description: "Crispy hollow puris served with spicy tangy water and potato filling.", PcsDisplay: "", Unit: "", Calculate: "0", Rate: 0, Category: "Add-Ons", VegNonVeg: "Veg"},
-    {Name: "Pav Bhaji", Description: "Buttery mashed vegetable curry served with soft toasted pav.", PcsDisplay: "", Unit: "", Calculate: "0", Rate: 0, Category: "Add-Ons", VegNonVeg: "Veg"},
-    {Name: "Aloo Tikki", Description: "Crispy spiced potato patties served with chutneys.", PcsDisplay: "", Unit: "", Calculate: "0", Rate: 0, Category: "Add-Ons", VegNonVeg: "Veg"},
-    {Name: "Fresh Fruits", Description: "A selection of seasonal hand-picked fresh fruits.", PcsDisplay: "", Unit: "", Calculate: "0", Rate: 0, Category: "Add-Ons", VegNonVeg: "Veg"},
-    {Name: "PASTA", Description: "Choice of pasta cooked in flavourful sauces with herbs.", PcsDisplay: "", Unit: "", Calculate: "0", Rate: 0, Category: "Add-Ons", VegNonVeg: "Veg"},
-    {Name: "Idli Sambhar", Description: "Soft steamed rice cakes served with aromatic lentil stew.", PcsDisplay: "", Unit: "", Calculate: "0", Rate: 0, Category: "Add-Ons", VegNonVeg: "Veg"},
-    {Name: "Bhalla Papri", Description: "Soft bhallas and crunchy papris topped with yogurt and tangy chutneys.", PcsDisplay: "", Unit: "", Calculate: "0", Rate: 0, Category: "Add-Ons", VegNonVeg: "Veg"},
-    {Name: "Moong Dal Chilla", Description: "Savory pancakes made from ground moong dal, served crisp.", PcsDisplay: "", Unit: "", Calculate: "0", Rate: 0, Category: "Add-Ons", VegNonVeg: "Veg"},
-    {Name: "Mattra Kulcha", Description: "Spiced white peas served with soft, fluffy kulchas.", PcsDisplay: "", Unit: "", Calculate: "0", Rate: 0, Category: "Add-Ons", VegNonVeg: "Veg"},
-    {Name: "Shakarkhani ki chaat", Description: "Roasted sweet potato chunks tossed with tangy spices and lemon.", PcsDisplay: "", Unit: "", Calculate: "0", Rate: 0, Category: "Add-Ons", VegNonVeg: "Veg"},
-    {Name: "Aloo Chaat", Description: "Fried potato cubes tossed in spicy and tangy chaat masala.", PcsDisplay: "", Unit: "", Calculate: "0", Rate: 0, Category: "Add-Ons", VegNonVeg: "Veg"},
-    {Name: "Bhel Puri", Description: "Puffed rice tossed with onions, tomatoes, and zingy chutneys.", PcsDisplay: "", Unit: "", Calculate: "0", Rate: 0, Category: "Add-Ons", VegNonVeg: "Veg"},
-    {Name: "Sev Puri", Description: "Crispy papris topped with potatoes, onions, and plenty of sev.", PcsDisplay: "", Unit: "", Calculate: "0", Rate: 0, Category: "Add-Ons", VegNonVeg: "Veg"},
-    {Name: "Sambhar Vada", Description: "Crispy fried lentil donuts soaked in hot aromatic sambhar.", PcsDisplay: "", Unit: "", Calculate: "0", Rate: 0, Category: "Add-Ons", VegNonVeg: "Veg"}
+    {Name: "Gol Gappe", Description: "Crispy hollow puris served with spicy tangy water and potato filling.", PcsDisplay: "", Unit: "PC", Calculate: "0", Rate: 0, Category: "Add-Ons", VegNonVeg: "Veg"},
+    {Name: "Pav Bhaji", Description: "Buttery mashed vegetable curry served with soft toasted pav.", PcsDisplay: "", Unit: "PC", Calculate: "0", Rate: 0, Category: "Add-Ons", VegNonVeg: "Veg"},
+    {Name: "Aloo Tikki", Description: "Crispy spiced potato patties served with chutneys.", PcsDisplay: "", Unit: "PC", Calculate: "0", Rate: 0, Category: "Add-Ons", VegNonVeg: "Veg"},
+    {Name: "Fresh Fruits", Description: "A selection of seasonal hand-picked fresh fruits.", PcsDisplay: "", Unit: "PC", Calculate: "0", Rate: 0, Category: "Add-Ons", VegNonVeg: "Veg"},
+    {Name: "PASTA", Description: "Choice of pasta cooked in flavourful sauces with herbs.", PcsDisplay: "", Unit: "PC", Calculate: "0", Rate: 0, Category: "Add-Ons", VegNonVeg: "Veg"},
+    {Name: "Idli Sambhar", Description: "Soft steamed rice cakes served with aromatic lentil stew.", PcsDisplay: "", Unit: "PC", Calculate: "0", Rate: 0, Category: "Add-Ons", VegNonVeg: "Veg"},
+    {Name: "Bhalla Papri", Description: "Soft bhallas and crunchy papris topped with yogurt and tangy chutneys.", PcsDisplay: "", Unit: "PC", Calculate: "0", Rate: 0, Category: "Add-Ons", VegNonVeg: "Veg"},
+    {Name: "Moong Dal Chilla", Description: "Savory pancakes made from ground moong dal, served crisp.", PcsDisplay: "", Unit: "PC", Calculate: "0", Rate: 0, Category: "Add-Ons", VegNonVeg: "Veg"},
+    {Name: "Mattra Kulcha", Description: "Spiced white peas served with soft, fluffy kulchas.", PcsDisplay: "", Unit: "PC", Calculate: "0", Rate: 0, Category: "Add-Ons", VegNonVeg: "Veg"},
+    {Name: "Shakarkhani ki chaat", Description: "Roasted sweet potato chunks tossed with tangy spices and lemon.", PcsDisplay: "", Unit: "PC", Calculate: "0", Rate: 0, Category: "Add-Ons", VegNonVeg: "Veg"},
+    {Name: "Aloo Chaat", Description: "Fried potato cubes tossed in spicy and tangy chaat masala.", PcsDisplay: "", Unit: "PC", Calculate: "0", Rate: 0, Category: "Add-Ons", VegNonVeg: "Veg"},
+    {Name: "Bhel Puri", Description: "Puffed rice tossed with onions, tomatoes, and zingy chutneys.", PcsDisplay: "", Unit: "PC", Calculate: "0", Rate: 0, Category: "Add-Ons", VegNonVeg: "Veg"},
+    {Name: "Sev Puri", Description: "Crispy papris topped with potatoes, onions, and plenty of sev.", PcsDisplay: "", Unit: "PC", Calculate: "0", Rate: 0, Category: "Add-Ons", VegNonVeg: "Veg"},
+    {Name: "Sambhar Vada", Description: "Crispy fried lentil donuts soaked in hot aromatic sambhar.", PcsDisplay: "", Unit: "PC", Calculate: "0", Rate: 0, Category: "Add-Ons", VegNonVeg: "Veg"}
 ];
   renderMenu(menuItems);
 }
@@ -903,7 +902,7 @@ function renderMenu(items){
       const cb = document.createElement('input'); cb.type='checkbox'; cb.id = 'm_'+idx; cb.dataset.idx = idx;
       const meta = document.createElement('div'); meta.className = 'meta'; meta.innerHTML = `<strong>${item.Name||'Unnamed'}</strong>`;
       const right = document.createElement('div'); right.className = 'right';
-      right.innerHTML = `${item.PcsDisplay ? '<div class="small">'+item.PcsDisplay+'</div>' : ''}<div>${item.Rate?formatCurrency(item.Rate):''}</div>`;
+      right.innerHTML = `<div>${item.Rate?formatCurrency(item.Rate):''}</div>`;
 
       el.appendChild(cb); el.appendChild(meta); el.appendChild(right);
       container.appendChild(el);
@@ -922,7 +921,7 @@ function renderMenu(items){
 let currentCategoryFilter = null; // Track active category filter
 
 // Define the desired order of categories
-const categoryOrder = ['Table Snacks', 'Main Course', 'Rice', 'Noodles', 'Dessert', 'Drinks', 'Live Stations'];
+const categoryOrder = ['Soups', 'Chatori Chaat & Nostalgic Bites', 'Traditional Starters', 'Salads', 'Yoghurts', 'Breads', 'Main Course', 'Rice', 'Noodles', 'Add-Ons', 'Beverages', 'Desserts'];
 
 function renderFilterButtons(items){
   const filterBtnEl = document.getElementById('filterButtons');
@@ -1084,9 +1083,6 @@ function addItemToTable(item, idx){
     <td style="text-align:center"><input class="portions" type="number" min="0" value="1" style="width:55px;padding:4px;border:1px solid #ccc;border-radius:4px;text-align:center" /></td>
     <td style="text-align:center"><input class="rate" type="number" min="0" step="0.01" value="${rate}" style="width:70px;padding:4px;border:1px solid #ccc;border-radius:4px;text-align:right" /></td>
     <td style="text-align:center" class="amount">${formatCurrency(rate)}</td>
-    <td style="text-align:center"><input class="pcsQty" type="text" value="${pcsDisplay}" style="width:70px;padding:4px;border:1px solid #ccc;border-radius:4px;text-align:center" /><div class="pcsDisplayReview" style="font-size:10px;color:#666;margin-top:2px;font-weight:500">→ ${pcsDisplay}</div></td>
-    <td style="text-align:center"><select class="pcsUnit" style="width:70px;padding:4px;border:1px solid #ccc;border-radius:4px;font-size:12px"><option value="" ${unit===''?'selected':''}>NA</option><option value="PCS" ${unit==='PCS'?'selected':''}>PCS</option><option value="PC" ${unit==='PC'?'selected':''}>PC</option><option value="GMS" ${unit==='GMS'?'selected':''}>GMS</option><option value="ML" ${unit==='ML'?'selected':''}>ML</option><option value="ml per portion" ${unit==='ml per portion'?'selected':''}>ml per portion</option></select></td>
-    <td style="text-align:center"><input class="calculateToggle" type="checkbox" ${calculateChecked} style="width:16px;height:16px;cursor:pointer" /></td>
     <td style="text-align:center">
       <div style="display:flex;gap:4px;align-items:center;justify-content:center;flex-wrap:wrap">
         <button class="icon-btn mobile-move upBtn" title="Move up" aria-label="Move up" style="padding:4px">
@@ -1437,7 +1433,7 @@ function addCustomItem(){
   const desc = document.getElementById('customDesc').value.trim();
   const category = document.getElementById('customCategory').value.trim();
   const vegNonVeg = document.getElementById('customVegNonVeg').value.trim();
-  const pcsDisplay = document.getElementById('customPcs').value.trim();
+  const pcsDisplay = '';
   const unit = 'PCS'; // default unit for custom items
   const portions = Number(document.getElementById('customPortions').value) || 0;
   const rate = Number(document.getElementById('customRate').value) || 0;
@@ -1474,9 +1470,6 @@ function addCustomItem(){
     <td style="text-align:center"><input class="portions" type="number" min="0" value="${portions}" style="width:55px;padding:4px;border:1px solid #ccc;border-radius:4px;text-align:center" /></td>
     <td style="text-align:center"><input class="rate" type="number" min="0" step="0.01" value="${rate}" style="width:70px;padding:4px;border:1px solid #ccc;border-radius:4px;text-align:right" /></td>
     <td style="text-align:center" class="amount">${formatCurrency(portions * rate)}</td>
-    <td style="text-align:center"><input class="pcsQty" type="text" value="${pcsDisplay}" style="width:70px;padding:4px;border:1px solid #ccc;border-radius:4px;text-align:center" /><div class="pcsDisplayReview" style="font-size:10px;color:#666;margin-top:2px;font-weight:500">→ ${pcsDisplay}</div></td>
-    <td style="text-align:center"><select class="pcsUnit" style="width:70px;padding:4px;border:1px solid #ccc;border-radius:4px;font-size:12px"><option value="">NA</option><option value="PCS">PCS</option><option value="PC">PC</option><option value="GMS">GMS</option><option value="ML">ML</option><option value="ml per portion">ml per portion</option></select></td>
-    <td style="text-align:center"><input class="calculateToggle" type="checkbox" style="width:16px;height:16px;cursor:pointer" /></td>
     <td style="text-align:center">
       <div style="display:flex;gap:4px;align-items:center;justify-content:center;flex-wrap:wrap">
         <button class="icon-btn mobile-move upBtn" title="Move up" aria-label="Move up" style="padding:4px">
@@ -1507,7 +1500,6 @@ function addCustomItem(){
   document.getElementById('customDesc').value = '';
   document.getElementById('customCategory').value = '';
   document.getElementById('customVegNonVeg').value = '';
-  document.getElementById('customPcs').value = '';
   document.getElementById('customPortions').value = '1';
   document.getElementById('customRate').value = '';
   document.getElementById('customSetup').value = '0';
@@ -1520,24 +1512,8 @@ function addCustomItem(){
   if (portionsEl) portionsEl.addEventListener('input', ()=>updateCustomRowAmount(tr));
   const rateInputC = tr.querySelector('.rate');
   if (rateInputC){ rateInputC.addEventListener('input', ()=>updateCustomRowAmount(tr)); }
-  const pcsQtyInputC = tr.querySelector('.pcsQty');
-  if (pcsQtyInputC){ 
-    pcsQtyInputC.addEventListener('input', ()=>{ 
-      tr.dataset.pcsDisplay = pcsQtyInputC.value;
-      if (tr.dataset.calculate === '1'){
-        updateCustomRowAmount(tr);
-      }
-    }); 
-  }
   const unitSelectC = tr.querySelector('.pcsUnit');
   if (unitSelectC){ unitSelectC.addEventListener('change', ()=>{ tr.dataset.unit = unitSelectC.value; }); }
-  const calculateToggleC = tr.querySelector('.calculateToggle');
-  if (calculateToggleC){
-    calculateToggleC.addEventListener('change', ()=>{
-      tr.dataset.calculate = calculateToggleC.checked ? '1' : '0';
-      updateCustomRowAmount(tr);
-    });
-  }
   tr.querySelector('.deleteBtn').addEventListener('click', ()=>{ handleDeleteRow(tr); });
   const upBtnC = tr.querySelector('.upBtn');
   if (upBtnC) upBtnC.addEventListener('click', ()=>moveRowUp(tr));
@@ -1568,7 +1544,6 @@ function addCustomItem(){
   document.getElementById('customDesc').value = '';
   document.getElementById('customCategory').value = '';
   document.getElementById('customVegNonVeg').value = '';
-  document.getElementById('customPcs').value = '';
   document.getElementById('customPortions').value = '1';
   document.getElementById('customRate').value = '';
 
@@ -1929,7 +1904,6 @@ const customCategoryEl = document.getElementById('customCategory');
 function toggleCustomFieldsForCategory(){
   const isLive = customCategoryEl && customCategoryEl.value === 'Live Stations';
   document.getElementById('customPortionsDiv').style.display = isLive ? 'none' : '';
-  document.getElementById('customPcsDiv').style.display = isLive ? 'none' : '';
   document.getElementById('customSetupDiv').style.display = isLive ? '' : 'none';
   document.getElementById('customNoPeopleDiv').style.display = isLive ? '' : 'none';
 }
@@ -2424,21 +2398,6 @@ function buildRegularRow(menuItem, savedData) {
     <td><input class="portions" type="number" min="0" value="${portions}" style="width:50px;text-align:center"/></td>
     <td><input class="rate" type="number" min="0" value="${rate}" style="width:60px;text-align:center"/></td>
     <td class="amount col-right">${formatCurrency(amount)}</td>
-    <td class="pcsDisplay">
-      <input class="pcsQty" type="text" value="${pcsDisplay}" style="width:40px;text-align:center" placeholder="0"/>
-      <span class="pcsDisplayReview" style="font-size:11px;color:#666;"></span>
-    </td>
-    <td>
-      <select class="pcsUnit" style="width:60px;font-size:11px">
-        <option value="" ${unit===''?'selected':''}>NA</option>
-        <option value="PCS" ${unit==='PCS'?'selected':''}>PCS</option>
-        <option value="PC" ${unit==='PC'?'selected':''}>PC</option>
-        <option value="GMS" ${unit==='GMS'?'selected':''}>GMS</option>
-        <option value="ML" ${unit==='ML'?'selected':''}>ML</option>
-        <option value="ml per portion" ${unit==='ml per portion'?'selected':''}>ml per portion</option>
-      </select>
-    </td>
-    <td style="text-align:center"><input class="calculateToggle" type="checkbox" ${calculate==='1'?'checked':''} style="width:16px;height:16px;cursor:pointer" title="Auto-calculate PCS × Portions"/></td>
     <td style="text-align:center">
       <div style="display:flex;gap:4px;align-items:center;justify-content:center;flex-wrap:wrap">
         <button class="icon-btn mobile-move upBtn" title="Move up" aria-label="Move up" style="padding:4px">
