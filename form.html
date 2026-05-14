@@ -296,7 +296,7 @@
     <h1>Dahi Cheeni Quotation Maker
     </h1>
 
-  <!-- Load Existing Quotation Section -->
+  <!-- Load Existing Quotation Section - temporarily disabled
   <div style="background:#f5f9ff; border:2px solid #2D3E50; border-radius:8px; padding:16px; margin-bottom:20px;">
     <div style="display:flex; gap:12px; align-items:center; flex-wrap:wrap;">
       <label style="margin:0; font-weight:600; white-space:nowrap;">Load Existing:</label>
@@ -309,6 +309,7 @@
     </div>
     <p class="muted" style="margin:8px 0 0 0; font-size:12px;">Search or select a previous quotation to load and modify, or start fresh with "New Quotation".</p>
   </div>
+  -->
 
   <div>
     <div class="form-grid">
@@ -2077,9 +2078,11 @@ function bindRowEventListeners(tr, isLiveStation) {
 }
 
 // ==================== LOAD EXISTING QUOTATION FUNCTIONALITY ====================
-// Call Supabase directly (has proper CORS headers)
-const SUPABASE_URL = 'https://wtqtnpjliyhcwxjkincj.supabase.co/rest/v1/quotations';
-const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Ind0cXRucGpsaXloY3d4amtpbmNqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njk0MjgyMjQsImV4cCI6MjA4NTAwNDIyNH0.AlfAv9B1Qx4fRYFio90Qa6Md4viQ2bw6F7p-DKT_aFs';
+// Temporarily disabled. Database access removed.
+/*
+// Supabase access removed and feature disabled
+const SUPABASE_URL = '';
+const SUPABASE_KEY = '';
 
 // Store all quotations for search filtering
 let allQuotations = [];
@@ -2495,7 +2498,8 @@ document.getElementById('quotationSearch').addEventListener('input', (e) => {
 });
 
 // Load quotations list on page load
-fetchQuotationsList();
+// fetchQuotationsList();
+*/
 </script>
 </body>
 </html>
