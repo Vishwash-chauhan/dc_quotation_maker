@@ -3,11 +3,11 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Dahi Cheeni Quotation Maker</title>
+  <title>Dahi Cheeni — Quotation Maker</title>
   <style>
     body{font-family:Inter,system-ui,Segoe UI,Roboto,Helvetica,Arial,sans-serif;margin:0;padding:20px;color:#222;background:#f8f9fa}
     .container{max-width:900px;margin:0 auto;background:white;padding:24px;border-radius:8px;box-shadow:0 2px 8px rgba(0,0,0,0.08)}
-    h1{font-size:28px;margin:0 0 8px 0;color:#1a3a3a;font-weight:700}
+    h1{font-size:28px;margin:0 0 8px 0;color:#5c1a1a;font-weight:700}
     h1 small{display:block;font-size:14px;color:#666;font-weight:400;margin-top:4px}
     h3{font-size:16px;margin:20px 0 12px 0;color:#2D3E50;font-weight:600;border-bottom:2px solid #f0f0f0;padding-bottom:8px}
     p.muted{color:#777;font-size:13px;margin:8px 0 16px 0}
@@ -293,8 +293,7 @@
 </head>
 <body>
   <div class="container">
-    <h1>Dahi Cheeni Quotation Maker
-    </h1>
+    <h1>Dahi Cheeni<small>Home-Style Catering · Quotation Maker</small></h1>
 
   <!-- Load Existing Quotation Section - temporarily disabled
   <div style="background:#f5f9ff; border:2px solid #2D3E50; border-radius:8px; padding:16px; margin-bottom:20px;">
@@ -345,7 +344,7 @@
     </div>
 
     <label style="margin-top:18px"></label>
-    <input id="webhookUrl" type="hidden" value="https://n8n.vyaapaarniti.com/webhook/9b2f3be4-e30e-42e8-9ca7-afce486bf02e" />
+    <input id="webhookUrl" type="hidden" value="https://n8n.vyaapaarniti.com/webhook-test/dc" />
     <input type="hidden" id="quoteId" value="" />
     <input type="hidden" name="x-webhook-token" id="webhookToken" value="a-string-secret-at-least-256-bits-long" />
     <p class="muted" style="margin-top:8px;"></p>
@@ -405,7 +404,6 @@
             <option value="Add-Ons">Add-Ons</option>
             <option value="Beverages">Beverages</option>
             <option value="Desserts">Desserts</option>
-            <option value="Live Stations">Live Stations</option>
           </select>
         </div>
         <div>
@@ -420,14 +418,6 @@
         <div id="customPortionsDiv">
           <label>Qty</label>
           <input id="customPortions" type="number" min="0" value="1" />
-        </div>
-        <div id="customSetupDiv" style="display:none">
-          <label>Setup (₹)</label>
-          <input id="customSetup" type="number" min="0" value="0" />
-        </div>
-        <div id="customNoPeopleDiv" style="display:none">
-          <label>No. People</label>
-          <input id="customNoPeople" type="number" min="0" value="0" />
         </div>
         <div>
           <label>Rate</label>
@@ -482,18 +472,6 @@
         <tr class="total-row"><td colspan="2">TOTAL AMOUNT</td><td class="col-right" id="finalTotal">₹0</td></tr>
       </tbody>
     </table>
-
-    <h3 style="margin-top:24px">To Be Provided By Host</h3>
-    <div class="form-grid">
-      <div>
-        <label>Tables with covers for the food display</label>
-        <input id="tables" type="text" value="As Required" />
-      </div>
-      <div>
-        <label>Kitchen Space & Table to be provided</label>
-        <input id="kitchenSpace" type="text" value="As Required" />
-      </div>
-    </div>
 
     <div style="margin-top:18px;display:flex;gap:12px;align-items:center">
       <button id="submitBtn" style="background-color: green; color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer;">Submit</button>
@@ -554,6 +532,19 @@ const totalAmountEl = document.getElementById('totalAmount');
 const webhookEl = document.getElementById('webhookUrl');
 const hostNameEl = document.getElementById('hostName');
 const quoteIdEl = document.getElementById('quoteId');
+
+// Gallery UI is disabled; keep payload/load/clear working with an empty image list
+let selectedImages = [];
+function renderSelectedPreview() {
+  const el = document.getElementById('selectedImagesPreview');
+  if (!el) return;
+  el.innerHTML = '';
+  selectedImages.forEach(u => {
+    const i = document.createElement('img');
+    i.src = u;
+    el.appendChild(i);
+  });
+}
 
 /* CLOUDINARY & GALLERY CONFIGURATION COMMENTED OUT
 // --- Cloudinary configuration: set your unsigned upload preset here ---
@@ -1038,46 +1029,38 @@ searchEl.addEventListener('input', ()=>{
   applyFilters();
 })
 
+function bindVegToggle(tr) {
+  const vegBtn = tr.querySelector('.veg-toggle');
+  if (!vegBtn) return;
+  vegBtn.addEventListener('click', (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    const cur = (tr.dataset.vegNonVeg || '').toString().trim();
+    let next = 'Veg';
+    if (cur === 'Veg') next = 'Non-Veg';
+    else if (cur === 'Non-Veg') next = 'Veg & Non-Veg';
+    else if (cur === 'Veg & Non-Veg') next = 'Veg';
+    tr.dataset.vegNonVeg = next;
+    vegBtn.textContent = next;
+    vegBtn.classList.remove('non-veg', 'veg');
+    if (next === 'Non-Veg' || next === 'Veg & Non-Veg') {
+      vegBtn.classList.add('non-veg');
+      vegBtn.setAttribute('aria-pressed', 'true');
+    } else {
+      vegBtn.classList.add('veg');
+      vegBtn.setAttribute('aria-pressed', 'false');
+    }
+  });
+}
+
 function addItemToTable(item, idx){
-  // prevent duplicates (search entire table)
   if (document.querySelector('#selectedTable [data-idx="'+idx+'"]')) return;
   const tr = document.createElement('tr');
   tr.dataset.idx = idx;
   const rate = Number(item['Rate']||0);
-  const pcsDisplay = item['PcsDisplay'] || '';
-  const unit = item['Unit'] !== undefined ? item['Unit'] : '';
   const vegLabel = (item['VegNonVeg'] || '').toString().trim();
-  const vegClass = vegLabel.toLowerCase().includes('non') ? 'non-veg' : (vegLabel ? 'veg' : 'veg');
-  const calculateChecked = (item['Calculate'] === '1' || item['Calculate'] === 1) ? 'checked' : '';
-  const isLiveStation = (item.Category || '') === 'Live Stations';
+  const vegClass = vegLabel.toLowerCase().includes('non') ? 'non-veg' : 'veg';
   
-  if (isLiveStation) {
-    // LIVE STATIONS: Different column structure with editable name
-    tr.innerHTML = `<td colspan="2"><input class="itemName" type="text" value="${item['Name']||''}" style="font-weight:700;border:none;background:transparent;width:100%;" /> <button type="button" class="veg-toggle ${vegClass}" aria-pressed="${vegLabel.toLowerCase().includes('non')}">${vegLabel || 'Veg'}</button>
-      <div style="margin-top:6px;font-size:12px;color:#666;"><textarea class="description-input" rows="2" placeholder="Description" style="font-size:12px">${item['Description']||''}</textarea></div>
-    </td>
-    <td style="text-align:center"><input class="setup" type="number" min="0" step="0.01" value="${item['Setup'] || ''}" style="width:65px;padding:4px;border:1px solid #ccc;border-radius:4px;text-align:right" /></td>
-    <td style="text-align:center"><input class="rate" type="number" min="0" step="0.01" value="${rate}" style="width:65px;padding:4px;border:1px solid #ccc;border-radius:4px;text-align:right" /></td>
-    <td style="text-align:center"><input class="noOfPeople" type="number" min="0" value="0" style="width:65px;padding:4px;border:1px solid #ccc;border-radius:4px;text-align:center" /></td>
-    <td style="text-align:center" class="amount">₹0</td>
-    <td style="text-align:center">
-      <div style="display:flex;gap:4px;align-items:center;justify-content:center;flex-wrap:wrap">
-        <button class="icon-btn mobile-move upBtn" title="Move up" aria-label="Move up" style="padding:4px">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M12 19V6" stroke="#666" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M5 12l7-7 7 7" stroke="#666" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        </button>
-        <button class="icon-btn mobile-move downBtn" title="Move down" aria-label="Move down" style="padding:4px">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M12 5v14" stroke="#666" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M19 12l-7 7-7-7" stroke="#666" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        </button>
-        <button class="icon-btn deleteBtn" title="Delete" aria-label="Delete" style="padding:4px"> 
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M3 6h18" stroke="#d32f2f" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M8 6V4a2 2 0 012-2h4a2 2 0 012 2v2" stroke="#d32f2f" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6" stroke="#d32f2f" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        </button>
-        <span class="drag-handle" title="Drag to reorder" aria-label="Drag to reorder">☰</span>
-      </div>
-    </td>`;
-    tr.dataset.setup = '0';
-    tr.dataset.noOfPeople = '0';
-  } else {
-    // REGULAR ITEMS: Editable name field in row
     tr.innerHTML = `<td><input class="itemName" type="text" value="${item['Name']||''}" style="font-weight:700;border:none;background:transparent;width:100%;" /> <button type="button" class="veg-toggle ${vegClass}" aria-pressed="${vegLabel.toLowerCase().includes('non')}">${vegLabel || 'Veg'}</button>
       <div style="margin-top:6px;font-size:12px;color:#666;"><textarea class="description-input" rows="2" placeholder="Description" style="font-size:12px">${item['Description']||''}</textarea></div>
     </td>
@@ -1098,16 +1081,12 @@ function addItemToTable(item, idx){
         <span class="drag-handle" title="Drag to reorder" aria-label="Drag to reorder">☰</span>
       </div>
     </td>`;
-  }
-  
+
   tr.dataset.name = item['Name'] || '';
   tr.dataset.rate = rate;
-  tr.dataset.pcsDisplay = pcsDisplay;
-  tr.dataset.unit = unit;
   tr.dataset.category = item.Category || 'Other';
   tr.dataset.vegNonVeg = item.VegNonVeg || '';
   tr.dataset.description = item.Description || '';
-  tr.dataset.calculate = (item['Calculate'] === '1' || item['Calculate'] === 1) ? '1' : '0';
   
   // Append row into category tbody
   const cat = tr.dataset.category || 'Other';
@@ -1123,8 +1102,8 @@ function addItemToTable(item, idx){
     descInput.addEventListener('input', ()=>{ tr.dataset.description = descInput.value; });
   }
   
-  if (isLiveStation) {
-    // Live Stations event listeners
+  if (false) {
+    // legacy live stations
     const vegBtn = tr.querySelector('.veg-toggle');
     if (vegBtn){
       vegBtn.addEventListener('click', (e)=>{
@@ -1245,9 +1224,7 @@ function addItemToTable(item, idx){
   if (downBtn) downBtn.addEventListener('click', ()=>moveRowDown(tr));
   makeRowDraggable(tr);
   
-  if (!isLiveStation) {
-    updateRowAmount(tr);
-  }
+  updateRowAmount(tr);
 }
 
 function getCategoryBody(category){
@@ -1261,17 +1238,7 @@ function getCategoryBody(category){
   const headerRow = document.createElement('tr');
   headerRow.className = 'category-row';
   
-  // For Live Stations, show different column structure
-  if (category === 'Live Stations') {
-    headerRow.innerHTML = `<td colspan="2" style="font-weight:700;padding:8px;"><strong>${category}</strong></td>
-      <td style="text-align:center;font-weight:600;font-size:12px;padding:8px;width:70px">Setup</td>
-      <td style="text-align:center;font-weight:600;font-size:12px;padding:8px;width:70px">Rate</td>
-      <td style="text-align:center;font-weight:600;font-size:12px;padding:8px;width:70px">No. People</td>
-      <td style="text-align:center;font-weight:600;font-size:12px;padding:8px;width:70px">Amount</td>
-      <td style="text-align:center;font-weight:600;font-size:12px;padding:8px;width:90px">Action</td>`;
-  } else {
-    headerRow.innerHTML = `<td colspan="${colCount}"><strong>${category}</strong></td>`;
-  }
+  headerRow.innerHTML = `<td colspan="${colCount}"><strong>${category}</strong></td>`;
   
   tb.appendChild(headerRow);
   // insert before tfoot
@@ -1605,7 +1572,6 @@ function updateRowAmount(tr){
   const amt = portions * rate;
   tr.querySelector('.amount').textContent = formatCurrency(amt);
   updateTotal();
-  updatePcsDisplayReview(tr);
 }
 
 function updatePcsDisplay(tr){
@@ -1687,44 +1653,18 @@ function collectPayload(){
     const category = tr.dataset.category || 'Other';
     const vegNonVeg = tr.dataset.vegNonVeg || '';
     
-    // Check if it's a Live Stations item
-    if (category === 'Live Stations') {
-      const setup = Number(tr.querySelector('.setup') ? tr.querySelector('.setup').value : 0) || 0;
-      const rateEl = tr.querySelector('.rate');
-      const rate = rateEl ? Number(rateEl.value) : 0;
-      const noOfPeople = Number(tr.querySelector('.noOfPeople') ? tr.querySelector('.noOfPeople').value : 0) || 0;
-      const amount = setup + (rate * noOfPeople);
-      
-      items.push({ 
-        Name: name, 
-        Description: desc, 
-        Category: category, 
-        VegNonVeg: vegNonVeg, 
-        Setup: setup,
-        Rate: rate,
-        NoOfPeople: noOfPeople,
-        Amount: amount
-      });
-    } else {
-      // Regular item
-      const portions = Number(tr.querySelector('.portions') ? tr.querySelector('.portions').value : 0) || 0;
-      const pcsQtyEl = tr.querySelector('.pcsQty');
-      const pcsQtyBase = pcsQtyEl ? pcsQtyEl.value.trim() : (tr.dataset.pcsDisplay || '');
-      const unitEl = tr.querySelector('.pcsUnit');
-      const unit = unitEl ? unitEl.value : (tr.dataset.unit || 'PCS');
-      const rateEl = tr.querySelector('.rate');
-      const rate = rateEl ? Number(rateEl.value) : (Number(tr.dataset.rate) || 0);
-      const calculate = tr.dataset.calculate || '0';
-      
-      // Calculate PcsDisplay: if Calculate=1, multiply by Portions; otherwise use base value
-      let pcsDisplay = pcsQtyBase;
-      if (calculate === '1'){
-        const baseNum = extractNumber(pcsQtyBase);
-        pcsDisplay = String(baseNum * portions);
-      }
-      
-      items.push({ Name: name, Description: desc, Category: category, VegNonVeg: vegNonVeg, Portions: portions, PcsDisplay: pcsDisplay, Unit: unit, Rate: rate, Amount: portions*rate, Calculate: calculate });
-    }
+    const qty = Number(tr.querySelector('.portions') ? tr.querySelector('.portions').value : 0) || 0;
+    const rateEl = tr.querySelector('.rate');
+    const rate = rateEl ? Number(rateEl.value) : (Number(tr.dataset.rate) || 0);
+    items.push({
+      Name: name,
+      Description: desc,
+      Category: category,
+      VegNonVeg: vegNonVeg,
+      Qty: qty,
+      Rate: rate,
+      Amount: qty * rate
+    });
   });
 
   // Format date as dd/mm/yyyy
@@ -1775,10 +1715,7 @@ function collectPayload(){
     Cutlery: document.getElementById('cutlery').value,
     Chaffing: document.getElementById('chaffing').value,
     Conveyance: document.getElementById('conveyance').value,
-    VenueCharges: document.getElementById('venueCharges').value,
-    Tables: document.getElementById('tables').value,
-    KitchenSpace: document.getElementById('kitchenSpace').value,
-    ImageGrid: selectedImages.slice(0,9) // array of image URLs (max 9)
+    VenueCharges: document.getElementById('venueCharges').value
   };
   return payload;
 }
@@ -1800,8 +1737,16 @@ document.getElementById('submitBtn').addEventListener('click', ()=>{
     body: JSON.stringify(payload),
     signal: controller.signal
   })
-      .then(r=>{
-        if(!r.ok) throw new Error('Network response was not ok: '+r.status);
+      .then(async r=>{
+        if(!r.ok){
+          const text = await r.text();
+          let detail = text;
+          try {
+            const j = JSON.parse(text);
+            detail = [j.message, j.hint].filter(Boolean).join(' — ') || text;
+          } catch (_) {}
+          throw new Error('HTTP '+r.status+(detail ? ': '+detail : ''));
+        }
         // Check if response is binary (PDF file)
         const contentType = r.headers.get('content-type');
         if (contentType && contentType.includes('application/pdf')) {
@@ -2462,12 +2407,8 @@ function clearForm() {
   document.getElementById('conveyance').value = 'As Per Actual';
   document.getElementById('venueCharges').value = '';
   document.getElementById('venueCharges').value = '';
-  document.getElementById('tables').value = 'As Required';
-  document.getElementById('kitchenSpace').value = 'As Required';
-  
-  // Clear images
   selectedImages = [];
-  renderSelectedPreview();
+  if (typeof renderSelectedPreview === 'function') renderSelectedPreview();
   
   // Clear selected items
   document.querySelectorAll('#selectedTable tbody').forEach(tb => {
