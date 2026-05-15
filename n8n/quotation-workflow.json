@@ -1,0 +1,670 @@
+{
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "9b2f3be4-e30e-42e8-9ca7-afce486bf02e",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "1d8bd33d-97c4-4716-97d4-f67208abd0d7",
+      "name": "Webhook Form",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [
+        -320,
+        -688
+      ],
+      "webhookId": "9b2f3be4-e30e-42e8-9ca7-afce486bf02e"
+    },
+    {
+      "parameters": {
+        "language": "python",
+        "pythonCode": "# Access the body from the first input item\nbody = _input.all()[0].json.get('body', {})\n\n# Helper to get the raw display value\ndef get_display_val(key):\n    return body.get(key, 0)\n\n# Helper function to extract numeric values for MATH only\ndef extract_number(val):\n    if not val or isinstance(val, (int, float)):\n        return val or 0\n    str_val = str(val).strip()\n    import re\n    match = re.search(r'[\\d.]+', str_val) # Removed comma to avoid float issues\n    if not match:\n        return 0\n    try:\n        return float(match.group())\n    except:\n        return 0\n\n# 1. Get Values for Calculations\n# Prefer computing items subtotal from Items array (new payload) else fall back to body['Total'] (legacy)\nitems = body.get('Items', [])\nif items and isinstance(items, list):\n    sub_val = sum(extract_number(it.get('Amount', 0)) for it in items)\nelse:\n    sub_val = extract_number(body.get('Total', 0))\n\nchef_val = extract_number(body.get('ChefServers', 0))\ndecor_val = extract_number(body.get('TableDecor', 0))\ncutlery_val = extract_number(body.get('Cutlery', 0))\nchaffing_val = extract_number(body.get('Chaffing', 0))\nconv_val = extract_number(body.get('Conveyance', 0))\nvenue_val = extract_number(body.get('VenueCharges', 0))\n\n# 2. Perform Calculations\nsubtotal_with_services = sub_val + chef_val + decor_val + cutlery_val + chaffing_val + conv_val + venue_val\ngst_amount = subtotal_with_services * 0.05\ntotal_amount = subtotal_with_services + gst_amount\n\n# 3. Create results using RAW values for display, but calculated values for totals\nresults = [\n    {\"Other Services\": \"Subtotal (Items)\", \"Amount\": (body.get('Total', sub_val) if body.get('Total') is not None else sub_val)},\n    {\"Other Services\": \"Chef + Servers + Helper\", \"Amount\": body.get('ChefServers', 0)},\n    {\"Other Services\": \"Table Décor (As Per Theme)\", \"Amount\": body.get('TableDecor', 0)},\n    {\"Other Services\": \"Cutlery & Crockery\", \"Amount\": body.get('Cutlery', 0)},\n    {\"Other Services\": \"Chaffing Dishes & Snack Warmers\", \"Amount\": body.get('Chaffing', 0)},\n    {\"Other Services\": \"Conveyance\", \"Amount\": body.get('Conveyance', 0)},\n    {\"Other Services\": \"Venue Charges\", \"Amount\": body.get('VenueCharges', 0)},\n    {\"Other Services\": \"Subtotal (With Services)\", \"Amount\": subtotal_with_services},\n    {\"Other Services\": \"GST 5%\", \"Amount\": round(gst_amount, 2)},\n    {\"Other Services\": \"TOTAL AMOUNT\", \"Amount\": round(total_amount, 2)}\n]\n\nreturn results"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        80,
+        -608
+      ],
+      "id": "4eaafd0b-fe5b-4296-ad95-d2f745f756d8",
+      "name": "Code in Python (Beta)"
+    },
+    {
+      "parameters": {
+        "language": "python",
+        "pythonCode": "# Access the body from the first input item\nbody = _input.all()[0].json.get('body', {})\n\n# We create a list of dictionaries. \n# Each dictionary in this list represents one row in Google Sheets.\nresults = [\n    {\n        \"TO BE PROVIDED BY HOST\": \"Tables with covers for the food display\",\n        \"QUANTITY\": body.get(\"Tables\")\n    },\n    {\n        \"TO BE PROVIDED BY HOST\": \"Kitchen Space & Table to be provided\",\n        \"QUANTITY\": body.get(\"KitchenSpace\")\n    }\n]\n\nreturn results"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        80,
+        -416
+      ],
+      "id": "4905c6d2-b221-46df-8357-37759bd2c93e",
+      "name": "Code in Python (Beta)13"
+    },
+    {
+      "parameters": {
+        "language": "python",
+        "pythonCode": "# Access the body from the first input item\nbody = _input.all()[0].json.get('body', {})\n\n# Extract customer details directly from webhook\nresult = {\n    \"Event Date\": body.get(\"EventDate\", \"N/A\"),\n    \"Host Name\": body.get(\"HostName\", \"N/A\"),\n    \"Mobile No\": body.get(\"MobileNo\", \"N/A\"),\n    \"Time\": body.get(\"Time\", \"N/A\"),\n    \"Pax\": body.get(\"Pax\", \"N/A\"),\n    \"Location\": body.get(\"Location\", \"N/A\"),\n    \"ImageGrid\": body.get(\"ImageGrid\", []),\n    \"Quote ID\": body.get(\"QuotationId\", \"\")\n}\n\nreturn [result]"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        80,
+        -992
+      ],
+      "id": "909d07a7-50c6-422f-aa29-4cf88ee9f016",
+      "name": "Customer Details"
+    },
+    {
+      "parameters": {
+        "content": "## PDF Generation",
+        "height": 384,
+        "width": 960
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        544,
+        -832
+      ],
+      "id": "d97a2414-a6ee-4c9b-8ef4-8d13edec4069",
+      "name": "Sticky Note7"
+    },
+    {
+      "parameters": {
+        "numberInputs": 4
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        416,
+        -736
+      ],
+      "id": "d19dce6e-3d60-4bed-84ba-bf7d2221ab83",
+      "name": "Merge"
+    },
+    {
+      "parameters": {
+        "language": "python",
+        "pythonCode": "# Access the input data from the webhook\ninput_data = _input.all()[0].json\n\n# Get the list of menu items\nitems_list = input_data.get('body', {}).get('Items', [])\n\n# Create a list of objects that match your sheet structure\noutput = []\nfor item in items_list:\n    output.append({\n        \"Name\": item.get(\"Name\"),\n        \"Description\": item.get(\"Description\"),\n        \"Portion\": item.get(\"Portions\", \"\"),  # Get from Portions field (updated from form)\n        \"PcsDisplay\": item.get(\"PcsDisplay\", \"\"),\n        \"Rate\": item.get(\"Rate\"),\n        \"Category\": item.get(\"Category\", \"\"),\n        \"Veg/Non Veg\": item.get(\"VegNonVeg\", \"\"),\n        \"Amount\": item.get(\"Amount\"),\n        \"Unit\" : item.get(\"Unit\"),\n        \"Setup\": item.get(\"Setup\"),\n        \"NoOfPeople\": item.get(\"NoOfPeople\")\n    })\n\nreturn output"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        80,
+        -800
+      ],
+      "id": "d3a03ec5-908e-4d5a-bca1-72fc528f0b9c",
+      "name": "Menu Item Transformation"
+    },
+    {
+      "parameters": {
+        "language": "python",
+        "pythonCode": "# 1. Configuration & Access\ntry:\n    cust_list = _input.all(\"Customer Details\")\n    cust = cust_list[0].json if cust_list else {}\nexcept:\n    cust = {}\n\nmenu_items = _input.all(\"Proposed Menu\")\nservices = _input.all(\"Other Services\")\nhost_reqs = _input.all(\"Other Info\")\n\n# Logo URL\nlogo_url = \"https://res.cloudinary.com/dwffrfajl/image/upload/v1770034621/Little_Jalebis_Logo_lmpaxo.svg\"\n\n# 2. HTML Construction\nhtml = f\"\"\"\n<!DOCTYPE html>\n<html>\n<head>\n<style>\n  /* Import Google Fonts */\n  @import url('https://fonts.googleapis.com/css2?family=Chilanka&family=Quicksand:wght@400;600;700&display=swap');\n\n  @page {{\n    margin: 15mm 15mm 15mm 15mm; /* Reduced margin as requested */\n  }}\n  \n  body {{ \n    font-family: 'Quicksand', sans-serif; \n    color: #000000; \n    line-height: 1.65;\n    letter-spacing: 0.4px;\n    margin: 0;\n    background: white;\n    padding-bottom: 30mm; /* reserve space for fixed footer to avoid content overlap */\n  }} \n\n  /* FIXED FOOTER STYLING */\n  .footer {{\n    position: fixed;\n    bottom: 0; /* sit at the bottom of page box; body reserves space so content won't overlap */\n    left: 0;\n    right: 0;\n    text-align: center;\n    font-size: 10px;\n    color: #000000;\n    border-top: 1px solid #eee;\n    padding-top: 8px;\n    line-height: 1.4;\n  }} \n\n  /* TABLE SPACER: Increased to reserve footer area and prevent overlap */\n  .table-spacer {{\n    height: 12mm;\n    border: none !important;\n  }}\n  /* Prevent table rows and cells from breaking into footer area on PDF print */\n  tr, td {{\n    page-break-inside: avoid;\n    break-inside: avoid;\n    -webkit-column-break-inside: avoid;\n  }}\n  table {{\n    page-break-inside: auto;\n  }}\n\n  @media print {{\n    body {{ background: white; color: #333; }}\n    h1, h2, h3 {{ color: #2D3E50 !important; }}\n    .header-banner {{\n      background: #2D3E50 !important;\n      -webkit-print-color-adjust: exact;\n      print-color-adjust: exact;\n    }}\n    .footer {{\n        position: fixed;\n        bottom: 0;\n    }}\n    /* Force logo size for print to ensure PDF renders the larger logo */\n    .main-logo {{ width: 200px !important; max-width: 200px !important; height: auto !important; }}\n    .gallery-logo .main-logo {{ width: 200px !important; max-width: 200px !important; height: auto !important; }}\n    tr {{ page-break-inside: avoid; }}\n  }}\n\n  h1, h2, h3 {{ \n    font-family: 'Chilanka', cursive; \n    color: #2D3E50; \n    margin-top: 15px;\n  }}\n\n  .logo-wrapper {{\n    text-align: center;\n    padding: 5px 0 15px 0;\n  }}\n  .main-logo {{\n    max-width: 200px; /* increased 1.5x from 160px */\n    height: auto;\n  }}\n\n  .full-page-section {{\n    page-break-after: always;\n    text-align: left;\n    padding: 6mm 10mm;\n  }}\n\n  .full-page-section .main-logo {{\n    max-width: 160px;\n    height: auto;\n  }}\n\n  .intro-text {{\n    font-size: 18px;\n    text-align: left;\n    margin: 0 auto;\n    font-weight: 800;\n    max-width: 100%;\n    line-height: 2;\n    letter-spacing: 1.8px;\n    color: #333;\n  }}\n\n  .intro-text strong {{\n    font-weight: 900;\n    color: #F08C00;\n  }}\n\n  .intro-signoff {{\n    margin-top: 12px;\n    font-weight: 900;\n    text-align: left;\n  }}\n\n  .header-banner {{ \n    background: #2D3E50; \n    color: white;\n    padding: 15px 20px;\n    border-radius: 8px;\n    margin-bottom: 10px;\n    -webkit-print-color-adjust: exact;\n    print-color-adjust: exact;\n  }}\n\n  .header-banner h1 {{ margin: 0; font-size: 24px; text-align: center; color: white !important; }}\n  \n  .header-details {{ \n    margin-top: 10px; \n    display: table;\n    width: 100%;\n    font-size: 13px; \n    border-top: 1px solid rgba(255,255,255,0.3);\n    padding-top: 8px;\n  }}\n\n  .header-detail-row {{ display: table-row; }}\n  .header-detail-row div {{\n    display: table-cell;\n    width: 50%;\n    padding: 3px 0;\n    color: white;\n  }}\n  \n  h2 {{ border-bottom: 2px solid #2D3E50; padding-bottom: 3px; font-size: 18px; text-transform: uppercase; }}\n  \n  .data-table {{ \n    width: 100%; \n    border-collapse: collapse; \n    margin-top: 10px; \n    table-layout: fixed;\n  }}\n  \n  .data-table th {{ background: #f8f9fa; padding: 8px; text-align: left; border: 1px solid #999; font-size: 12px; }}\n  .data-table td {{ padding: 8px; border: 1px solid #ccc; vertical-align: top; font-size: 13px; word-wrap: break-word; }}\n  \n  .col-right {{ text-align: right; }}\n  .total-row {{ font-weight: bold; background-color: #f8f9fa; color: #2D3E50; }}\n  .description {{ font-size: 11px; color: #000000; font-style: italic; display: block; }}\n  .badge {{ font-size: 9px; padding: 2px 6px; border-radius: 3px; background: #D3D3D3; color: #333; font-weight: bold; display: inline-block; margin-left: 8px; border: 1px solid #CCCCCC; white-space: nowrap; }}\n  .badge:empty {{ display: none; }}\n\n  /* Gallery page styling */\n  .gallery-section {{\n    display:flex;\n    flex-direction:column;\n    align-items:center;\n    justify-content:center;\n    /* Use explicit height for A4 printable area but reserve space for logo so content centers within remaining area */\n    height: calc(297mm - 30mm - 30mm); /* subtract ~30mm for logo area */\n    box-sizing: border-box;\n    padding: 5mm 0;\n    text-align: center;\n  }}\n  .gallery-logo .main-logo {{ max-width: 200px; height:auto; }}\n  .gallery-content {{\n    display:flex;\n    flex-direction:column;\n    align-items:center;\n    justify-content:center;\n    width:100%;\n  }}\n  .gallery-heading {{\n    font-size: 20px;\n    color: #2D3E50;\n    font-weight:700;\n    margin: 10px 0 6px;\n    text-align:center;\n    letter-spacing: 1.6px;\n    /* Remove default H2 underline for gallery heading */\n    border-bottom: none !important;\n    padding-bottom: 0 !important;\n    text-decoration: none !important;\n  }}\n  .gallery-tagline {{\n    font-size: 20px;\n    color: #2D3E50;\n    font-weight:600;\n    margin-top: 12px;\n    text-align:center;\n    letter-spacing: 1px;\n  }}\n  .gallery-hr {{ border:0; border-top:2px solid #2D3E50; width:60%; margin: 8px auto 14px; }}\n  .photo-grid td {{ padding:6px; vertical-align: top; }}\n  .gallery-img {{ width:100%; height:150px; object-fit: cover; border-radius: 8px; box-shadow: 0 2px 6px rgba(0,0,0,0.08); display:block; }}\n  .data-table th {{ background: #f8f9fa; padding: 8px; text-align: left; border: 1px solid #999; font-size: 12px; line-height: 1.6; letter-spacing: 0.3px; }}\n  .data-table td {{ padding: 8px; border: 1px solid #ccc; vertical-align: top; font-size: 13px; word-wrap: break-word; line-height: 1.6; letter-spacing: 0.3px; }}\n\n  /* Page break header - repeats on every page */\n  .print-header {{\n    display: table-header-group;\n  }}\n\n  .page-container {{\n    width: 100%;\n    border-collapse: collapse;\n  }}\n\n</style>\n</head>\n<body>\n\n<div class=\"footer\">\n    <strong>Little Jalebis - Kids Party House & Catering Co.</strong><br>\n    (Unit of NC Hospitality Pvt Ltd) CIN : U55101DL2009PTC188581<br>\n    Regd. Address : E 5 Kalindi Colony, Near New Friends Colony, New Delhi 110065<br>\n    Party Venue : 17, Arjun Marg, DLF Phase-1, Gurgaon 122002<br>\n    Website : www.littlejalebis.com Email : sales@littlejalebis.com\n</div>\n\n<div class=\"full-page-section\">\n  <div class=\"logo-wrapper\">\n    <img src=\"{logo_url}\" class=\"main-logo\" alt=\"Little Jalebis Logo\">\n  </div>\n  <div class=\"intro-text\">\n    <p><strong>Welcome to Little Jalebis – Kids Party House & Catering Co.</strong></p>\n    <p>Thank you for considering <strong>Little Jalebis</strong> for your child's celebration.</p>\n    <p>This quote outlines our <strong>food and catering offerings</strong>, thoughtfully curated for kids' parties and family gatherings — whether hosted at your home, a venue of your choice, or at our kids' party house in DLF Phase 1, Gurgaon.</p>\n    <p>At <strong>Little Jalebis</strong>, food is at the heart of every celebration. Our menus are designed keeping children in mind — kid-friendly, hygienic, and flavour-balanced — while being equally enjoyed by adults. With over <strong>40 years of hospitality expertise</strong>, we focus on consistent quality, generous portions, and smooth service, so hosting stays simple and stress-free for parents.</p>\n    <p>All menus can be <strong>customised</strong> based on the age of the children, duration of the event, and your preferences. If you have any specific ideas or requests, we're always happy to tailor the food accordingly.</p>\n    <p>We look forward to being a part of your celebration and creating a delightful food experience that both children and adults enjoy.</p>\n    <div style=\"margin-top: 24px;\">\n      <p class=\"intro-signoff\"><strong>Warm regards,<br>\n      Team Little Jalebis<br>\n      +91 8130964374</strong></p>\n    </div>\n  </div>\n</div>\n\n\"\"\"  # 2.5 PHOTO GALLERY (PAGE 2)\nimages = cust.get('ImageGrid') or []\n# Handle serialized JSON strings (if passed as string)\ntry:\n    if isinstance(images, str) and images.strip():\n        import json as _json\n        images = _json.loads(images)\nexcept Exception:\n    # leave as-is\n    pass\n\n# Normalize to list of urls\n_image_urls = []\nfor it in (images or []):\n    if isinstance(it, dict):\n        url = it.get('url') or it.get('secure_url') or it.get('secureUrl') or it.get('src')\n    else:\n        url = str(it)\n    if url: _image_urls.append(url)\n\nif _image_urls:\n    # keep up to 9 images and pad with empty strings\n    _image_urls = _image_urls[:9]\n    while len(_image_urls) < 9:\n        _image_urls.append('')\n\n    html += f\"\"\"\n        <div style=\"page-break-before: always;\">\n          <div class=\"logo-wrapper\">\n            <img src=\"{logo_url}\" class=\"main-logo\" alt=\"Little Jalebis Logo\">\n          </div>\n          <div class=\"gallery-section\">\n            <div class=\"gallery-content\">\n              <h2 class=\"gallery-heading\">PHOTO GALLERY</h2>\n              <hr class=\"gallery-hr\" />\n              <table class=\"photo-grid\" style=\"width:820px; margin: 0 auto; border-collapse: collapse; table-layout: fixed;\">\n                <tbody>\n    \"\"\"\n    for r in range(3):\n        html += \"        <tr>\"\n        for c in range(3):\n            idx = r*3 + c\n            url = _image_urls[idx]\n            if url:\n                html += f\"<td style='width:33%; padding:4px;'><img src=\\\"{url}\\\" class=\\\"gallery-img\\\" alt=\\\"gallery image {idx}\\\"></td>\"\n            else:\n                html += \"<td style='width:33%; padding:4px;'></td>\"\n        html += \"</tr>\"\n    html += \"\"\"\n                </tbody>\n              </table>\n              <div class=\"gallery-tagline\">INDIA'S FIRST KIDS-CENTRIC CATERING COMPANY</div>\n            </div>\n          </div>\n        </div>\n    \"\"\"\n\nhtml += f\"\"\"\n<table class=\"page-container\">\n  <thead class=\"print-header\">\n    <tr>\n      <td>\n        <div class=\"logo-wrapper\">\n          <img src=\"{logo_url}\" class=\"main-logo\" alt=\"Little Jalebis Logo\">\n        </div>\n      </td>\n    </tr>\n  </thead>\n  <tbody>\n    <tr>\n      <td>\n        <div class=\"header-banner\">\n          <h1>EVENT QUOTATION</h1>\n          <div class=\"header-details\">\n            <div class=\"header-detail-row\">\n              <div><strong>HOST:</strong> {cust.get('Host Name', 'N/A')}</div>\n              <div><strong>MOBILE:</strong> {cust.get('Mobile No', 'N/A')}</div>\n            </div>\n            <div class=\"header-detail-row\">\n              <div><strong>DATE:</strong> {cust.get('Event Date', 'N/A')}</div>\n              <div><strong>TIME:</strong> {cust.get('Time', 'N/A')}</div>\n            </div>\n            <div class=\"header-detail-row\">\n              <div><strong>LOCATION:</strong> {cust.get('Location', 'N/A')}</div>\n              <div><strong>PAX:</strong> {cust.get('Pax', 'N/A')}</div>\n            </div>\n          </div>\n        </div>\n\n        <h2>PROPOSED MENU</h2>\n\"\"\"\n\n# 3. Process Menu Items\nfrom collections import OrderedDict\ncategories = OrderedDict()\nfor item in menu_items:\n    d = item.json\n    if not d.get('Name') or str(d.get('Name')).strip() == \"\": continue\n    cat = d.get('Category','Other')\n    categories.setdefault(cat, []).append(d)\n\nfor cat, items in categories.items():\n    is_live_station = \"live station\" in cat.lower()\n    \n    if is_live_station:\n        colgroup = '<col style=\"width:50%\" /><col style=\"width:12.5%\" /><col style=\"width:12.5%\" /><col style=\"width:12.5%\" /><col style=\"width:12.5%\" />'\n        header_row = f\"\"\"\n            <tr>\n              <th style=\"background: #F6B27A; color: #2D3E50;\">{cat.upper()}</th>\n              <th style=\"text-align: center; background: #F6B27A; color: #2D3E50;\">SETUP</th>\n              <th style=\"text-align: center; background: #F6B27A; color: #2D3E50;\">NO. OF PEOPLE</th>\n              <th style=\"text-align: center; background: #F6B27A; color: #2D3E50;\">RATE PER PERSON</th>\n              <th style=\"text-align: center; background: #F6B27A; color: #2D3E50;\">AMOUNT</th>\n            </tr>\"\"\"\n    else:\n        colgroup = '<col style=\"width:55%\" /><col style=\"width:10%\" /><col style=\"width:10%\" /><col style=\"width:12.5%\" /><col style=\"width:12.5%\" />'\n        header_row = f\"\"\"\n            <tr>\n              <th style=\"background: #F6B27A; color: #2D3E50;\">{cat.upper()}</th>\n              <th style=\"text-align: center; background: #F6B27A; color: #2D3E50;\">PORTION</th>\n              <th style=\"text-align: center; background: #F6B27A; color: #2D3E50;\">RATE</th>\n              <th style=\"text-align: center; background: #F6B27A; color: #2D3E50;\">AMOUNT</th>\n              <th style=\"text-align: center; background: #F6B27A; color: #2D3E50;\">PCS</th>\n            </tr>\"\"\"\n    \n    html += f\"\"\"\n        <table class=\"data-table\" style=\"margin-top: 15px;\">\n          <tfoot><tr><td colspan=\"5\" class=\"table-spacer\"></td></tr></tfoot>\n          <colgroup>\n            {colgroup}\n          </colgroup>\n          <thead>\n            {header_row}\n          </thead>\n          <tbody>\n    \"\"\"\n    for d in items:\n        rate_raw = d.get('Rate','')\n        try:\n            r_str = str(rate_raw).replace(',','').strip()\n            r_val = float(r_str)\n            rate_display = f\"₹{int(r_val):,}\" if r_val.is_integer() else f\"₹{r_val:,.2f}\"\n        except:\n            rate_display = rate_raw\n        \n        amount_raw = d.get('Amount','')\n        try:\n            a_str = str(amount_raw).replace(',','').strip()\n            a_val = float(a_str)\n            amount_display = f\"₹{int(a_val):,}\" if a_val == int(a_val) else f\"₹{a_val:,.2f}\"\n        except:\n            amount_display = amount_raw if amount_raw else \"\"\n\n        if is_live_station:\n            setup_raw = d.get('Setup','')\n            try:\n                s_str = str(setup_raw).replace(',','').strip()\n                s_val = float(s_str)\n                setup_display = f\"₹{int(s_val):,}\" if s_val.is_integer() else f\"₹{s_val:,.2f}\"\n            except:\n                setup_display = setup_raw\n            no_of_people_raw = d.get('NoOfPeople','')\n            no_of_people = 'NA' if not no_of_people_raw or str(no_of_people_raw).strip() == '0' or str(no_of_people_raw).strip() == '' else no_of_people_raw\n            rate_display_final = 'NA' if not rate_raw or str(rate_raw).strip() == '0' or str(rate_raw).strip() == '' else rate_display\n            html += f\"\"\"\n            <tr>\n              <td>\n                <strong>{d.get('Name','')}</strong><span class='badge'>{d.get('Veg/Non Veg','').strip()}</span>\n                <span class='description'>{d.get('Description','')}</span>\n              </td>\n              <td style=\"text-align: center;\">{setup_display}</td>\n              <td style=\"text-align: center;\">{no_of_people}</td>\n              <td style=\"text-align: center;\">{rate_display_final}</td>\n              <td style=\"text-align: center;\">{amount_display}</td>\n            </tr>\"\"\"\n        else:\n            portions = d.get('Portion','') if d.get('Portion','') not in (0,'0','') else ''\n            html += f\"\"\"\n            <tr>\n              <td>\n                <strong>{d.get('Name','')}</strong><span class='badge'>{d.get('Veg/Non Veg','').strip()}</span>\n                <span class='description'>{d.get('Description','')}</span>\n              </td>\n              <td style=\"text-align: center;\">{portions}</td>\n              <td style=\"text-align: center;\">{rate_display}</td>\n              <td style=\"text-align: center;\">{amount_display}</td>\n              <td style=\"text-align: center;\">{d.get('PcsDisplay') or d.get('Pcs','')} {d.get('Unit','')}</td>\n            </tr>\"\"\"\n    html += \"</tbody></table>\"\n\n# 4. Other Services & Summary (PAGE 3)\nhtml += f\"\"\"\n        <div style=\"page-break-before: always;\"></div>\n        <div style=\"margin-top: 15px;\">\n          <h2>OTHER SERVICES & SUMMARY</h2>\n          <table class='data-table'>\n            <tfoot><tr><td colspan=\"5\" class=\"table-spacer\"></td></tr></tfoot>\n            <tbody>\n\"\"\"\n\nfor s in services:\n    sd = s.json\n    service_name = sd.get('Other Services', '')\n    if not service_name or str(service_name).strip() == \"\": continue\n    amount = sd.get('Amount', '')\n    try:\n        amt_str = str(amount).replace(',','').strip()\n        amt_val = float(amt_str)\n        amount_display = f\"₹{int(amt_val):,}\" if amt_val.is_integer() else f\"₹{amt_val:,.2f}\"\n    except:\n        amount_display = amount\n\n    is_total = any(x in str(service_name).upper() for x in [\"TOTAL\", \"SUBTOTAL\", \"GST\"])\n    row_class = \"class='total-row'\" if is_total else \"\"\n    html += f\"<tr {row_class}><td colspan='4'>{service_name}</td><td class='col-right'>{amount_display}</td></tr>\"\n\nhtml += \"</tbody></table></div>\" \n\n# 5. Host Requirements\nif host_reqs:\n    html += \"\"\"\n    <div style=\"page-break-inside: avoid; margin-top: 25px;\">\n        <h2>TO BE PROVIDED BY HOST</h2>\n        <ul style=\"font-size: 13px;\">\"\"\"\n    for h in host_reqs:\n        req = h.json.get('TO BE PROVIDED BY HOST')\n        qty_req = h.json.get('QUANTITY', '')\n        if req and str(req).strip() != \"\": \n            html += f\"<li style='margin-bottom: 4px;'><strong>{req}</strong>: {qty_req}</li>\"\n    html += \"</ul></div>\"\n\nhtml += \"</td></tr></tbody></table>\"\n\n# Link to master menu (PDF-Compatible Horizontal Layout)\nhtml += \"\"\"\n    <div style=\"margin: 20px 0; text-align: center; page-break-inside: avoid;\">\n      <div style=\"display: inline-block; background-color: #F6B27A; padding: 10px 20px; border-radius: 8px; width: 85%;\">\n        <span style=\"font-weight: 900; color: #2D3E50; font-size: 16px; text-transform: uppercase; vertical-align: middle;\">\n            Visit Master Menu\n        </span>\n        <br/>\n        <a href=\"https://littlejalebis.com/menu\" style=\"color: #2D3E50; text-decoration: none; font-weight: 900; font-size: 16px; margin-left: 8px; vertical-align: middle;\">\n            🍫 www.littlejalebis.com/menu 🍫\n        </a>\n      </div>\n    </div>\n\"\"\"\n\n# 6. Final Page (PAGE 4)\nhtml += f\"\"\"\n    <div class=\"last-page\" style=\"page-break-before: always; padding-top: 15px;\">\n      <div class=\"logo-wrapper\">\n        <img src=\"{logo_url}\" class=\"main-logo\" alt=\"Little Jalebis Logo\">\n      </div>\n      <h3 style=\"text-decoration: underline; margin-bottom: 15px; margin-top: 15px;\">Please Note :</h3>\n      <ul class=\"note-list\" style=\"list-style-type: disc; padding-left: 20px; font-size: 14px;\">\n        <li style=\"margin-bottom: 10px;\"><strong>No Minimum Guarantee:</strong> We do not require any minimum guarantee of people. However, our minimum order value for catering is ₹ 20,000 + GST.</li>\n        <li style=\"margin-bottom: 10px;\"><strong>Portion Size:</strong> 1 portion of a main course dish serves 3–4 adults or 4–5 kids.</li>\n        <li style=\"margin-bottom: 10px;\"><strong>Event Duration:</strong> Service duration is 4 hours from the guest invite time.</li>\n        <li style=\"margin-bottom: 10px;\"><strong>Kitchen Access:</strong> If kitchen access is not available, an additional charge of ₹3,000 will apply for stove, cylinder, and other equipment.</li>\n        <li style=\"margin-bottom: 10px;\"><strong>Menu Finalization:</strong> To ensure a flawless experience, please confirm the menu 4–5 days prior to the event. No changes can be accommodated after this.</li>\n        <li style=\"margin-bottom: 10px;\"><strong>Nanny Boxes:</strong> Available on request. Please connect with us for details.</li>\n        <li style=\"margin-bottom: 10px;\"><strong>Guest Count Updates:</strong> Kindly inform us of any increase in guest count at least 4–5 days prior.</li>\n        <li style=\"margin-bottom: 10px;\"><strong>Booking Policy:</strong> All bookings are subject to availability at the time of confirmation and require a non-refundable 50% advance payment.</li>\n        <li style=\"margin-bottom: 10px;\"><strong>Add-On Services:</strong> Options such as sanitised toys and theme-aligned play areas can be arranged on request by our sister company. Please connect with us for details.</li>\n      </ul>\n\n      <div style=\"text-align: center; margin-top: 110px;\">\n          <p style=\"font-weight: bold; color: #D4813E; font-size: 16px; letter-spacing: 1px;\">FOLLOW US @LITTLEJALEBIS</p>\n          <!-- Instagram QR code added below the icon -->\n          <div style=\"margin-top: 10px;\">\n            <img src=\"https://res.cloudinary.com/dwffrfajl/image/upload/v1768128519/qr_xvsuyp.png\" alt=\"Instagram QR code\" style=\"height: 200px; display: inline-block;\">\n          </div>\n      </div>\n    </div>\n  </body>\n</html>\n\"\"\"\n\nreturn [{\"html_content\": html}]"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        640,
+        -704
+      ],
+      "id": "4895f598-2112-40e6-a32b-061462415575",
+      "name": "JSON TO HTML"
+    },
+    {
+      "parameters": {
+        "operation": "toText",
+        "sourceProperty": "html_content",
+        "binaryPropertyName": "=data",
+        "options": {
+          "fileName": "=index.html"
+        }
+      },
+      "type": "n8n-nodes-base.convertToFile",
+      "typeVersion": 1.1,
+      "position": [
+        864,
+        -704
+      ],
+      "id": "d6fc3009-e60b-4527-a5e5-bf1bb9fdc2d3",
+      "name": "Convert to File"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://168.231.122.119:3010/forms/chromium/convert/html",
+        "sendBody": true,
+        "contentType": "multipart-form-data",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "parameterType": "formBinaryData",
+              "name": "files",
+              "inputDataFieldName": "data"
+            }
+          ]
+        },
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "file"
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        1088,
+        -704
+      ],
+      "id": "d9ed6fa1-092f-436e-a993-f79c16c8d6c1",
+      "name": "HTML TO PDF"
+    },
+    {
+      "parameters": {
+        "respondWith": "binary",
+        "responseDataSource": "set",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [
+        1312,
+        -800
+      ],
+      "id": "62c954fb-c382-452c-844d-21ebf3dbe319",
+      "name": "Respond to Webhook1"
+    },
+    {
+      "parameters": {
+        "name": "={{ $('Webhook Form').first().json.body.HostName }} - {{ $('Webhook Form').first().json.body.EventDate }}.pdf",
+        "driveId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "My Drive"
+        },
+        "folderId": {
+          "__rl": true,
+          "value": "17HkrULgQ6MluWCSysJ19tb_GmW98r85p",
+          "mode": "list",
+          "cachedResultName": "Little Jalebis",
+          "cachedResultUrl": "https://drive.google.com/drive/folders/17HkrULgQ6MluWCSysJ19tb_GmW98r85p"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        1312,
+        -608
+      ],
+      "id": "e43b43d8-c4b8-4dcd-b1b2-b3bc3f4a0b07",
+      "name": "Upload file",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "pc86TJhyvqWbHzZg",
+          "name": "Vishwash"
+        }
+      },
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "language": "python",
+        "pythonCode": "import json\n\n# Access the body from the first input item\nbody = _input.all()[0].json.get('body', {})\n\n# Helper function to extract numeric values\ndef extract_number(val):\n    if not val or isinstance(val, (int, float)):\n        return val or 0\n    str_val = str(val).strip()\n    import re\n    match = re.search(r'[\\d.]+', str_val)\n    if not match:\n        return 0\n    try:\n        return float(match.group())\n    except:\n        return 0\n\n# Prepare data for Supabase\nsupabase_data = {\n    \"quotation_id\": body.get(\"QuotationId\", \"\"),\n    \"host_name\": body.get(\"HostName\", \"\"),\n    \"mobile_no\": body.get(\"MobileNo\", \"\"),\n    \"event_date\": body.get(\"EventDate\", \"\"),\n    \"time\": body.get(\"Time\", \"\"),\n    \"pax\": body.get(\"Pax\", \"\"),\n    \"location\": body.get(\"Location\", \"\"),\n    \"image_grid\": body.get(\"ImageGrid\", []),\n    \"items\": body.get(\"Items\", []),\n    \"total\": extract_number(body.get(\"Total\", 0)),\n    \"chef_servers\": extract_number(body.get(\"ChefServers\", 0)),\n    \"table_decor\": extract_number(body.get(\"TableDecor\", 0)),\n    \"cutlery\": extract_number(body.get(\"Cutlery\", 0)),\n    \"chaffing\": extract_number(body.get(\"Chaffing\", 0)),\n    \"conveyance\": extract_number(body.get(\"Conveyance\", 0)),\n    \"venue_charges\": extract_number(body.get(\"VenueCharges\", 0)),\n    \"tables\": body.get(\"Tables\", \"\"),\n    \"kitchen_space\": body.get(\"KitchenSpace\", \"\")\n}\n\nreturn [supabase_data]"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        80,
+        -224
+      ],
+      "id": "46e214e2-256c-45b2-b8ea-20a8f215f95a",
+      "name": "Prepare Supabase Data"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://wtqtnpjliyhcwxjkincj.supabase.co/rest/v1/quotations?on_conflict=quotation_id",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "apikey",
+              "value": "sb_publishable_JejvEEqBVuaYhS_6otvYuA_djCMsv-1"
+            },
+            {
+              "name": "Authorization",
+              "value": "Bearer sb_publishable_JejvEEqBVuaYhS_6otvYuA_djCMsv-1"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "Prefer",
+              "value": "resolution=merge-duplicates,return=minimal"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify($json) }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        416,
+        -224
+      ],
+      "id": "0222e63b-9217-4309-83de-44a2f64cbdb5",
+      "name": "Save to Supabase"
+    },
+    {
+      "parameters": {
+        "path": "quotations-list",
+        "responseMode": "responseNode",
+        "options": {
+          "responseHeaders": {
+            "entries": [
+              {
+                "name": "Access-Control-Allow-Origin",
+                "value": "*"
+              }
+            ]
+          }
+        }
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [
+        688,
+        -32
+      ],
+      "id": "647510e7-29af-4319-9660-5ef8bb4f4cf5",
+      "name": "Get Quotations List",
+      "webhookId": "quotations-list"
+    },
+    {
+      "parameters": {
+        "url": "https://wtqtnpjliyhcwxjkincj.supabase.co/rest/v1/quotations?select=quotation_id,host_name,event_date,created_at&order=created_at.desc&limit=100",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "apikey",
+              "value": "sb_publishable_JejvEEqBVuaYhS_6otvYuA_djCMsv-1"
+            },
+            {
+              "name": "Authorization",
+              "value": "Bearer sb_publishable_JejvEEqBVuaYhS_6otvYuA_djCMsv-1"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        928,
+        -32
+      ],
+      "id": "c0d900ee-76f0-47af-aa49-0fd3cffddb56",
+      "name": "Fetch Quotations List"
+    },
+    {
+      "parameters": {
+        "respondWith": "allIncomingItems",
+        "options": {
+          "responseHeaders": {
+            "entries": [
+              {
+                "name": "Access-Control-Allow-Origin",
+                "value": "*"
+              }
+            ]
+          }
+        }
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [
+        1232,
+        -32
+      ],
+      "id": "e9f41dfc-6c38-4f2b-a65e-3381ee6d8668",
+      "name": "Respond Quotations List"
+    },
+    {
+      "parameters": {
+        "path": "quotation-by-id",
+        "responseMode": "responseNode",
+        "options": {
+          "responseHeaders": {
+            "entries": [
+              {
+                "name": "Access-Control-Allow-Origin",
+                "value": "*"
+              }
+            ]
+          }
+        }
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [
+        656,
+        208
+      ],
+      "id": "310952a1-52fe-4847-9af4-ea044be36195",
+      "name": "Get Quotation By ID",
+      "webhookId": "quotation-by-id"
+    },
+    {
+      "parameters": {
+        "url": "=https://wtqtnpjliyhcwxjkincj.supabase.co/rest/v1/quotations?quotation_id=eq.{{ $json.query.id }}&limit=1",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "apikey",
+              "value": "sb_publishable_JejvEEqBVuaYhS_6otvYuA_djCMsv-1"
+            },
+            {
+              "name": "Authorization",
+              "value": "Bearer sb_publishable_JejvEEqBVuaYhS_6otvYuA_djCMsv-1"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        960,
+        208
+      ],
+      "id": "a641e2c5-c834-43bc-9a5f-4777fe4ead4f",
+      "name": "Fetch Quotation By ID"
+    },
+    {
+      "parameters": {
+        "respondWith": "allIncomingItems",
+        "options": {
+          "responseHeaders": {
+            "entries": [
+              {
+                "name": "Access-Control-Allow-Origin",
+                "value": "*"
+              }
+            ]
+          }
+        }
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [
+        1248,
+        208
+      ],
+      "id": "a63a9e71-6cad-4b2c-825a-cbef38f8aa58",
+      "name": "Respond Quotation By ID"
+    },
+    {
+      "parameters": {
+        "content": "python -m http.server 8000\n\na-string-secret-at-least-256-bits-long\n\nhttps://n8n.vyaapaarniti.com/webhook-test/quotation-form",
+        "height": 80,
+        "width": 464
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        528,
+        -1168
+      ],
+      "id": "fca9885b-6d46-496d-9332-87e1d8b7daf2",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "sendTo": "vishwashchauhan77@gmail.com",
+        "subject": "hello",
+        "message": "={{ $('Webhook Form').first().json.body.HostName }} - {{ $('Webhook Form').first().json.body.EventDate }}.pdf",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        1392,
+        -368
+      ],
+      "id": "7ed47001-24f9-4d81-926b-d96160cd1156",
+      "name": "Send a message",
+      "webhookId": "ebc0a6a5-7f8b-40a5-9b9c-795f64871fb5",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "9YhI3zWkjKQLFSPV",
+          "name": "Gmail Vishu"
+        }
+      },
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "content": "## Data Transformation ",
+        "height": 1200,
+        "color": 4
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        16,
+        -1136
+      ],
+      "id": "4096fb06-4a82-400c-b8c6-b033c537b9c7",
+      "name": "Sticky Note1"
+    }
+  ],
+  "connections": {
+    "Webhook Form": {
+      "main": [
+        [
+          {
+            "node": "Code in Python (Beta)",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Menu Item Transformation",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Code in Python (Beta)13",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Customer Details",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Prepare Supabase Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in Python (Beta)": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 2
+          }
+        ]
+      ]
+    },
+    "Code in Python (Beta)13": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 3
+          }
+        ]
+      ]
+    },
+    "Customer Details": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "JSON TO HTML",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Menu Item Transformation": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "JSON TO HTML": {
+      "main": [
+        [
+          {
+            "node": "Convert to File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Convert to File": {
+      "main": [
+        [
+          {
+            "node": "HTML TO PDF",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTML TO PDF": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook1",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Upload file",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prepare Supabase Data": {
+      "main": [
+        [
+          {
+            "node": "Save to Supabase",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Save to Supabase": {
+      "main": [
+        []
+      ]
+    },
+    "Get Quotations List": {
+      "main": [
+        [
+          {
+            "node": "Fetch Quotations List",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fetch Quotations List": {
+      "main": [
+        [
+          {
+            "node": "Respond Quotations List",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Quotation By ID": {
+      "main": [
+        [
+          {
+            "node": "Fetch Quotation By ID",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fetch Quotation By ID": {
+      "main": [
+        [
+          {
+            "node": "Respond Quotation By ID",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "pinData": {},
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "1e67cb8fe3dc79a4146e98ea40b94c77a507a3a599feb644f6e81b47655f5c75"
+  }
+}
