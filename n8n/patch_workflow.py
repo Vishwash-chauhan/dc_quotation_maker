@@ -1,12 +1,10 @@
 #!/usr/bin/env python3
 """Inject Dahi Cheeni node code into quotation-workflow.json."""
-import base64
 import json
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent
 WORKFLOW = ROOT / "quotation-workflow.json"
-LOGO = ROOT.parent / "assets" / "logo-dahi-cheeni.png"
 NODES = ROOT / "nodes"
 
 NODE_FILES = {
@@ -18,9 +16,6 @@ NODE_FILES = {
 
 
 def main():
-    logo_b64 = base64.b64encode(LOGO.read_bytes()).decode("ascii")
-    logo_uri = f"data:image/png;base64,{logo_b64}"
-
     with WORKFLOW.open(encoding="utf-8") as f:
         wf = json.load(f)
 
@@ -29,8 +24,6 @@ def main():
         if name not in NODE_FILES:
             continue
         code = (NODES / NODE_FILES[name]).read_text(encoding="utf-8")
-        if name == "JSON TO HTML":
-            code = code.replace("__LOGO_DATA_URI__", logo_uri)
         node.setdefault("parameters", {})["pythonCode"] = code
         print(f"Updated: {name}")
 

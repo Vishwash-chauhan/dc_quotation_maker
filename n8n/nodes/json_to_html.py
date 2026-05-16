@@ -1,7 +1,6 @@
 # n8n Code node: JSON TO HTML (Dahi Cheeni)
-# LOGO_DATA_URI is replaced by patch_workflow.py
 
-LOGO_DATA_URI = "__LOGO_DATA_URI__"
+logo_url = "https://res.cloudinary.com/dwxjq3tj9/image/upload/q_auto/f_auto/v1778926627/Dahi_Cheeni_Logo_draxao.png"
 
 try:
     cust_list = _input.all("Customer Details")
@@ -11,8 +10,6 @@ except Exception:
 
 menu_items = _input.all("Proposed Menu")
 services = _input.all("Other Services")
-
-logo_url = LOGO_DATA_URI
 brand = "#5c1a1a"
 cream = "#f5ebe0"
 gold = "#c9a227"
