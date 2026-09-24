@@ -7,13 +7,13 @@
         "responseMode": "responseNode",
         "options": {}
       },
-      "id": "5b641254-75ab-43c0-bb5b-520904aa461e",
+      "id": "ba1a3cb3-ec6a-495d-a94f-6bf2175fdb1f",
       "name": "Webhook Form",
       "type": "n8n-nodes-base.webhook",
       "typeVersion": 1,
       "position": [
-        -848,
-        480
+        -928,
+        416
       ],
       "webhookId": "9b2f3be4-e30e-42e8-9ca7-afce486bf02e"
     },
@@ -25,10 +25,10 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -448,
-        560
+        -528,
+        496
       ],
-      "id": "a05eaf23-7a12-4726-8cf5-0803488fb528",
+      "id": "f059b401-4f3a-4fd8-bb54-c7c346335530",
       "name": "Code in Python (Beta)"
     },
     {
@@ -39,10 +39,10 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -448,
-        752
+        -528,
+        688
       ],
-      "id": "dbc43f23-e157-4676-95f0-98d6a22f02f4",
+      "id": "9c5558dd-5101-4e4e-bfb6-e9aa57ae7282",
       "name": "Code in Python (Beta)13"
     },
     {
@@ -53,10 +53,10 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -448,
-        176
+        -528,
+        112
       ],
-      "id": "b707f219-c2e8-48d4-80d2-7142ca39d1c2",
+      "id": "5e7c3416-17cc-4f55-aa55-47d750d4eb05",
       "name": "Customer Details"
     },
     {
@@ -68,10 +68,10 @@
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        16,
-        336
+        -64,
+        272
       ],
-      "id": "e107f2aa-623b-46b2-9848-fa12d302483c",
+      "id": "df13a962-0e73-4a1e-915f-857a8cb9a830",
       "name": "Sticky Note7"
     },
     {
@@ -81,10 +81,10 @@
       "type": "n8n-nodes-base.merge",
       "typeVersion": 3.2,
       "position": [
-        -112,
-        432
+        -192,
+        368
       ],
-      "id": "4c3c8134-e570-47d8-8456-1580b8e2f6da",
+      "id": "cfa04807-04be-4376-a2a1-ebef2fa33041",
       "name": "Merge"
     },
     {
@@ -95,24 +95,24 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -448,
-        368
+        -528,
+        304
       ],
-      "id": "2c2fedc8-5112-4f8e-bfed-570c7866ee2a",
+      "id": "ef555a50-04bd-42a4-aec4-c3acccb0ee7e",
       "name": "Menu Item Transformation"
     },
     {
       "parameters": {
         "language": "python",
-        "pythonCode": "logo_url = \"https://res.cloudinary.com/dwxjq3tj9/image/upload/q_auto/f_auto/v1778926627/Dahi_Cheeni_Logo_draxao.png\"\n\ntry:\n    cust_list = _input.all(\"Customer Details\")\n    cust = cust_list[0].json if cust_list else {}\nexcept Exception:\n    cust = {}\n\nmenu_items = _input.all(\"Proposed Menu\")\nservices = _input.all(\"Other Services\")\nbrand = \"#5c1a1a\"\ncream = \"#f5ebe0\"\ngold = \"#c9a227\"\n\ndef fmt_money(val):\n    if val is None or val == \"\":\n        return \"\"\n    try:\n        s = str(val).replace(\",\", \"\").strip()\n        v = float(s)\n        return f\"₹{int(v):,}\" if v == int(v) else f\"₹{v:,.2f}\"\n    except Exception:\n        return str(val)\n\nhtml = f\"\"\"<!DOCTYPE html>\n<html>\n<head>\n<style>\n  @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Source+Sans+3:wght@400;600;700&display=swap');\n  @page {{ \n    margin: 15mm;\n    @bottom-center {{\n        content: element(footer);\n    }}\n  }}\n  body {{ font-family: 'Source Sans 3', sans-serif; color: #222; margin: 0; line-height: 1.7; padding-bottom: 35mm; }}\n  \n  .footer {{ \n    position: fixed; \n    bottom: 0; \n    left: 0; \n    right: 0; \n    text-align: center; \n    font-size: 11px; \n    color: #444; \n    border-top: 1px solid #ccc; \n    padding-top: 12px;\n    line-height: 1.4;\n    background: white;\n  }}\n  .footer-title {{ font-weight: 700; font-size: 12px; color: #000; }}\n  \n  h1, h2, h3 {{ font-family: 'Cormorant Garamond', serif; color: {brand}; }}\n  \n  /* Logo and Layout Styling */\n  .logo-wrap {{ text-align: center; padding: 20px 0 30px; }}\n  .main-logo {{ max-width: 120px; height: auto; }}\n  \n  .intro-container {{ padding: 0 10px; }}\n  .welcome-text {{ color: {brand}; font-size: 22px; font-weight: 700; margin-bottom: 25px; font-family: 'Cormorant Garamond', serif; }}\n  .intro-body {{ font-size: 16px; color: #333; }}\n  .intro-body p {{ margin-bottom: 22px; text-align: justify; }}\n  .highlight {{ color: {brand}; font-weight: 700; }}\n  .signature {{ margin-top: 40px; font-size: 16px; line-height: 1.4; }}\n  .signature strong {{ color: {brand}; font-size: 18px; }}\n\n  /* Quotation Page Styling */\n  .header-banner {{ background: {brand}; color: {cream}; padding: 18px; border-radius: 8px; margin-bottom: 20px; }}\n  .header-banner h1 {{ color: {cream} !important; text-align: center; font-size: 28px; margin: 0; letter-spacing: 1px; }}\n  .header-details {{ margin-top: 12px; font-size: 14px; border-top: 1px solid rgba(255,255,255,0.25); padding-top: 10px; }}\n  .detail-row {{ display: table; width: 100%; }}\n  .detail-row > div {{ display: table-cell; width: 50%; padding: 4px 0; }}\n  \n  h2 {{ font-size: 22px; border-bottom: 2px solid {brand}; padding-bottom: 6px; margin-top: 25px; text-transform: uppercase; letter-spacing: 1px; }}\n  \n  .data-table {{ width: 100%; border-collapse: collapse; margin-top: 12px; table-layout: fixed; }}\n  .data-table th {{ background: {brand}; color: {cream}; padding: 10px; border: 1px solid {brand}; font-size: 13px; text-transform: uppercase; }}\n  .data-table td {{ padding: 10px; border: 1px solid #ddd; font-size: 14px; vertical-align: top; }}\n  .cat-row td {{ background: #fdf8f5; font-weight: 700; color: {brand}; font-family: 'Cormorant Garamond', serif; font-size: 18px; padding: 12px 10px; }}\n  \n  .description {{ font-size: 11px; color: #666; font-style: italic; display: block; margin-top: 5px; }}\n  .badge {{ font-size: 10px; padding: 2px 8px; border-radius: 4px; background: #f0f0f0; margin-left: 8px; color: {brand}; font-weight: 700; border: 0.5px solid #ccc; }}\n  .num {{ text-align: center; }}\n  .total-row td {{ font-weight: 700; background: #faf6f4; font-size: 15px; }}\n  \n  .note-list {{ font-size: 14px; padding-left: 20px; }}\n  .note-list li {{ margin-bottom: 12px; }}\n</style>\n</head>\n<body>\n\n<div class=\"footer\">\n  <div class=\"footer-title\">Dahi Cheeni Catering</div>\n  (Unit of NC Hospitality Pvt Ltd) CIN : U55101DL2009PTC188581<br>\n  Regd. Address : E 5 Kalindi Colony, Near New Friends Colony, New Delhi 110065<br>\n  Website : www.dahicheenicatering.com | Email : sales@dahicheenicatering.com\n</div>\n\n<!-- PAGE 1: INTRODUCTION -->\n<div class=\"intro-container\">\n    <div class=\"logo-wrap\">\n      <img src=\"{logo_url}\" class=\"main-logo\" alt=\"Dahi Cheeni\">\n    </div>\n\n    <div class=\"welcome-text\">Welcome to Dahi Cheeni — Pure Veg Home-Style Catering</div>\n\n    <div class=\"intro-body\">\n      <p>Thank you for considering <span class=\"highlight\">Dahi Cheeni</span> for your upcoming gathering. With over <span class=\"highlight\">10 years of dedicated experience</span> in the hospitality industry, we bring a refined legacy of excellence, taste, and trust to your doorstep.</p>\n      \n      <p>We specialize exclusively in <span class=\"highlight\">100% pure vegetarian catering</span>, designed specifically for your most <span class=\"highlight\">auspicious occasions</span>. Whether it is a housewarming, a traditional ceremony, or an intimate family milestone, our menus are thoughtfully curated to honor the sanctity and joy of your celebration.</p>\n      \n      <p>Our culinary philosophy is rooted in authentic <span class=\"highlight\">\"home-style\" preparation</span>. We prioritize the selection of the freshest seasonal ingredients, traditional spice blends, and the highest standards of hygiene. Our goal is to serve food that doesn't just satiate hunger but evokes a sense of comfort and nostalgia, much like a meal prepared in one’s own family kitchen.</p>\n      \n      <p>We take pride in our smooth, stress-free service, allowing you to focus entirely on being a host while we take care of the flavors.</p>\n      \n      <p>We look forward to being a part of your celebration and creating a delightful, soul-satisfying dining experience for you and your loved ones.</p>\n    </div>\n\n    <div class=\"signature\">\n      Warm regards,<br>\n      <strong>Team Dahi Cheeni</strong><br>\n      Pure Veg. Authentic. Intimate.\n    </div>\n</div>\n\n<div style=\"page-break-before: always;\"></div>\n\n<!-- PAGE 2: QUOTATION -->\n<div class=\"logo-wrap\">\n  <img src=\"{logo_url}\" class=\"main-logo\" alt=\"Dahi Cheeni\">\n</div>\n\n<div class=\"header-banner\">\n  <h1>EVENT QUOTATION</h1>\n  <div class=\"header-details\">\n    <div class=\"detail-row\">\n      <div><strong>HOST:</strong> {cust.get('Host Name', 'N/A')}</div>\n      <div><strong>MOBILE:</strong> {cust.get('Mobile No', 'N/A')}</div>\n    </div>\n    <div class=\"detail-row\">\n      <div><strong>DATE:</strong> {cust.get('Event Date', 'N/A')}</div>\n      <div><strong>TIME:</strong> {cust.get('Time', 'N/A')}</div>\n    </div>\n    <div class=\"detail-row\">\n      <div><strong>LOCATION:</strong> {cust.get('Location', 'N/A')}</div>\n      <div><strong>PAX:</strong> {cust.get('Pax', 'N/A')}</div>\n    </div>\n  </div>\n</div>\n\n<h2>Proposed Menu</h2>\n\"\"\"\n\nfrom collections import OrderedDict\n\ncategories = OrderedDict()\nfor item in menu_items:\n    d = item.json\n    name = (d.get(\"Name\") or \"\").strip()\n    if not name:\n        continue\n    cat = d.get(\"Category\") or \"Other\"\n    categories.setdefault(cat, []).append(d)\n\nfor cat, items in categories.items():\n    html += f\"\"\"\n<table class=\"data-table\">\n  <colgroup>\n    <col style=\"width:50%\" />\n    <col style=\"width:14%\" />\n    <col style=\"width:18%\" />\n    <col style=\"width:18%\" />\n  </colgroup>\n  <thead>\n    <tr class=\"cat-row\"><td colspan=\"4\">{cat.upper()}</td></tr>\n    <tr>\n      <th>ITEM</th>\n      <th class=\"num\">QTY</th>\n      <th class=\"num\">RATE</th>\n      <th class=\"num\">AMOUNT</th>\n    </tr>\n  </thead>\n  <tbody>\n\"\"\"\n    for d in items:\n        # Veg/Non Veg logic removed here\n        qty = d.get(\"Qty\", d.get(\"Portions\", \"\"))\n        html += f\"\"\"\n    <tr>\n      <td><strong>{d.get('Name', '')}</strong>\n        <span class=\"description\">{d.get('Description', '')}</span>\n      </td>\n      <td class=\"num\">{qty}</td>\n      <td class=\"num\">{fmt_money(d.get('Rate', ''))}</td>\n      <td class=\"num\">{fmt_money(d.get('Amount', ''))}</td>\n    </tr>\n\"\"\"\n    html += \"</tbody></table>\"\n\nhtml += f\"\"\"\n<div style=\"page-break-before: always;\">\n  <div class=\"logo-wrap\">\n    <img src=\"{logo_url}\" class=\"main-logo\" alt=\"Dahi Cheeni\">\n  </div>\n  <h2>Other Services &amp; Summary</h2>\n  <table class=\"data-table\">\n    <tbody>\n\"\"\"\n\nfor s in services:\n    sd = s.json\n    label = (sd.get(\"Other Services\") or \"\").strip()\n    if not label:\n        continue\n    amount = fmt_money(sd.get(\"Amount\", \"\"))\n    row_class = \"total-row\" if any(x in label.upper() for x in (\"TOTAL\", \"SUBTOTAL\", \"GST\")) else \"\"\n    html += f'<tr class=\"{row_class}\"><td colspan=\"3\">{label}</td><td class=\"num\">{amount}</td></tr>'\n\nhtml += f\"\"\"\n    </tbody>\n  </table>\n</div>\n\n<div style=\"page-break-before: always; margin-top: 20px;\">\n  <div class=\"logo-wrap\">\n    <img src=\"{logo_url}\" class=\"main-logo\" alt=\"Dahi Cheeni\">\n  </div>\n  <h3 style=\"text-decoration: underline; font-size: 20px;\">Important Terms & Conditions</h3>\n  <ul class=\"note-list\">\n    <li><strong>Pricing Model:</strong> Final billing is based on the actual quantity ordered or the minimum guaranteed pax, whichever is higher.</li>\n    <li><strong>Taxation:</strong> 5% GST is applicable on the final subtotal as per government mandates.</li>\n    <li><strong>Menu Finalization:</strong> We request you to confirm your final menu selections at least 4–5 days prior to the event date.</li>\n    <li><strong>Booking Policy:</strong> Dates are blocked only upon receipt of the booking advance.</li>\n    <li><strong>Logistics:</strong> Basic kitchen access, electricity, and water supply should be provided at the venue.</li>\n    <li><strong>Cancellation:</strong> Please refer to our detailed cancellation policy provided at the time of booking.</li>\n  </ul>\n</div>\n\n</body>\n</html>\n\"\"\"\n\nreturn [{\"html_content\": html}]"
+        "pythonCode": "# n8n Code node: JSON TO HTML (Dahi Cheeni)\n\nlogo_url = \"https://res.cloudinary.com/dwxjq3tj9/image/upload/q_auto/f_auto/v1778926627/Dahi_Cheeni_Logo_draxao.png\"\n\ntry:\n    cust_list = _input.all(\"Customer Details\")\n    cust = cust_list[0].json if cust_list else {}\nexcept Exception:\n    cust = {}\n\nmenu_items = _input.all(\"Proposed Menu\")\nservices = _input.all(\"Other Services\")\nbrand = \"#5c1a1a\"\ncream = \"#f5ebe0\"\ngold = \"#c9a227\"\n\n\ndef fmt_money(val):\n    if val is None or val == \"\":\n        return \"\"\n    try:\n        s = str(val).replace(\",\", \"\").strip()\n        v = float(s)\n        return f\"₹{int(v):,}\" if v == int(v) else f\"₹{v:,.2f}\"\n    except Exception:\n        return str(val)\n\n\nhtml = f\"\"\"<!DOCTYPE html>\n<html>\n<head>\n<style>\n  @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Source+Sans+3:wght@400;600;700&display=swap');\n  @page {{ \n    margin: 15mm;\n    @bottom-center {{\n        content: element(footer);\n    }}\n  }}\n  body {{ font-family: 'Source Sans 3', sans-serif; color: #222; margin: 0; line-height: 1.7; padding-bottom: 35mm; }}\n  \n  .footer {{ \n    position: fixed; \n    bottom: 0; \n    left: 0; \n    right: 0; \n    text-align: center; \n    font-size: 11px; \n    color: #444; \n    border-top: 1px solid #ccc; \n    padding-top: 12px;\n    line-height: 1.4;\n    background: white;\n  }}\n  .footer-title {{ font-weight: 700; font-size: 12px; color: #000; }}\n  \n  h1, h2, h3 {{ font-family: 'Cormorant Garamond', serif; color: {brand}; }}\n  \n  /* Logo and Layout Styling */\n  .logo-wrap {{ text-align: center; padding: 20px 0 30px; }}\n  .main-logo {{ max-width: 120px; height: auto; }}\n  \n  .intro-container {{ padding: 0 10px; }}\n  .welcome-text {{ color: {brand}; font-size: 22px; font-weight: 700; margin-bottom: 25px; font-family: 'Cormorant Garamond', serif; }}\n  .intro-body {{ font-size: 16px; color: #333; }}\n  .intro-body p {{ margin-bottom: 22px; text-align: justify; }}\n  .highlight {{ color: {brand}; font-weight: 700; }}\n  .signature {{ margin-top: 40px; font-size: 16px; line-height: 1.4; }}\n  .signature strong {{ color: {brand}; font-size: 18px; }}\n\n  /* Quotation Page Styling */\n  .header-banner {{ background: {brand}; color: {cream}; padding: 18px; border-radius: 8px; margin-bottom: 20px; }}\n  .header-banner h1 {{ color: {cream} !important; text-align: center; font-size: 28px; margin: 0; letter-spacing: 1px; }}\n  .header-details {{ margin-top: 12px; font-size: 14px; border-top: 1px solid rgba(255,255,255,0.25); padding-top: 10px; }}\n  .detail-row {{ display: table; width: 100%; }}\n  .detail-row > div {{ display: table-cell; width: 50%; padding: 4px 0; }}\n  \n  h2 {{ font-size: 22px; border-bottom: 2px solid {brand}; padding-bottom: 6px; margin-top: 25px; text-transform: uppercase; letter-spacing: 1px; }}\n  \n  .data-table {{ width: 100%; border-collapse: collapse; margin-top: 12px; table-layout: fixed; }}\n  .data-table th {{ background: {brand}; color: {cream}; padding: 10px; border: 1px solid {brand}; font-size: 13px; text-transform: uppercase; }}\n  .data-table td {{ padding: 10px; border: 1px solid #ddd; font-size: 14px; vertical-align: top; }}\n  .cat-row td {{ background: #fdf8f5; font-weight: 700; color: {brand}; font-family: 'Cormorant Garamond', serif; font-size: 18px; padding: 12px 10px; }}\n  \n  .description {{ font-size: 11px; color: #666; font-style: italic; display: block; margin-top: 5px; }}\n  .badge {{ font-size: 10px; padding: 2px 8px; border-radius: 4px; background: #f0f0f0; margin-left: 8px; color: {brand}; font-weight: 700; border: 0.5px solid #ccc; }}\n  .num {{ text-align: center; }}\n  .total-row td {{ font-weight: 700; background: #faf6f4; font-size: 15px; }}\n  \n  .note-list {{ font-size: 14px; padding-left: 20px; }}\n  .note-list li {{ margin-bottom: 12px; }}\n</style>\n</head>\n<body>\n\n<div class=\"footer\">\n  <div class=\"footer-title\">Dahi Cheeni Catering</div>\n  (Unit of NC Hospitality Pvt Ltd) CIN : U55101DL2009PTC188581<br>\n  Regd. Address : E 5 Kalindi Colony, Near New Friends Colony, New Delhi 110065<br>\n  Website : www.dahicheenicatering.com | Email : sales@dahicheenicatering.com\n</div>\n\n<!-- PAGE 1: INTRODUCTION -->\n<div class=\"intro-container\">\n    <div class=\"logo-wrap\">\n      <img src=\"{logo_url}\" class=\"main-logo\" alt=\"Dahi Cheeni\">\n    </div>\n\n    <div class=\"welcome-text\">Welcome to Dahi Cheeni — Home-Style Catering</div>\n\n    <div class=\"intro-body\">\n      <p>Thank you for considering <span class=\"highlight\">Dahi Cheeni</span> for your upcoming gathering. With over <span class=\"highlight\">10 years of dedicated experience</span> in the hospitality industry, we bring a refined legacy of excellence, taste, and trust to your doorstep.</p>\n      \n      <p>We specialize in <span class=\"highlight\">catering services</span>, designed specifically for your most <span class=\"highlight\">auspicious occasions</span>. Whether it is a housewarming, a traditional ceremony, or an intimate family milestone, our menus are thoughtfully curated to honor the sanctity and joy of your celebration.</p>\n      \n      <p>Our culinary philosophy is rooted in authentic <span class=\"highlight\">\"home-style\" preparation</span>. We prioritize the selection of the freshest seasonal ingredients, traditional spice blends, and the highest standards of hygiene. Our goal is to serve food that doesn't just satiate hunger but evokes a sense of comfort and nostalgia, much like a meal prepared in one’s own family kitchen.</p>\n      \n      <p>We take pride in our smooth, stress-free service, allowing you to focus entirely on being a host while we take care of the flavors.</p>\n      \n      <p>We look forward to being a part of your celebration and creating a delightful, soul-satisfying dining experience for you and your loved ones.</p>\n    </div>\n\n    <div class=\"signature\">\n      Warm regards,<br>\n      <strong>Team Dahi Cheeni</strong><br>\n      Authentic. Intimate.\n    </div>\n</div>\n\n<div style=\"page-break-before: always;\"></div>\n\n<!-- PAGE 2: QUOTATION -->\n<div class=\"logo-wrap\">\n  <img src=\"{logo_url}\" class=\"main-logo\" alt=\"Dahi Cheeni\">\n</div>\n\n<div class=\"header-banner\">\n  <h1>EVENT QUOTATION</h1>\n  <div class=\"header-details\">\n    <div class=\"detail-row\">\n      <div><strong>HOST:</strong> {cust.get('Host Name', 'N/A')}</div>\n      <div><strong>MOBILE:</strong> {cust.get('Mobile No', 'N/A')}</div>\n    </div>\n    <div class=\"detail-row\">\n      <div><strong>DATE:</strong> {cust.get('Event Date', 'N/A')}</div>\n      <div><strong>TIME:</strong> {cust.get('Time', 'N/A')}</div>\n    </div>\n    <div class=\"detail-row\">\n      <div><strong>LOCATION:</strong> {cust.get('Location', 'N/A')}</div>\n      <div><strong>PAX:</strong> {cust.get('Pax', 'N/A')}</div>\n    </div>\n  </div>\n</div>\n\n<h2>Proposed Menu</h2>\n\"\"\"\n\nfrom collections import OrderedDict\n\ncategories = OrderedDict()\nfor item in menu_items:\n    d = item.json\n    name = (d.get(\"Name\") or \"\").strip()\n    if not name:\n        continue\n    cat = d.get(\"Category\") or \"Other\"\n    categories.setdefault(cat, []).append(d)\n\nfor cat, items in categories.items():\n    html += f\"\"\"\n<table class=\"data-table\">\n  <colgroup>\n    <col style=\"width:50%\" />\n    <col style=\"width:14%\" />\n    <col style=\"width:18%\" />\n    <col style=\"width:18%\" />\n  </colgroup>\n  <thead>\n    <tr class=\"cat-row\"><td colspan=\"4\">{cat.upper()}</td></tr>\n    <tr>\n      <th>ITEM</th>\n      <th class=\"num\">QTY</th>\n      <th class=\"num\">RATE</th>\n      <th class=\"num\">AMOUNT</th>\n    </tr>\n  </thead>\n  <tbody>\n\"\"\"\n    for d in items:\n        # Veg/Non Veg logic removed here\n        qty = d.get(\"Qty\", d.get(\"Portions\", \"\"))\n        html += f\"\"\"\n    <tr>\n      <td><strong>{d.get('Name', '')}</strong>\n        <span class=\"description\">{d.get('Description', '')}</span>\n      </td>\n      <td class=\"num\">{qty}</td>\n      <td class=\"num\">{fmt_money(d.get('Rate', ''))}</td>\n      <td class=\"num\">{fmt_money(d.get('Amount', ''))}</td>\n    </tr>\n\"\"\"\n    html += \"</tbody></table>\"\n\nhtml += f\"\"\"\n<div style=\"page-break-before: always;\">\n  <div class=\"logo-wrap\">\n    <img src=\"{logo_url}\" class=\"main-logo\" alt=\"Dahi Cheeni\">\n  </div>\n  <h2>Other Services &amp; Summary</h2>\n  <table class=\"data-table\">\n    <tbody>\n\"\"\"\n\nfor s in services:\n    sd = s.json\n    label = (sd.get(\"Other Services\") or \"\").strip()\n    if not label:\n        continue\n    amount = fmt_money(sd.get(\"Amount\", \"\"))\n    row_class = \"total-row\" if any(x in label.upper() for x in (\"TOTAL\", \"SUBTOTAL\", \"GST\")) else \"\"\n    html += f'<tr class=\"{row_class}\"><td colspan=\"3\">{label}</td><td class=\"num\">{amount}</td></tr>'\n\nhtml += f\"\"\"\n    </tbody>\n  </table>\n</div>\n\n<div style=\"page-break-before: always; margin-top: 20px;\">\n  <div class=\"logo-wrap\">\n    <img src=\"{logo_url}\" class=\"main-logo\" alt=\"Dahi Cheeni\">\n  </div>\n  <h3 style=\"text-decoration: underline; font-size: 20px;\">Important Terms &amp; Conditions</h3>\n  <ul class=\"note-list\">\n    <li><strong>Pricing Model:</strong> Final billing is based on the actual quantity ordered or the minimum guaranteed pax, whichever is higher.</li>\n    <li><strong>Taxation:</strong> 5% GST is applicable on the final subtotal as per government mandates.</li>\n    <li><strong>Menu Finalization:</strong> We request you to confirm your final menu selections at least 4–5 days prior to the event date.</li>\n    <li><strong>Booking Policy:</strong> Dates are blocked only upon receipt of the booking advance.</li>\n    <li><strong>Logistics:</strong> Basic kitchen access, electricity, and water supply should be provided at the venue.</li>\n    <li><strong>Cancellation:</strong> Please refer to our detailed cancellation policy provided at the time of booking.</li>\n  </ul>\n</div>\n\n</body>\n</html>\n\"\"\"\n\nreturn [{\"html_content\": html}]\n"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        112,
-        464
+        32,
+        400
       ],
-      "id": "43e4ea1d-0324-4c7c-97f9-feb8f6a9b500",
+      "id": "4f8dd290-5797-43ed-a280-1fb60652cd8d",
       "name": "JSON TO HTML"
     },
     {
@@ -127,16 +127,16 @@
       "type": "n8n-nodes-base.convertToFile",
       "typeVersion": 1.1,
       "position": [
-        336,
-        464
+        256,
+        400
       ],
-      "id": "11421d2c-8daf-490d-be58-fa1eca0539fd",
+      "id": "5885c34f-fbd7-421d-8c8f-498b8a0906e4",
       "name": "Convert to File"
     },
     {
       "parameters": {
         "method": "POST",
-        "url": "http://168.231.122.119:3010/forms/chromium/convert/html",
+        "url": "http://147.93.97.152:3010/forms/chromium/convert/html",
         "sendBody": true,
         "contentType": "multipart-form-data",
         "bodyParameters": {
@@ -159,10 +159,10 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.3,
       "position": [
-        560,
-        464
+        480,
+        400
       ],
-      "id": "5f3d3c4d-549e-4bf7-a082-5b6cb5d4a350",
+      "id": "8b4bc5a9-862d-4f0b-9d93-feb4d578b66d",
       "name": "HTML TO PDF"
     },
     {
@@ -174,10 +174,10 @@
       "type": "n8n-nodes-base.respondToWebhook",
       "typeVersion": 1,
       "position": [
-        784,
-        368
+        704,
+        304
       ],
-      "id": "a977732e-ec0a-437a-afe0-9e79c75569c1",
+      "id": "8b4070d5-4b8a-40a1-ac47-0f45e2ad50d3",
       "name": "Respond to Webhook1"
     },
     {
@@ -200,17 +200,11 @@
       "type": "n8n-nodes-base.googleDrive",
       "typeVersion": 3,
       "position": [
-        784,
-        560
+        704,
+        496
       ],
-      "id": "079ae593-95a8-4937-9dad-ffe66f89acf2",
+      "id": "167f9733-e2e3-4d77-ac0a-0e95ad87e6e7",
       "name": "Upload file",
-      "credentials": {
-        "googleDriveOAuth2Api": {
-          "id": "pc86TJhyvqWbHzZg",
-          "name": "Vishwash"
-        }
-      },
       "disabled": true
     },
     {
@@ -221,10 +215,10 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -448,
-        944
+        -528,
+        880
       ],
-      "id": "cf609e4b-1619-4f63-9d8e-b835447380b3",
+      "id": "ff2ff486-ee06-4255-ade1-ac723089338c",
       "name": "Prepare Supabase Data"
     },
     {
@@ -260,10 +254,10 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.3,
       "position": [
-        -112,
-        944
+        -192,
+        880
       ],
-      "id": "021b8597-e300-44ff-9977-ca0c03f6b396",
+      "id": "ef8b8d79-e942-461e-a608-a437d29046df",
       "name": "Save to Supabase"
     },
     {
@@ -284,12 +278,13 @@
       "type": "n8n-nodes-base.webhook",
       "typeVersion": 1,
       "position": [
-        160,
-        1136
+        80,
+        1072
       ],
-      "id": "29404384-feb7-4987-af5d-ab8388d6b607",
+      "id": "632ffa64-6d67-40a4-affa-18ff2f3c974a",
       "name": "Get Quotations List",
-      "webhookId": "quotations-list"
+      "webhookId": "quotations-list",
+      "disabled": true
     },
     {
       "parameters": {
@@ -312,10 +307,10 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.3,
       "position": [
-        400,
-        1136
+        320,
+        1072
       ],
-      "id": "2eef3cb5-a669-4989-bad3-503e23073827",
+      "id": "add744c5-c993-412e-bb00-4108733c6910",
       "name": "Fetch Quotations List"
     },
     {
@@ -335,10 +330,10 @@
       "type": "n8n-nodes-base.respondToWebhook",
       "typeVersion": 1,
       "position": [
-        704,
-        1136
+        624,
+        1072
       ],
-      "id": "6496ce39-9660-4ae5-b6e5-7f1bc90dc159",
+      "id": "7fc044c0-a998-4284-af02-e05a363c59f0",
       "name": "Respond Quotations List"
     },
     {
@@ -359,12 +354,13 @@
       "type": "n8n-nodes-base.webhook",
       "typeVersion": 1,
       "position": [
-        128,
-        1376
+        48,
+        1312
       ],
-      "id": "203f3096-04f5-42d8-a853-5218aaa98f16",
+      "id": "bb3cc095-c36a-45bb-ac3a-ba41cd9a8ba1",
       "name": "Get Quotation By ID",
-      "webhookId": "quotation-by-id"
+      "webhookId": "quotation-by-id",
+      "disabled": true
     },
     {
       "parameters": {
@@ -387,10 +383,10 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.3,
       "position": [
-        432,
-        1376
+        352,
+        1312
       ],
-      "id": "3b0fd852-38ec-4f82-969b-ed72559355cd",
+      "id": "4821e889-a446-4840-83dd-51534d5bd261",
       "name": "Fetch Quotation By ID"
     },
     {
@@ -410,25 +406,25 @@
       "type": "n8n-nodes-base.respondToWebhook",
       "typeVersion": 1,
       "position": [
-        720,
-        1376
+        640,
+        1312
       ],
-      "id": "373d3f4f-8853-44fe-9d11-413f4002f20d",
+      "id": "6299c241-60a4-4953-9f77-07319935be26",
       "name": "Respond Quotation By ID"
     },
     {
       "parameters": {
-        "content": "Dahi Cheeni quotation workflow\nForm: form.html\nPricing: Qty × Rate\nRe-import this JSON after edits, then activate workflow.\npython -m http.server 8000",
+        "content": "Dahi Cheeni quotation workflow\nForm: form.html\nPricing: Qty × Rate\nRe-import this JSON after edits, then activate workflow.",
         "height": 112,
         "width": 464
       },
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        0,
-        0
+        -80,
+        -64
       ],
-      "id": "b2574559-2d26-45f4-94af-19a08bb79aac",
+      "id": "829197e2-e6fa-4e14-84e3-a71f55311999",
       "name": "Sticky Note"
     },
     {
@@ -441,18 +437,12 @@
       "type": "n8n-nodes-base.gmail",
       "typeVersion": 2.1,
       "position": [
-        864,
-        800
+        784,
+        736
       ],
-      "id": "af8eac50-45fe-4359-950e-046ecfa523c8",
+      "id": "a58f124d-b090-4b3a-863f-040ea7362511",
       "name": "Send a message",
       "webhookId": "ebc0a6a5-7f8b-40a5-9b9c-795f64871fb5",
-      "credentials": {
-        "gmailOAuth2": {
-          "id": "9YhI3zWkjKQLFSPV",
-          "name": "Gmail Vishu"
-        }
-      },
       "disabled": true
     },
     {
@@ -464,10 +454,10 @@
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        -512,
-        32
+        -592,
+        -32
       ],
-      "id": "b199ef9b-7b9c-4014-933b-831865ed0713",
+      "id": "bcc920f3-89f9-4b66-a410-5e89926a1802",
       "name": "Sticky Note1"
     }
   ],
@@ -601,11 +591,6 @@
         ]
       ]
     },
-    "Prepare Supabase Data": {
-      "main": [
-        []
-      ]
-    },
     "Get Quotations List": {
       "main": [
         [
@@ -653,6 +638,7 @@
   },
   "pinData": {},
   "meta": {
-    "instanceId": "1e67cb8fe3dc79a4146e98ea40b94c77a507a3a599feb644f6e81b47655f5c75"
+    "templateCredsSetupCompleted": true,
+    "instanceId": "684990e9b4e8bebc99a7379fc12d6d1a399bc096a6c2624c877826619ea84a0b"
   }
 }
